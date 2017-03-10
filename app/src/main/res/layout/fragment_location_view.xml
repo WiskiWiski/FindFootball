@@ -1,0 +1,35 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="by.wiskiw.findfootball.lacation.gmaps.fragments.LocationViewFragment">
+
+    <LinearLayout
+        android:id="@+id/btns_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:enabled="false"
+        android:visibility="gone"
+        tools:enabled="true"
+        tools:visibility="visible">
+
+        <Button
+            android:id="@+id/preview_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/gmaps_button_preview_text"/>
+
+        <Button
+            android:id="@+id/next_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/gmaps_button_next_text"/>
+
+
+    </LinearLayout>
+
+</FrameLayout>

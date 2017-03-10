@@ -5,4 +5,17 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+
+    <!-- === GMaps === -->
+    <string name="gmaps_activity_title">GMapsActivity</string>
+    <string name="gmaps_permissions_not_granted">Requiring Location permissions</string>
+    <string name="gmaps_button_confirm_text">Confirm</string>
+    <string name="gmaps_button_preview_text">Preview</string>
+    <string name="gmaps_button_next_text">Next</string>
+
+
+
+
+
 </resources>
