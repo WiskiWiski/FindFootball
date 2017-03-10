@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="launch_counter" translatable="false">pref_tag_launch_counter</string>
+
+</resources>
