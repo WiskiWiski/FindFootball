@@ -3,7 +3,6 @@ package by.wiskiw.findfootball.lacation.gmaps;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -51,7 +50,7 @@ public class GMapsActivity extends AppCompatActivity implements
 
             Intent gmapsIntent = new Intent(getApplicationContext(), GMapsActivity.class);
             gmapsIntent.putExtra(GMapsActivity.FRAGMENT_TYPE, GMapsActivity.REQUEST_VIEWER);
-            gmapsIntent.putExtra(App.INTENT_BUNBLE, bundle);
+            gmapsIntent.putExtra(App.INTENT_BUNDLE, bundle);
             startActivityForResult(gmapsIntent, GMapsActivity.REQUEST_VIEWER);
      */
 
@@ -73,7 +72,7 @@ public class GMapsActivity extends AppCompatActivity implements
                 switch (resultCode) {
                     case LocationSelectFragment.LOCATION:
                         // местоположение выбрано
-                        LatLng latLng = data.getBundleExtra(App.INTENT_BUNBLE)
+                        LatLng latLng = data.getBundleExtra(App.INTENT_BUNDLE)
                                 .getParcelable(GMapsActivity.LAT_LNG_LOCATION);
                         if (latLng != null) {
                             Log.d(TAG, "onLocationSelect: " + latLng.latitude);
@@ -120,7 +119,7 @@ public class GMapsActivity extends AppCompatActivity implements
             } else if (mapFragmentType == REQUEST_VIEWER) {
                 // Start LocationViewFragment
                 LocationViewFragment locationViewFrg =
-                        LocationViewFragment.newInstance(intent.getBundleExtra(App.INTENT_BUNBLE));
+                        LocationViewFragment.newInstance(intent.getBundleExtra(App.INTENT_BUNDLE));
                 setFragment(locationViewFrg);
             }
 
@@ -171,7 +170,7 @@ public class GMapsActivity extends AppCompatActivity implements
         Intent intent = new Intent();
         Bundle data = new Bundle();
         data.putParcelable(LAT_LNG_LOCATION, latLng);
-        intent.putExtra(App.INTENT_BUNBLE, data);
+        intent.putExtra(App.INTENT_BUNDLE, data);
         setResult(LocationSelectFragment.LOCATION, intent);
         finish();
     }
