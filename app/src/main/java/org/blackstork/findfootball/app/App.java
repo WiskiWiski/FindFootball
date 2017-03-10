@@ -1,10 +1,10 @@
-package by.wiskiw.findfootball.app;
+package org.blackstork.findfootball.app;
 
 import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
-import by.wiskiw.findfootball.storage.PreferencesStorage;
+import org.blackstork.findfootball.storage.PreferencesStorage;
 
 /**
  * Created by WiskiW on 02.03.2017.

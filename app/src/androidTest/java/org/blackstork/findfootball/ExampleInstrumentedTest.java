@@ -1,4 +1,4 @@
-package by.wiskiw.findfootball;
+package org.blackstork.findfootball;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,4 +1,4 @@
-package by.wiskiw.findfootball.lacation.gmaps;
+package org.blackstork.findfootball.lacation.gmaps;
 
 import android.Manifest;
 import android.content.Intent;
@@ -16,10 +16,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import by.wiskiw.findfootball.R;
-import by.wiskiw.findfootball.app.App;
-import by.wiskiw.findfootball.lacation.gmaps.fragments.LocationSelectFragment;
-import by.wiskiw.findfootball.lacation.gmaps.fragments.LocationViewFragment;
+import org.blackstork.findfootball.R;
+import org.blackstork.findfootball.app.App;
+import org.blackstork.findfootball.lacation.gmaps.fragments.LocationSelectFragment;
+import org.blackstork.findfootball.lacation.gmaps.fragments.LocationViewFragment;
 
 public class GMapsActivity extends AppCompatActivity implements
         LocationSelectFragment.OnLocationSelectListener {

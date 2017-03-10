@@ -1,11 +1,10 @@
-package by.wiskiw.findfootball.app;
+package org.blackstork.findfootball.app;
 
 import android.content.Context;
 import android.util.Log;
 
-import by.wiskiw.findfootball.R;
-import by.wiskiw.findfootball.lacation.gmaps.fragments.LocationSelectFragment;
-import by.wiskiw.findfootball.storage.PreferencesStorage;
+import org.blackstork.findfootball.R;
+import org.blackstork.findfootball.storage.PreferencesStorage;
 
 /**
  * Created by WiskiW on 10.03.2017.

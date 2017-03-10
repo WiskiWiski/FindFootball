@@ -1,4 +1,4 @@
-package by.wiskiw.findfootball.storage;
+package org.blackstork.findfootball.storage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,11 +11,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import by.wiskiw.findfootball.BuildConfig;
-import by.wiskiw.findfootball.app.App;
+import org.blackstork.findfootball.BuildConfig;
+import org.blackstork.findfootball.app.App;
 
 /**
  * Created by WiskiW on 10.03.2017.

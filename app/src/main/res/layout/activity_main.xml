@@ -24,6 +24,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
+            <Button
+                android:id="@+id/test_btn_1"
+                android:text="Choose location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/test_btn_2"
+                android:text="Show location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
         </LinearLayout>
 
     </android.support.design.widget.CoordinatorLayout>

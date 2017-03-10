@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="by.wiskiw.findfootball.lacation.gmaps.fragments.LocationViewFragment">
+    tools:context="org.blackstork.findfootball.lacation.gmaps.fragments.LocationViewFragment">
 
     <LinearLayout
         android:id="@+id/btns_container"

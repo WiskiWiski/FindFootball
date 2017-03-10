@@ -1,4 +1,4 @@
-package by.wiskiw.findfootball.lacation.device;
+package org.blackstork.findfootball.lacation.device;
 
 import com.google.android.gms.maps.model.LatLng;
 

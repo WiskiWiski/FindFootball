@@ -1,4 +1,4 @@
-package by.wiskiw.findfootball.lacation.gmaps;
+package org.blackstork.findfootball.lacation.gmaps;
 
 /**
  * Created by WiskiW on 10.03.2017.

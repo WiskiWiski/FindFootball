@@ -1,4 +1,4 @@
-package by.wiskiw.findfootball.lacation.gmaps.fragments;
+package org.blackstork.findfootball.lacation.gmaps.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,11 +10,10 @@ import android.widget.Button;
 
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import by.wiskiw.findfootball.R;
-import by.wiskiw.findfootball.app.App;
-import by.wiskiw.findfootball.lacation.gmaps.LocationPicker;
+import org.blackstork.findfootball.R;
+import org.blackstork.findfootball.app.App;
+import org.blackstork.findfootball.lacation.gmaps.LocationPicker;
 
 
 public class LocationSelectFragment extends Fragment {

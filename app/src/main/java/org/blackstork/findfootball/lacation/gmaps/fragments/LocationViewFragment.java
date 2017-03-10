@@ -1,8 +1,7 @@
-package by.wiskiw.findfootball.lacation.gmaps.fragments;
+package org.blackstork.findfootball.lacation.gmaps.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +15,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-import by.wiskiw.findfootball.R;
-import by.wiskiw.findfootball.app.App;
-import by.wiskiw.findfootball.lacation.gmaps.GMapsPreferences;
+import org.blackstork.findfootball.R;
+import org.blackstork.findfootball.app.App;
+import org.blackstork.findfootball.lacation.gmaps.GMapsPreferences;
 
 /**
  * Created by WiskiW on 09.03.2017.

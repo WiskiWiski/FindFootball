@@ -1,4 +1,4 @@
-package by.wiskiw.findfootball;
+package org.blackstork.findfootball;
 
 import org.junit.Test;
 
