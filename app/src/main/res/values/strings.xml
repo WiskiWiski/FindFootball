@@ -15,6 +15,9 @@
     <string name="gmaps_button_next_text">Next</string>
 
 
+    <!-- === Auth === -->
+    <string name="auth_activity_title">Login</string>
+
 
 
 

@@ -17,10 +17,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
 import org.blackstork.findfootball.app.App;
+import org.blackstork.findfootball.auth.AuthUiActivity;
+import org.blackstork.findfootball.auth.UserAuth;
 import org.blackstork.findfootball.lacation.gmaps.GMapsActivity;
 import org.blackstork.findfootball.lacation.gmaps.fragments.LocationSelectFragment;
 import org.blackstork.findfootball.lacation.gmaps.fragments.LocationViewFragment;
@@ -30,13 +34,14 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = App.G_TAG + ":MapsActivity";
 
+    private UserAuth userAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -47,41 +52,38 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
+        userAuth = UserAuth.getInstance(this);
         findViewById(R.id.test_btn_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gmapsIntent = new Intent(getApplicationContext(), GMapsActivity.class);
-                gmapsIntent.putExtra(GMapsActivity.FRAGMENT_TYPE, GMapsActivity.REQUEST_SELECTOR);
-                startActivityForResult(gmapsIntent, GMapsActivity.REQUEST_SELECTOR);
+                if (userAuth.requestUser(new Intent(getApplicationContext(), MainActivity.class))){
+                    FirebaseUser user = userAuth.getUser();
+                    Log.d(TAG, "onClick: user name: " + user.getDisplayName());
+                    Toast.makeText(getApplicationContext(), user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         findViewById(R.id.test_btn_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                ArrayList<MarkerOptions> coordList = new ArrayList<>();
-                coordList.add(new MarkerOptions().position(new LatLng(10, 10)).title("Title1"));
-                coordList.add(new MarkerOptions().position(new LatLng(50, 50)).title("Title2"));
-
-
-
-
-                Bundle bundle = new Bundle();
-                //bundle.putParcelableArrayList(LocationViewFragment.MARKER_OPTIONS_LIST, coordList);
-                bundle.putParcelable(LocationViewFragment.MARKER_OPTIONS,
-                        new MarkerOptions().position(new LatLng(10, 10)).title("Single Marker")
-                        );
-
-                Intent gmapsIntent = new Intent(getApplicationContext(), GMapsActivity.class);
-                gmapsIntent.putExtra(GMapsActivity.FRAGMENT_TYPE, GMapsActivity.REQUEST_VIEWER);
-                gmapsIntent.putExtra(App.INTENT_BUNDLE, bundle);
-                startActivityForResult(gmapsIntent, GMapsActivity.REQUEST_VIEWER);
+                userAuth.signOut();
             }
         });
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        userAuth.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        userAuth.onStop();
     }
 
     @Override
