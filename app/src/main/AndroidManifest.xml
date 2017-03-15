@@ -29,7 +29,7 @@
         <activity
             android:name="org.blackstork.findfootball.lacation.gmaps.GMapsActivity"
             android:label="@string/gmaps_activity_title"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoToolBar">
         </activity>
 
         <meta-data
