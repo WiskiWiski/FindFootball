@@ -20,11 +20,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.blackstork.findfootball.app.App;
+import org.blackstork.findfootball.app.BaseActivity;
 import org.blackstork.findfootball.location.gmaps.fragments.LocationSelectFragment;
 import org.blackstork.findfootball.location.gmaps.fragments.LocationViewFragment;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
+public class MainActivity extends BaseActivity implements
+        NavigationView.OnNavigationItemSelectedListener,
         LocationSelectFragment.OnLocationSelectListener {
 
     private static final String TAG = App.G_TAG + ":MapsActivity";
@@ -33,20 +34,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        onNavigationItemSelected(getCurrentMenuItem());
 
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        final LocationSelectFragment locationSelectFragment =  LocationSelectFragment
+        final LocationSelectFragment locationSelectFragment = LocationSelectFragment
                 .newInstance().setConfirmButton((Button) findViewById(R.id.test_btn_3));
 
         findViewById(R.id.test_btn_1).setOnClickListener(new View.OnClickListener() {
@@ -96,24 +86,28 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            return true;
-        }
 
-        return super.onOptionsItemSelected(item);
+
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+        return true;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        super.onNavigationClick(item);
 
-        if (id == R.id.nav_main) {
-            // Handle the camera action
+        // Handle MainActivity's fragments navigation view item clicks here.
+        switch (item.getItemId()){
+            case  R.id.nav_main:
+                //setAFragment();
+
+                break;
+            default:
+                return super.onNavigationItemSelected(item);
         }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
