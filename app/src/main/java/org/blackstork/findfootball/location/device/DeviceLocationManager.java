@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.lacation.device;
+package org.blackstork.findfootball.location.device;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -13,7 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.List;
 
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.lacation.device.providers.UniversalLocationProvider;
+import org.blackstork.findfootball.location.device.providers.UniversalLocationProvider;
 
 
 /**

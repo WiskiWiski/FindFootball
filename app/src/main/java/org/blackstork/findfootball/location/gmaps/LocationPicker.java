@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.lacation.gmaps;
+package org.blackstork.findfootball.location.gmaps;
 
 import android.content.Context;
 import android.os.Vibrator;
@@ -13,8 +13,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.lacation.device.DeviceLocationListener;
-import org.blackstork.findfootball.lacation.device.DeviceLocationManager;
+import org.blackstork.findfootball.location.device.DeviceLocationListener;
+import org.blackstork.findfootball.location.device.DeviceLocationManager;
 
 
 /**

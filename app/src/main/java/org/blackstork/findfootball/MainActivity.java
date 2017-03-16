@@ -1,9 +1,9 @@
 package org.blackstork.findfootball;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,20 +13,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
-
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.lacation.gmaps.GMapsActivity;
-import org.blackstork.findfootball.lacation.gmaps.fragments.LocationSelectFragment;
-import org.blackstork.findfootball.lacation.gmaps.fragments.LocationViewFragment;
+import org.blackstork.findfootball.location.gmaps.fragments.LocationSelectFragment;
+import org.blackstork.findfootball.location.gmaps.fragments.LocationViewFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        LocationSelectFragment.OnLocationSelectListener {
 
     private static final String TAG = App.G_TAG + ":MapsActivity";
 
@@ -47,77 +46,32 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        final LocationSelectFragment locationSelectFragment =  LocationSelectFragment
+                .newInstance().setConfirmButton((Button) findViewById(R.id.test_btn_3));
 
         findViewById(R.id.test_btn_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gmapsIntent = new Intent(getApplicationContext(), GMapsActivity.class);
-                gmapsIntent.putExtra(GMapsActivity.FRAGMENT_TYPE, GMapsActivity.REQUEST_SELECTOR);
-                startActivityForResult(gmapsIntent, GMapsActivity.REQUEST_SELECTOR);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.root_container, locationSelectFragment)
+                        .commit();
+
             }
         });
 
         findViewById(R.id.test_btn_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                ArrayList<MarkerOptions> coordList = new ArrayList<>();
-                coordList.add(new MarkerOptions().position(new LatLng(10, 10)).title("Title1"));
-                coordList.add(new MarkerOptions().position(new LatLng(50, 50)).title("Title2"));
-
-
-
-
-                Bundle bundle = new Bundle();
-                //bundle.putParcelableArrayList(LocationViewFragment.MARKER_OPTIONS_LIST, coordList);
-                bundle.putParcelable(LocationViewFragment.MARKER_OPTIONS,
-                        new MarkerOptions().position(new LatLng(10, 10)).title("Single Marker")
-                        );
-
-                Intent gmapsIntent = new Intent(getApplicationContext(), GMapsActivity.class);
-                gmapsIntent.putExtra(GMapsActivity.FRAGMENT_TYPE, GMapsActivity.REQUEST_VIEWER);
-                gmapsIntent.putExtra(App.INTENT_BUNDLE, bundle);
-                startActivityForResult(gmapsIntent, GMapsActivity.REQUEST_VIEWER);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.root_container, LocationViewFragment
+                                .newInstance(new MarkerOptions().position(new LatLng(50, -46.684))))
+                        .commit();
             }
         });
 
 
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        /*
-        You must write onActivityResult() in your FirstActivity.Java as follows
-
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-           super.onActivityResult(requestCode, resultCode, data);
-        }
-        So this will call your fragment's onActivityResult()
-         */
-        if (data == null) return;
-        switch (requestCode) {
-            case GMapsActivity.REQUEST_SELECTOR:
-                // ответ с выбора местоположения
-                switch (resultCode) {
-                    case LocationSelectFragment.LOCATION:
-                        // местоположение выбрано
-                        LatLng latLng = data.getBundleExtra(App.INTENT_BUNDLE)
-                                .getParcelable(GMapsActivity.LAT_LNG_LOCATION);
-                        if (latLng != null) {
-                            Log.d(TAG, "onLocationSelect: " + latLng.latitude);
-                            Toast.makeText(getApplicationContext(), "new loc latitude: " + latLng.latitude,
-                                    Toast.LENGTH_LONG).show();
-                        }
-                        break;
-
-                    case LocationSelectFragment.CANCEL:
-                        // выбор местоположения отменен
-                        break;
-                }
-
-                break;
-        }
     }
 
     @Override
@@ -161,5 +115,12 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onLocationSelect(LatLng latLng) {
+        Log.d(TAG, "onLocationSelect: " + latLng.latitude);
+        Toast.makeText(getApplicationContext(), "new loc latitude: " + latLng.latitude,
+                Toast.LENGTH_LONG).show();
     }
 }

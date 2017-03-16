@@ -26,12 +26,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="org.blackstork.findfootball.lacation.gmaps.GMapsActivity"
-            android:label="@string/gmaps_activity_title"
-            android:theme="@style/AppTheme.TransparentBars">
-        </activity>
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key"/>

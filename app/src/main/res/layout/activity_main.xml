@@ -16,11 +16,6 @@
 
         <include layout="@layout/toolbar"/>
 
-        <FrameLayout
-            android:id="@+id/root_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
         <Button
             android:id="@+id/test_btn_1"
             android:layout_width="match_parent"
@@ -32,6 +27,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Show location"/>
+
+        <Button
+            android:id="@+id/test_btn_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button 3"/>
+
+
+        <FrameLayout
+            android:id="@+id/root_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
 
     </LinearLayout>
 

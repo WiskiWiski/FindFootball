@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.lacation.device.providers;
+package org.blackstork.findfootball.location.device.providers;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -6,7 +6,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import org.blackstork.findfootball.lacation.device.DeviceLocationManager;
+import org.blackstork.findfootball.location.device.DeviceLocationManager;
 
 
 /**
