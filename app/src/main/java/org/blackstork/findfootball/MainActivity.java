@@ -6,14 +6,10 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -25,8 +21,7 @@ import org.blackstork.findfootball.location.gmaps.fragments.LocationSelectFragme
 import org.blackstork.findfootball.location.gmaps.fragments.LocationViewFragment;
 
 public class MainActivity extends BaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener,
-        LocationSelectFragment.OnLocationSelectListener {
+        NavigationView.OnNavigationItemSelectedListener{
 
     private static final String TAG = App.G_TAG + ":MapsActivity";
 
@@ -38,14 +33,18 @@ public class MainActivity extends BaseActivity implements
         setContentView(R.layout.activity_main);
         onNavigationItemSelected(getCurrentMenuItem());
 
-        locationSelectFragment = LocationSelectFragment.newInstance(R.id.test_btn_3);
-
+        if (savedInstanceState == null) {
+            locationSelectFragment = LocationSelectFragment.newInstance();
+        } else {
+            locationSelectFragment = (LocationSelectFragment)
+                    getSupportFragmentManager().findFragmentByTag(LocationSelectFragment.F_TAG);
+        }
         findViewById(R.id.test_btn_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.root_container, locationSelectFragment)
+                        .replace(R.id.root_container, locationSelectFragment, LocationSelectFragment.F_TAG)
                         .commit();
 
             }
@@ -59,6 +58,15 @@ public class MainActivity extends BaseActivity implements
                         .replace(R.id.root_container, LocationViewFragment
                                 .newInstance(new MarkerOptions().position(new LatLng(50, -46.684))))
                         .commit();
+            }
+        });
+
+        findViewById(R.id.test_btn_3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "new loc latitude: " + locationSelectFragment.getMarkerPosition().latitude,
+                        Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -110,12 +118,5 @@ public class MainActivity extends BaseActivity implements
                 return super.onNavigationItemSelected(item);
         }
         return true;
-    }
-
-    @Override
-    public void onLocationSelect(LatLng latLng) {
-        Log.d(TAG, "onLocationSelect: " + latLng.latitude);
-        Toast.makeText(getApplicationContext(), "new loc latitude: " + latLng.latitude,
-                Toast.LENGTH_LONG).show();
     }
 }
