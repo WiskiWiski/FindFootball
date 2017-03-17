@@ -30,14 +30,15 @@ public class MainActivity extends BaseActivity implements
 
     private static final String TAG = App.G_TAG + ":MapsActivity";
 
+    private LocationSelectFragment locationSelectFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         onNavigationItemSelected(getCurrentMenuItem());
 
-        final LocationSelectFragment locationSelectFragment = LocationSelectFragment
-                .newInstance().setConfirmButton((Button) findViewById(R.id.test_btn_3));
+        locationSelectFragment = LocationSelectFragment.newInstance(R.id.test_btn_3);
 
         findViewById(R.id.test_btn_1).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,8 +101,8 @@ public class MainActivity extends BaseActivity implements
         super.onNavigationClick(item);
 
         // Handle MainActivity's fragments navigation view item clicks here.
-        switch (item.getItemId()){
-            case  R.id.nav_main:
+        switch (item.getItemId()) {
+            case R.id.nav_main:
                 //setAFragment();
 
                 break;

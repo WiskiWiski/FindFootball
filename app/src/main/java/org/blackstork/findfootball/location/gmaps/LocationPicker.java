@@ -1,6 +1,7 @@
 package org.blackstork.findfootball.location.gmaps;
 
 import android.content.Context;
+import android.os.Parcelable;
 import android.os.Vibrator;
 import android.util.Log;
 
@@ -36,6 +37,8 @@ public class LocationPicker implements OnMapReadyCallback, DeviceLocationListene
     private LatLng deviceLatLngLocation;
     private DeviceLocationManager deviceLocationManager;
     private Context context;
+    private float scale = GMapsPreferences.MARKER_SCALE;
+    private LatLng cameraPos;
 
     public LocationPicker(Context context, SupportMapFragment mapFragment) {
         this.context = context;
@@ -54,7 +57,6 @@ public class LocationPicker implements OnMapReadyCallback, DeviceLocationListene
         this.markerOptions = markerOptions
                 .draggable(true);
         drawMarker(markerOptions);
-        moveCamera(markerOptions.getPosition(), GMapsPreferences.MARKER_SCALE);
     }
 
     private void drawMarker(MarkerOptions markerOptions) {
@@ -64,11 +66,34 @@ public class LocationPicker implements OnMapReadyCallback, DeviceLocationListene
         }
     } // отрисовка маркера на карте
 
-    private void moveCamera(LatLng position, float scale) {
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
+    public float getScale() {
+        if (mMap != null) {
+            scale = mMap.getCameraPosition().zoom;
+        }
+        return scale;
+    }
+
+    public void moveCamera(LatLng position, float scale) {
         if (mMap != null) {
             if (scale == 0) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(position));
             } else {
+                this.scale = scale;
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, scale));
+            }
+        }
+    }
+
+    public void setCamera(LatLng position, float scale) {
+        if (mMap != null) {
+            if (scale == 0) {
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(position));
+            } else {
+                this.scale = scale;
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, scale));
             }
         }
@@ -99,7 +124,12 @@ public class LocationPicker implements OnMapReadyCallback, DeviceLocationListene
         mMap.setOnMarkerDragListener(this);
         if (markerOptions != null) {
             drawMarker(markerOptions);
-            moveCamera(markerOptions.getPosition(), GMapsPreferences.MARKER_SCALE);
+            if (cameraPos == null){
+                cameraPos = markerOptions.getPosition();
+                moveCamera(cameraPos, scale);
+            } else {
+                setCamera(cameraPos, scale);
+            }
         } else if (deviceLatLngLocation != null) {
             addDeviceLocationOnMap(); // если карта прорисовалась после того, как получили координаты устройства
         }
@@ -153,5 +183,15 @@ public class LocationPicker implements OnMapReadyCallback, DeviceLocationListene
     private void vibrate(int duration) {
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(duration);
+    }
+
+    public LatLng getCameraPosition() {
+        if (mMap != null)
+            cameraPos =  mMap.getCameraPosition().target;
+        return cameraPos;
+    }
+
+    public void setCameraPosition(LatLng cameraPos) {
+        this.cameraPos = cameraPos;
     }
 }

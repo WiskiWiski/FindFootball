@@ -28,6 +28,8 @@ public class LocationViewFragment extends SupportMapFragment implements OnMapRea
 
     private MarkerOptions markerOptions;
     private Marker marker;
+    private float scale = GMapsPreferences.MARKER_SCALE;
+    private LatLng cameraPos;
 
     private GoogleMap googleMap;
 
@@ -90,7 +92,33 @@ public class LocationViewFragment extends SupportMapFragment implements OnMapRea
         this.googleMap = googleMap;
         if (markerOptions != null) {
             drawMarker(markerOptions);
-            moveCamera(markerOptions.getPosition(), GMapsPreferences.MARKER_SCALE);
+            if (cameraPos == null){
+                cameraPos = markerOptions.getPosition();
+            }
+            moveCamera(cameraPos, scale);
         }
+    }
+
+
+    @Override
+    public void onActivityCreated(Bundle bundle) {
+        super.onActivityCreated(bundle);
+        if (bundle != null) {
+            // Restore last state
+            LatLng cameraPos = bundle.getParcelable(GMapsPreferences.BUNDLE_CAMERA_POS);
+            if (cameraPos!=null){
+                this.cameraPos = cameraPos;
+            }
+
+            scale = bundle.getFloat(GMapsPreferences.BUNDLE_MAP_SCALE);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+
+        bundle.putFloat(GMapsPreferences.BUNDLE_MAP_SCALE, googleMap.getCameraPosition().zoom);
+        bundle.putParcelable(GMapsPreferences.BUNDLE_CAMERA_POS, googleMap.getCameraPosition().target);
     }
 }
