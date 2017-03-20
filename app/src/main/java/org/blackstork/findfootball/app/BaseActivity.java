@@ -1,7 +1,6 @@
 package org.blackstork.findfootball.app;
 
 import android.app.ActivityManager;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -10,38 +9,58 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
-import org.blackstork.findfootball.MainActivity;
 import org.blackstork.findfootball.R;
 
 /**
  * Created by WiskiW on 16.03.2017.
  */
 
-public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class BaseActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener {
 
-    private static int menuItemId = R.id.nav_main;
+    private static final String TAG = App.G_TAG + ":BaseActivity";
+
+    private static int currentMenuItemId;
+
+    private static NavigationView.OnNavigationItemSelectedListener rootDrawerListener;
+    private static int rootMenuItemId;
+
     private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
 
-    protected void onNavigationClick(MenuItem menuItem) {
-        getCurrentMenuItem().setChecked(false);
-        menuItem.setChecked(true);
-        BaseActivity.menuItemId = menuItem.getItemId();
-        closeDrawer();
+    protected MenuItem getMenuItemById(int id) {
+        return navigationView.getMenu().findItem(id);
     }
 
-    protected MenuItem getCurrentMenuItem() {
-        return ((NavigationView) findViewById(R.id.nav_view)).getMenu().findItem(menuItemId);
+    public static void registerRootActivity(NavigationView.OnNavigationItemSelectedListener rootDrawerListener,
+                                            int rootMenuItemId) {
+        BaseActivity.rootDrawerListener = rootDrawerListener;
+        BaseActivity.rootMenuItemId = rootMenuItemId;
     }
 
     protected void closeDrawer() {
-        if (drawerLayout != null)
-            drawerLayout.closeDrawers();
+        drawerLayout.closeDrawers();
+    }
+
+    public static int getCurrentMenuItemId() {
+        return currentMenuItemId;
+    }
+
+    protected void updateMenuItemId(int clickedMenuItemId) {
+        currentMenuItemId = clickedMenuItemId;
+    }
+
+    protected void updateMenuItemSelection(MenuItem clickedMenuItem) {
+        // Убирает выделение текущего меню-элемента
+        getMenuItemById(currentMenuItemId).setChecked(false);
+
+        // Устанавливает выделение на нажатом меню-элементе
+        getMenuItemById(clickedMenuItem.getItemId()).setChecked(true);
     }
 
     @Override
@@ -64,36 +83,44 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         FrameLayout activityContainer = (FrameLayout) drawerLayout.findViewById(R.id.activity_content);
         getLayoutInflater().inflate(layoutResID, activityContainer, true);
         super.setContentView(drawerLayout);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.getMenu().findItem(menuItemId).setChecked(true);
-
+        getMenuItemById(currentMenuItemId).setChecked(true);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(Gravity.START)) {
+            drawerLayout.closeDrawers();
+        } else if (currentMenuItemId != rootMenuItemId) {
+            MenuItem menuItem = getMenuItemById(rootMenuItemId);
+            updateMenuItemSelection(menuItem);
+            //updateMenuItemId(menuItem);
+            rootDrawerListener.onNavigationItemSelected(menuItem);
+            super.onBackPressed();
+        }
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home && currentMenuItemId != rootMenuItemId) {
+            MenuItem menuItem = getMenuItemById(rootMenuItemId);
+            updateMenuItemSelection(menuItem);
+            //updateMenuItemId(menuItem);
+            rootDrawerListener.onNavigationItemSelected(menuItem);
+            super.onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        onNavigationClick(item);
-
-        int id = item.getItemId();
-        if (id == R.id.nav_main) {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
-
-        } else {
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        closeDrawer();
+        if (getCurrentMenuItemId() == menuItem.getItemId()) {
+            // Если нажали то, что сейчас открыто
             return false;
+        } else {
+            finish();
+            return rootDrawerListener.onNavigationItemSelected(menuItem);
         }
-        return true;
     }
 }
