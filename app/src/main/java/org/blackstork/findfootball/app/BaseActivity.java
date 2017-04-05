@@ -37,10 +37,11 @@ public class BaseActivity extends AppCompatActivity implements
         return navigationView.getMenu().findItem(id);
     }
 
-    public static void registerRootActivity(NavigationView.OnNavigationItemSelectedListener rootDrawerListener,
+    public void registerRootActivity(NavigationView.OnNavigationItemSelectedListener rootDrawerListener,
                                             int rootMenuItemId) {
         BaseActivity.rootDrawerListener = rootDrawerListener;
         BaseActivity.rootMenuItemId = rootMenuItemId;
+        getMenuItemById(rootMenuItemId).setChecked(true);
     }
 
     protected void closeDrawer() {
@@ -122,5 +123,15 @@ public class BaseActivity extends AppCompatActivity implements
             finish();
             return rootDrawerListener.onNavigationItemSelected(menuItem);
         }
+    }
+
+    @Override
+    public void finish() {
+        if (currentMenuItemId != rootMenuItemId) {
+            MenuItem menuItem = getMenuItemById(rootMenuItemId);
+            updateMenuItemSelection(menuItem);
+            rootDrawerListener.onNavigationItemSelected(menuItem);
+        }
+        super.finish();
     }
 }

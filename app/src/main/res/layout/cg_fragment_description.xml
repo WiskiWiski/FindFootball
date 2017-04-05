@@ -1,0 +1,31 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Game Description"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white"
+        android:textSize="28dp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Game Description"
+        android:inputType="textPersonName"
+        android:padding="16dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="#62ffffff"/>
+
+</LinearLayout>

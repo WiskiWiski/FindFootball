@@ -130,7 +130,7 @@ public class MainActivity extends BaseActivity implements
                     break;
 
                 case R.id.nav_create_game:
-                    //startActivity(new Intent(getApplicationContext(), CreateGameActivity.class));
+                    startActivity(new Intent(getApplicationContext(), CreateGameActivity.class));
                     break;
 
                 default:
