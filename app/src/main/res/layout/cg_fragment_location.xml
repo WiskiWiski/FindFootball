@@ -1,0 +1,35 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.blackstork.findfootball.create.game.fragments.CGLocationFragment">
+
+    <fragment
+        android:id="@+id/gmap_fragment"
+        android:name="org.blackstork.findfootball.location.gmaps.fragments.LocationSelectFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+    <FrameLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:paddingLeft="72dp"
+        android:paddingRight="16dp">
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@android:color/white"
+            android:ems="10"
+            android:enabled="false"
+            android:hint="Address"
+            android:inputType="textPersonName"/>
+    </FrameLayout>
+
+</FrameLayout>

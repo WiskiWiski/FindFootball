@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -15,31 +13,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
-
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.auth.AuthUiActivity;
+import org.blackstork.findfootball.app.BaseActivity;
 import org.blackstork.findfootball.auth.UserAuth;
-import org.blackstork.findfootball.lacation.gmaps.GMapsActivity;
-import org.blackstork.findfootball.lacation.gmaps.fragments.LocationSelectFragment;
-import org.blackstork.findfootball.lacation.gmaps.fragments.LocationViewFragment;
+import org.blackstork.findfootball.create.game.CreateGameActivity;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements
+        NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = App.G_TAG + ":MapsActivity";
 
     private UserAuth userAuth;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -48,18 +36,24 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+    }
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        // регистрируем главный NavDraw.ItemClickListener и передаем menu-id главного экрана
+        registerRootActivity(this, R.id.nav_main);
+        initToolbar();
 
         userAuth = UserAuth.getInstance(this);
         findViewById(R.id.test_btn_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (userAuth.requestUser(new Intent(getApplicationContext(), MainActivity.class))){
+                if (userAuth.requestUser(new Intent(getApplicationContext(), MainActivity.class))) {
                     FirebaseUser user = userAuth.getUser();
-                    Log.d(TAG, "onClick: user name: " + user.getDisplayName());
-                    Toast.makeText(getApplicationContext(), user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onClick: user name: " + user.getEmail());
+                    Toast.makeText(getApplicationContext(), user.getEmail(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -71,7 +65,11 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
+        findViewById(R.id.test_btn_3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
     }
 
     @Override
@@ -86,51 +84,6 @@ public class MainActivity extends AppCompatActivity
         userAuth.onStop();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        /*
-        You must write onActivityResult() in your FirstActivity.Java as follows
-
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-           super.onActivityResult(requestCode, resultCode, data);
-        }
-        So this will call your fragment's onActivityResult()
-         */
-        if (data == null) return;
-        switch (requestCode) {
-            case GMapsActivity.REQUEST_SELECTOR:
-                // ответ с выбора местоположения
-                switch (resultCode) {
-                    case LocationSelectFragment.LOCATION:
-                        // местоположение выбрано
-                        LatLng latLng = data.getBundleExtra(App.INTENT_BUNDLE)
-                                .getParcelable(GMapsActivity.LAT_LNG_LOCATION);
-                        if (latLng != null) {
-                            Log.d(TAG, "onLocationSelect: " + latLng.latitude);
-                            Toast.makeText(getApplicationContext(), "new loc latitude: " + latLng.latitude,
-                                    Toast.LENGTH_LONG).show();
-                        }
-                        break;
-
-                    case LocationSelectFragment.CANCEL:
-                        // выбор местоположения отменен
-                        break;
-                }
-
-                break;
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -144,34 +97,44 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            return true;
-        }
 
-        return super.onOptionsItemSelected(item);
+
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+        return true;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        int itemId = menuItem.getItemId();
+        // Получаем menuItem из Navigation Drawer текущей активити, а не той, откуда он прищел
+        menuItem = getMenuItemById(itemId);
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        closeDrawer();
+        if (getCurrentMenuItemId() == itemId) {
+            return false;
+        } else {
+            super.updateMenuItemSelection(menuItem); // Обновляем выделение в Navigation Drawer
+            super.updateMenuItemId(itemId); // Обновляем current menu item id
 
-        } else if (id == R.id.nav_slideshow) {
+            switch (itemId) {
+                case R.id.nav_main:
+                    //setAFragment();
 
-        } else if (id == R.id.nav_manage) {
+                    break;
 
-        } else if (id == R.id.nav_share) {
+                case R.id.nav_create_game:
+                    startActivity(new Intent(getApplicationContext(), CreateGameActivity.class));
+                    break;
 
-        } else if (id == R.id.nav_send) {
-
+                default:
+                    return false;
+            }
+            return true;
         }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
+
 }
+
