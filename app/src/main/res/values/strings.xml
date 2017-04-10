@@ -19,10 +19,12 @@
 
     <!-- === Auth === -->
     <string name="auth_activity_title">Login</string>
+    <string name="auth_required_re_authorization">Auth problem. Please sign in again</string>
 
 
     <!-- === Create Game === -->
     <string name="cg_activity_title">Create Game</string>
+    <string name="cg_game_created_msg" formatted="false">%s has been created!</string>
 
 
 </resources>

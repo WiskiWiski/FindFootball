@@ -13,17 +13,19 @@ import android.widget.Toast;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.blackstork.findfootball.MainActivity;
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.auth.providers.MyEmailAuthAuthProvider;
 import org.blackstork.findfootball.auth.providers.MyFacebookAuthProvider;
 import org.blackstork.findfootball.auth.providers.MyGoogleAuthProvider;
 import org.blackstork.findfootball.auth.providers.MyVkontakteAuthAuthProvider;
+import org.blackstork.findfootball.firebase.database.FBUserDatabase;
 
 public class AuthUiActivity extends AppCompatActivity {
 
     private static final String TAG = App.G_TAG + ":AuthAct";
+
+    public static final String SIGN_IN_MSG_INTENT_KEY = "sign_in_msg";
 
     private EditText inputEmail, inputPassword;
     private Button btnSignIn;
@@ -44,6 +46,9 @@ public class AuthUiActivity extends AppCompatActivity {
         setContentView(R.layout.activity_auth_ui);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        String signInMsg = getIntent().getStringExtra(SIGN_IN_MSG_INTENT_KEY);
+        // TODO : Show sign in message
 
         initProviders();
 
@@ -91,6 +96,7 @@ public class AuthUiActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
+                // TODO: Fix multiple clicks
                 emailAuthProvider.signUp(email, password);
             }
         });
@@ -102,11 +108,14 @@ public class AuthUiActivity extends AppCompatActivity {
             public void onResult(FirebaseUser user) {
                 Log.d(TAG, "Authentication success: " + user.getEmail());
                 Toast.makeText(getApplicationContext(), user.getEmail(), Toast.LENGTH_LONG).show();
-                startNextActivity();
+                FBUserDatabase.signUpUser(user);
+                setResult(UserAuth.RESULT_SUCCESS);
+                finish();
             }
 
             @Override
             public void onFailed(FailedResult result) {
+                setResult(UserAuth.RESULT_FAILED);
                 Log.d(TAG, "Authentication failed. " + result.toString());
                 Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
             }
@@ -118,22 +127,6 @@ public class AuthUiActivity extends AppCompatActivity {
         vkAuthProvider = new MyVkontakteAuthAuthProvider(this, providerCallback);
     }
 
-    private void startNextActivity() {
-        Intent nextActivityIntent;
-        Bundle bundle = getIntent().getBundleExtra(App.INTENT_BUNDLE);
-        if (bundle != null) {
-            nextActivityIntent = bundle.getParcelable(UserAuth.NEXT_ACTIVITY_INTENT);
-            if (nextActivityIntent != null) {
-                startActivity(nextActivityIntent);
-            } else {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            }
-            finish();
-        } else {
-            Log.e(TAG, "startNextActivity: Activity bundle is null! Can't start the result activity");
-        }
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -141,8 +134,5 @@ public class AuthUiActivity extends AppCompatActivity {
         googleAuthProvider.onActivityResult(requestCode, resultCode, data);
         fbAuthProvider.onActivityResult(requestCode, resultCode, data);
         vkAuthProvider.onActivityResult(requestCode, resultCode, data);
-
     }
-
-
 }

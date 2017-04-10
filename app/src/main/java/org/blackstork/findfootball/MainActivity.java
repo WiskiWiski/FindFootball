@@ -13,8 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseUser;
-
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.app.BaseActivity;
 import org.blackstork.findfootball.auth.UserAuth;
@@ -25,7 +23,6 @@ public class MainActivity extends BaseActivity implements
 
     private static final String TAG = App.G_TAG + ":MapsActivity";
 
-    private UserAuth userAuth;
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -46,44 +43,38 @@ public class MainActivity extends BaseActivity implements
         registerRootActivity(this, R.id.nav_main);
         initToolbar();
 
-        userAuth = UserAuth.getInstance(this);
+        if (savedInstanceState == null) {
+            UserAuth.updateLastUserOnline(this);
+        }
+
         findViewById(R.id.test_btn_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (userAuth.requestUser(new Intent(getApplicationContext(), MainActivity.class))) {
-                    FirebaseUser user = userAuth.getUser();
-                    Log.d(TAG, "onClick: user name: " + user.getEmail());
-                    Toast.makeText(getApplicationContext(), user.getEmail(), Toast.LENGTH_SHORT).show();
-                }
+                Log.d(TAG, "onClick: current U: " + UserAuth.getUser(getApplicationContext()));
+                Toast.makeText(getApplicationContext(), "U: " + UserAuth.getUser(getApplicationContext()), Toast.LENGTH_SHORT).show();
+/*
+                GameObj gameObj = new GameObj();
+                gameObj.setTitle("This is title");
+                gameObj.setDescription("This is description");
+                gameObj.setLocation(new LatLng(55.53505845593329, 28.582239858806137));
+*/
             }
         });
 
         findViewById(R.id.test_btn_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userAuth.signOut();
+                UserAuth.signOut();
             }
         });
 
         findViewById(R.id.test_btn_3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UserAuth.requestUser(view.getContext());
             }
         });
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        userAuth.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        userAuth.onStop();
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -95,7 +86,6 @@ public class MainActivity extends BaseActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.action_settings) {
 
 

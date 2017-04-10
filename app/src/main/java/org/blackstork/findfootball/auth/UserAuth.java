@@ -1,17 +1,23 @@
 package org.blackstork.findfootball.auth;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.vk.sdk.VKSdk;
 
+import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
+import org.blackstork.findfootball.firebase.database.FBUserDatabase;
 
 /**
  * Created by WiskiW on 11.03.2017.
@@ -21,88 +27,82 @@ public class UserAuth {
 
     private static final String TAG = App.G_TAG + ":UserAuth";
 
-    static final String NEXT_ACTIVITY_INTENT = "next_activity";
-
-    private Activity activity;
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseUser user;
-
-
-    private FirebaseAuth.AuthStateListener mAuthListener;
-
-    public static UserAuth getInstance(Activity activity) {
-        return new UserAuth(activity);
-    }
+    public final static int AUTH_REQUEST_CODE = 101;
+    public final static int RESULT_SUCCESS = 10;
+    public final static int RESULT_FAILED = 11;
+    public final static int RESULT_CANCEL = 12;
 
 
-    private UserAuth(Activity activity) {
-        this.activity = activity;
-        // TODO : http://stackoverflow.com/questions/38345085/firebase-authentication-state-change-does-not-fire-when-user-is-disabled-or-dele
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged: ===================================");
-                    Log.d(TAG, "onAuthStateChanged: signed_in: " + user.getUid());
-                    Log.d(TAG, "onAuthStateChanged: user name: " + user.getDisplayName());
-                    Log.d(TAG, "onAuthStateChanged: user email: " + user.getEmail());
-                    Log.d(TAG, "onAuthStateChanged: user provider: " + user.getProviderId());
-                    Log.d(TAG, "onAuthStateChanged: user photo: " + user.getPhotoUrl());
-                    Log.d(TAG, "onAuthStateChanged: providers: " + user.getProviders());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
-    }
-
-    public FirebaseUser getUser() {
-        user = mFirebaseAuth.getCurrentUser();
+    public static FirebaseUser getUser(Context context) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            FBUserDatabase.newInstance(context, user.getUid()).updateLastUserOnline();
+        }
         return user;
     }
 
-    public void requestAuth(Intent activityIntent) {
-        Intent intent = new Intent(activity, AuthUiActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(NEXT_ACTIVITY_INTENT, activityIntent);
-        intent.putExtra(App.INTENT_BUNDLE, bundle);
-
-        activity.startActivity(intent);
-        activity.finish();
+    public static void requestUser(Context context, String singInMsg) {
+        Intent intent = new Intent(context, AuthUiActivity.class);
+        if (singInMsg != null) {
+            intent.putExtra(AuthUiActivity.SIGN_IN_MSG_INTENT_KEY, singInMsg);
+        }
+        if (!(context instanceof Activity)) {
+            Log.i(TAG, "RequestUser: Context must be instance of Activity to use onActivityResult");
+            context.startActivity(intent);
+        } else {
+            ((Activity) context).startActivityForResult(intent, AUTH_REQUEST_CODE);
+        }
     }
 
-    public boolean requestUser(Intent activityIntent) {
-        if (getUser() != null) return true;
-        Intent intent = new Intent(activity, AuthUiActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(NEXT_ACTIVITY_INTENT, activityIntent);
-        intent.putExtra(App.INTENT_BUNDLE, bundle);
-
-        activity.startActivity(intent);
-        activity.finish();
-        return false;
+    public static void requestUser(Context context) {
+        requestUser(context, null);
     }
 
-    public void signOut() {
+    public static void updateLastUserOnline(Context context) {
+        FirebaseUser user = getUser(context);
+        if (user != null) {
+            FBUserDatabase.newInstance(context, user.getUid()).updateLastUserOnline();
+        }
+    }
+
+    public static void checkForAccountAvailability(final Context context) {
+        // Проверка доступа к аккаунту в App
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user.getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                @Override
+                public void onComplete(@NonNull Task<GetTokenResult> task) {
+                    try {
+                        Exception ex = task.getException();
+                        if (ex != null) {
+                            throw ex;
+                        }
+                    } catch (Exception e) {
+                        String msg = context.getString(R.string.auth_required_re_authorization);
+                        Toast.makeText(context, msg + "\n" + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.w(TAG, msg + e.getMessage());
+
+                        UserAuth.signOut();
+                        UserAuth.requestUser(context);
+                    }
+                }
+            });
+        }
+    }
+
+    public static void signOut() {
         FirebaseAuth.getInstance().signOut();
         LoginManager.getInstance().logOut(); // for Facebook
         VKSdk.logout(); // VK
     }
 
-    public void onStart() {
-        mFirebaseAuth.addAuthStateListener(mAuthListener);
+    public static void addAuthStateListener(FirebaseAuth.AuthStateListener authStateListener) {
+        FirebaseAuth.getInstance().addAuthStateListener(authStateListener);
     }
 
-    public void onStop() {
-        mFirebaseAuth.removeAuthStateListener(mAuthListener);
+    public static void removeAuthStateListener(FirebaseAuth.AuthStateListener authStateListener) {
+        FirebaseAuth.getInstance().removeAuthStateListener(authStateListener);
     }
 
 }

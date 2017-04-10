@@ -1,23 +1,31 @@
 package org.blackstork.findfootball.create.game;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.app.BaseActivity;
+import org.blackstork.findfootball.auth.UserAuth;
 import org.blackstork.findfootball.create.game.fragments.CGDescriptionFragment;
 import org.blackstork.findfootball.create.game.fragments.CGLocationFragment;
 import org.blackstork.findfootball.create.game.fragments.CGTempFragment;
 import org.blackstork.findfootball.create.game.fragments.CGTitleFragment;
 import org.blackstork.findfootball.create.game.view.CreateGameViewPager;
+import org.blackstork.findfootball.firebase.database.FBGameDatabase;
 import org.blackstork.findfootball.objects.GameObj;
+
+import java.util.Formatter;
 
 public class CreateGameActivity extends BaseActivity implements
         BaseCGFragment.CGTabEditListener {
@@ -78,18 +86,54 @@ public class CreateGameActivity extends BaseActivity implements
             }
         });
 
+
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (viewPager.getCurrentItem() == adapter.getCount() - 1) {
-                    Toast.makeText(getApplicationContext(), "Game created!", Toast.LENGTH_LONG).show();
-                    finish();
+                    onGameCreated();
                 } else {
                     nextClick();
                 }
             }
         });
 
+    }
+
+    private void onGameCreated() {
+        FirebaseUser user = UserAuth.getUser(this);
+        if (user == null) {
+            UserAuth.requestUser(this);
+        } else {
+            Formatter formatter = new Formatter();
+            formatter.format(getString(R.string.cg_game_created_msg), thisGameObj.getTitle());
+
+            Log.d(TAG, "onGameCreated: " + formatter);
+            Toast.makeText(getApplicationContext(), formatter.toString(), Toast.LENGTH_LONG).show();
+            FBGameDatabase fbGameDatabase = FBGameDatabase.newInstance(getApplicationContext(), user.getUid());
+            fbGameDatabase.saveGame(thisGameObj);
+            finish();
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == UserAuth.AUTH_REQUEST_CODE) {
+            switch (resultCode) {
+                case UserAuth.RESULT_SUCCESS:
+                    onGameCreated();
+                    break;
+                case UserAuth.RESULT_FAILED:
+
+                    break;
+                case UserAuth.RESULT_CANCEL:
+
+                    break;
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -139,8 +183,6 @@ public class CreateGameActivity extends BaseActivity implements
             showNextBtn(true);
             showFinishBtn(false);
         }
-
-
     }
 
     @Override
