@@ -47,6 +47,16 @@ public class FBUserDatabase {
         this.context = context;
     }
 
+
+    public static final String USER_ROLE_MEMBER = "member";
+    public static final String USER_ROLE_OWNER = "owner";
+
+    public void addFootballEvent(String eid, String role) {
+        FirebaseDatabase.getInstance().getReference()
+                .child(USERS_PATH).child(uid).child("events").child("football").child(eid).setValue(role);
+    }
+
+
     public static void signUpUser(FirebaseUser user) {
         final DatabaseReference thisUserReference = FirebaseDatabase.getInstance().getReference()
                 .child(USERS_PATH).child(user.getUid());

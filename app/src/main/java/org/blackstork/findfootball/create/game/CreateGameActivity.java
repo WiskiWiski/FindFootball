@@ -1,5 +1,6 @@
 package org.blackstork.findfootball.create.game;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,7 +23,8 @@ import org.blackstork.findfootball.create.game.fragments.CGLocationFragment;
 import org.blackstork.findfootball.create.game.fragments.CGTempFragment;
 import org.blackstork.findfootball.create.game.fragments.CGTitleFragment;
 import org.blackstork.findfootball.create.game.view.CreateGameViewPager;
-import org.blackstork.findfootball.firebase.database.FBGameDatabase;
+import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
+import org.blackstork.findfootball.firebase.database.FBUserDatabase;
 import org.blackstork.findfootball.objects.GameObj;
 
 import java.util.Formatter;
@@ -109,9 +111,13 @@ public class CreateGameActivity extends BaseActivity implements
             formatter.format(getString(R.string.cg_game_created_msg), thisGameObj.getTitle());
 
             Log.d(TAG, "onGameCreated: " + formatter);
-            Toast.makeText(getApplicationContext(), formatter.toString(), Toast.LENGTH_LONG).show();
-            FBGameDatabase fbGameDatabase = FBGameDatabase.newInstance(getApplicationContext(), user.getUid());
-            fbGameDatabase.saveGame(thisGameObj);
+
+            Context context = getApplicationContext();
+            Toast.makeText(context, formatter.toString(), Toast.LENGTH_LONG).show();
+
+            FBFootballDatabase.newInstance(context, user.getUid()).saveGame(thisGameObj);
+            FBUserDatabase.newInstance(context, user.getUid())
+                    .addFootballEvent(thisGameObj.getEid(), FBUserDatabase.USER_ROLE_OWNER);
             finish();
         }
 

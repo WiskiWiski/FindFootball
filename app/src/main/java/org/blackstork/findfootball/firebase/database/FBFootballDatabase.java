@@ -14,9 +14,9 @@ import org.blackstork.findfootball.objects.GameObj;
  * Created by WiskiW on 06.04.2017.
  */
 
-public class FBGameDatabase {
+public class FBFootballDatabase {
 
-    public static final String TAG = App.G_TAG + ":FBGameDatabase";
+    public static final String TAG = App.G_TAG + ":FBFootballDatabase";
 
     private final static String FOOTBALL_PATH = "/events/football/";
 
@@ -24,12 +24,12 @@ public class FBGameDatabase {
     private Context context;
     private String uid;
 
-    public FBGameDatabase() {
+    public FBFootballDatabase() {
         databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
-    public static FBGameDatabase newInstance(Context context, String uid) {
-        FBGameDatabase database = new FBGameDatabase();
+    public static FBFootballDatabase newInstance(Context context, String uid) {
+        FBFootballDatabase database = new FBFootballDatabase();
         database.setContext(context);
         database.setUid(uid);
         return database;
