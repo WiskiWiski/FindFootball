@@ -98,7 +98,7 @@ public class CreateGameActivity extends BaseActivity implements
 
     private void onGameCreated() {
         // сохраняем данных с предыдущего таба
-        if (!viewPager.getCurrentFragment().saveResult(thisGameObj)) {
+        if (!viewPager.getCurrentFragment().saveResult(true, thisGameObj)) {
             return;
         }
         FirebaseUser user = UserAuth.getUser(this);
@@ -144,7 +144,7 @@ public class CreateGameActivity extends BaseActivity implements
 
     private boolean previewClick() {
         // return: был ли сменен таб
-        viewPager.getCurrentFragment().saveResult(thisGameObj); // сохраняем данных с предыдущего таба
+        viewPager.getCurrentFragment().saveResult(false, thisGameObj); // сохраняем данных с предыдущего таба
         if (viewPager.goBack()) {
             updateButtonsVisibility();
             // обновляем данные в следующем табе
@@ -164,7 +164,7 @@ public class CreateGameActivity extends BaseActivity implements
 
     private void nextClick() {
         // сохраняем данных с предыдущего таба
-        if (!viewPager.getCurrentFragment().saveResult(thisGameObj)) {
+        if (!viewPager.getCurrentFragment().saveResult(true, thisGameObj)) {
             return;
         }
         if (viewPager.goNext()) {

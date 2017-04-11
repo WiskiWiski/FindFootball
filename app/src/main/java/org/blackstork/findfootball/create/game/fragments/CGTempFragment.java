@@ -52,7 +52,7 @@ public class CGTempFragment extends BaseCGFragment {
     }
 
     @Override
-    public boolean saveResult(GameObj game) {
+    public boolean saveResult(boolean checkForCorrect, GameObj game) {
         Calendar cal = Calendar.getInstance(TimeZone.getDefault());
         cal.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
         cal.set(Calendar.MONTH, datePicker.getMonth());
@@ -66,16 +66,18 @@ public class CGTempFragment extends BaseCGFragment {
 
         }
         long utcEventTime = cal.getTimeInMillis();
-        long utcCurrentTime = TimeProvider.getUtcTime();
-        // + 60 * 1000 - для компенсации минимальной цены деления в 1 минуту в TimePicker'e
-        if (utcEventTime + 60 * 1000 < utcCurrentTime) { // + 1 min
-            Toast.makeText(getContext(), getString(R.string.cg_game_time_frg_time_in_the_past), Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (utcEventTime - utcCurrentTime < MINIMAL_TIME_OFFSET + 60 * 1000) {
-            Formatter formatter = new Formatter();
-            formatter.format(getString(R.string.cg_game_time_frg_time_offset_too_small), MINIMAL_TIME_OFFSET / 60 / 1000);
-            Toast.makeText(getContext(), formatter.toString(), Toast.LENGTH_SHORT).show();
-            return false;
+        if (checkForCorrect) {
+            long utcCurrentTime = TimeProvider.getUtcTime();
+            // + 60 * 1000 - для компенсации минимальной цены деления в 1 минуту в TimePicker'e
+            if (utcEventTime + 60 * 1000 < utcCurrentTime) { // + 1 min
+                Toast.makeText(getContext(), getString(R.string.cg_game_time_frg_time_in_the_past), Toast.LENGTH_SHORT).show();
+                return false;
+            } else if (utcEventTime - utcCurrentTime < MINIMAL_TIME_OFFSET + 60 * 1000) {
+                Formatter formatter = new Formatter();
+                formatter.format(getString(R.string.cg_game_time_frg_time_offset_too_small), MINIMAL_TIME_OFFSET / 60 / 1000);
+                Toast.makeText(getContext(), formatter.toString(), Toast.LENGTH_SHORT).show();
+                return false;
+            }
         }
         game.setEventTime(utcEventTime);
         return true;

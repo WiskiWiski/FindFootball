@@ -58,7 +58,7 @@ public abstract class BaseCGFragment extends Fragment {
         }
     }
 
-    public abstract boolean saveResult(GameObj game); // return : были ли данных сохранены успешно
+    public abstract boolean saveResult(boolean checkForCorrect, GameObj game); // return : были ли данных сохранены успешно
 
     public abstract void updateView(GameObj game);
 

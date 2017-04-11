@@ -48,11 +48,11 @@ public class CGTitleFragment extends BaseCGFragment {
         return rootView;
     }
 
-    private String getTitle() {
+    private String getTitle(boolean checkForCorrect) {
         String title = null;
         if (editText != null) {
             title = editText.getText().toString().trim();
-            if (!verifyTitle(title)) {
+            if (checkForCorrect && !verifyTitle(title)) {
                 editText.requestFocus();
                 return null;
             }
@@ -72,13 +72,13 @@ public class CGTitleFragment extends BaseCGFragment {
     }
 
     @Override
-    public boolean saveResult(GameObj game) {
-        String title = getTitle();
+    public boolean saveResult(boolean checkForCorrect, GameObj game) {
+        String title = getTitle(checkForCorrect);
         if (title != null) {
             game.setTitle(title);
             return true;
         }
-        return false;
+        return !checkForCorrect;
     }
 
     @Override

@@ -52,11 +52,11 @@ public class CGDescriptionFragment extends BaseCGFragment {
         return rootView;
     }
 
-    private String getDescription() {
+    private String getDescription(boolean checkForCorrect) {
         String description = null;
         if (editText != null) {
             description = editText.getText().toString().trim();
-            if (!verifyDescription(description)) {
+            if (checkForCorrect && !verifyDescription(description)) {
                 editText.requestFocus();
                 return null;
             }
@@ -77,13 +77,13 @@ public class CGDescriptionFragment extends BaseCGFragment {
     }
 
     @Override
-    public boolean saveResult(GameObj game) {
-        String description = getDescription();
+    public boolean saveResult(boolean checkForCorrect, GameObj game) {
+        String description = getDescription(checkForCorrect);
         if (description != null) {
             game.setDescription(description);
             return true;
         }
-        return false;
+        return !checkForCorrect;
     }
 
     @Override

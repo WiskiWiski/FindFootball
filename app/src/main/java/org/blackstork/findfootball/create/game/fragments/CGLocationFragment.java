@@ -46,15 +46,14 @@ public class CGLocationFragment extends BaseCGFragment {
     }
 
     @Override
-    public boolean saveResult(GameObj game) {
+    public boolean saveResult(boolean checkForCorrect, GameObj game) {
         LatLng location = getLocation();
-        if (location != null) {
-            game.setLocation(location);
-            return true;
-        } else {
+        if (checkForCorrect && location == null) {
             Toast.makeText(getContext(), "Please, select game location!", Toast.LENGTH_LONG).show();
+            return false;
         }
-        return false;
+        game.setLocation(location);
+        return true;
     }
 
     @Override
