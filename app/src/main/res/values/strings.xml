@@ -25,6 +25,8 @@
     <!-- === Create Game === -->
     <string name="cg_activity_title">Create Game</string>
     <string name="cg_game_created_msg" formatted="false">%s has been created!</string>
+    <string name="cg_game_time_frg_time_offset_too_small" formatted="false">Minimal time offset: %d minutes!</string>
+    <string name="cg_game_time_frg_time_in_the_past">You can\'t create game in the past!</string>
 
 
 </resources>

@@ -65,4 +65,12 @@ public class GameObj {
     public void setCreateTime(long createTime) {
         this.createTime = createTime;
     }
+
+    public long getEventTime() {
+        return eventTime;
+    }
+
+    public void setEventTime(long eventTime) {
+        this.eventTime = eventTime;
+    }
 }

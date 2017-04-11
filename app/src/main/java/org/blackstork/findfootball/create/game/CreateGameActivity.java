@@ -90,17 +90,17 @@ public class CreateGameActivity extends BaseActivity implements
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (viewPager.getCurrentItem() == adapter.getCount() - 1) {
-                    onGameCreated();
-                } else {
-                    nextClick();
-                }
+                tryNextButtonClick();
             }
         });
 
     }
 
     private void onGameCreated() {
+        // сохраняем данных с предыдущего таба
+        if (!viewPager.getCurrentFragment().saveResult(thisGameObj)) {
+            return;
+        }
         FirebaseUser user = UserAuth.getUser(this);
         if (user == null) {
             UserAuth.requestUser(this);
@@ -152,6 +152,14 @@ public class CreateGameActivity extends BaseActivity implements
             return true;
         }
         return false;
+    }
+
+    private void tryNextButtonClick() {
+        if (viewPager.getCurrentItem() == adapter.getCount() - 1) {
+            onGameCreated();
+        } else {
+            nextClick();
+        }
     }
 
     private void nextClick() {
@@ -224,6 +232,6 @@ public class CreateGameActivity extends BaseActivity implements
     // Create Game Tab Callback
     @Override
     public void onDoneEdit() {
-        nextClick();
+        tryNextButtonClick();
     }
 }

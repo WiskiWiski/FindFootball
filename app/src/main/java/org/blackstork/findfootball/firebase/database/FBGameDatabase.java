@@ -49,6 +49,7 @@ public class FBGameDatabase {
         thisGameReference.child("title").setValue(gameObj.getTitle());
         thisGameReference.child("description").setValue(gameObj.getDescription());
         thisGameReference.child("create_time").setValue(gameObj.getCreateTime());
+        thisGameReference.child("event_time").setValue(gameObj.getEventTime());
 
         new Thread(new Runnable() {
             public void run() {
