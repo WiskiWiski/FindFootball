@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public class GameObj {
 
+    // TODO : Add city and country
     private String eid;
     private LatLng location;
     private String title;

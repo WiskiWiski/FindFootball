@@ -115,7 +115,7 @@ public class CreateGameActivity extends BaseActivity implements
             Context context = getApplicationContext();
             Toast.makeText(context, formatter.toString(), Toast.LENGTH_LONG).show();
 
-            FBFootballDatabase.newInstance(context, user.getUid()).saveGame(thisGameObj);
+            FBFootballDatabase.newInstance(context).saveGame(thisGameObj, user.getUid());
             FBUserDatabase.newInstance(context, user.getUid())
                     .addFootballEvent(thisGameObj.getEid(), FBUserDatabase.USER_ROLE_OWNER);
             finish();

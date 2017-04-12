@@ -18,7 +18,7 @@ public class FBUserDatabase {
 
     public static final String TAG = App.G_TAG + ":FBUserDatabase";
 
-    private final static String USERS_PATH = "/users/";
+    public final static String USERS_PATH = "/users/";
 
     private DatabaseReference databaseReference;
     private Context context;
@@ -54,6 +54,12 @@ public class FBUserDatabase {
     public void addFootballEvent(String eid, String role) {
         FirebaseDatabase.getInstance().getReference()
                 .child(USERS_PATH).child(uid).child("events").child("football").child(eid).setValue(role);
+    }
+
+    public void removeFootballEvent(String eid){
+        // Убирает игру из списка игр пользователя (не удаляет сам ивент!)
+        FirebaseDatabase.getInstance().getReference()
+                .child(USERS_PATH).child(uid).child("events").child("football").child(eid).removeValue();
     }
 
 
