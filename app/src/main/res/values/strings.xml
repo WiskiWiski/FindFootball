@@ -8,6 +8,8 @@
 
     <!-- === Navigation Drawer === -->
     <string name="nav_main_title">Main</string>
+    <string name="nav_nav_upcoming_games_title">Upcoming Games</string>
+    <string name="nav_nav_archived_games_title">Archived Games</string>
     <string name="nav_create_game_title">Create Game</string>
     <string name="nav_settings_title">Settings</string>
 
@@ -27,6 +29,14 @@
     <string name="cg_game_created_msg" formatted="false">%s has been created!</string>
     <string name="cg_game_time_frg_time_offset_too_small" formatted="false">Minimal time offset: %d minutes!</string>
     <string name="cg_game_time_frg_time_in_the_past">You can\'t create game in the past!</string>
+
+
+    <!-- === My Games Activity === -->
+    <string name="my_games_activity_title">My Games</string>
+    <string name="my_games_activity_title_archived_games">Archive</string>
+    <string name="my_games_activity_title_upcoming_games">Upcoming</string>
+
+
 
 
 </resources>

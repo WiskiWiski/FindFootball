@@ -10,6 +10,16 @@
             android:title="@string/nav_main_title"/>
 
         <item
+            android:id="@+id/nav_upcoming_games"
+            android:icon="@drawable/ic_menu_debug"
+            android:title="@string/nav_nav_upcoming_games_title"/>
+
+        <item
+            android:id="@+id/nav_archived_games"
+            android:icon="@drawable/ic_menu_debug"
+            android:title="@string/nav_nav_archived_games_title"/>
+
+        <item
             android:id="@+id/nav_create_game"
             android:icon="@drawable/ic_menu_debug"
             android:title="@string/nav_create_game_title"/>

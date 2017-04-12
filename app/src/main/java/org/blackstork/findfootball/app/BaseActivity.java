@@ -1,6 +1,7 @@
 package org.blackstork.findfootball.app;
 
 import android.app.ActivityManager;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -10,11 +11,14 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import org.blackstork.findfootball.R;
+
+import java.util.HashSet;
 
 /**
  * Created by WiskiW on 16.03.2017.
@@ -26,9 +30,10 @@ public class BaseActivity extends AppCompatActivity implements
     private static final String TAG = App.G_TAG + ":BaseActivity";
 
     private static int currentMenuItemId;
+    private static int defaultMenuItemId;
 
-    private static NavigationView.OnNavigationItemSelectedListener rootDrawerListener;
-    private static int rootMenuItemId;
+    private static OnRootActivity rootActivity;
+    private static HashSet<Integer> rootChildes;
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
@@ -37,11 +42,46 @@ public class BaseActivity extends AppCompatActivity implements
         return navigationView.getMenu().findItem(id);
     }
 
-    public void registerRootActivity(NavigationView.OnNavigationItemSelectedListener rootDrawerListener,
-                                            int rootMenuItemId) {
-        BaseActivity.rootDrawerListener = rootDrawerListener;
-        BaseActivity.rootMenuItemId = rootMenuItemId;
-        getMenuItemById(rootMenuItemId).setChecked(true);
+    public void registerRootActivity(OnRootActivity rootActivity) {
+        BaseActivity.rootActivity = rootActivity;
+    }
+
+    public void setDefaultMenuItemId(int itemId) {
+        uncheckedMenu();
+        updateMenuItemId(0);
+        BaseActivity.defaultMenuItemId = itemId;
+        rootActivity.onNavigationItemSelected(getMenuItemById(getDefaultMenuItemId()));
+        //updateMenuItemId(itemId);
+        //getMenuItemById(itemId).setChecked(true);
+    }
+
+    private void uncheckedMenu() {
+        int size = navigationView.getMenu().size();
+        for (int i = 0; i < size; i++) {
+            navigationView.getMenu().getItem(i).setChecked(false);
+        }
+    }
+
+    public int getDefaultMenuItemId() {
+        return defaultMenuItemId;
+    }
+
+    public static void addRootActivityChildes(Integer... itemIds) {
+        if (rootChildes == null) {
+            rootChildes = new HashSet<>();
+        }
+        for (int id : itemIds) {
+            rootChildes.add(id);
+        }
+    }
+
+    private boolean isRootChild(int id) {
+        for (int child : rootChildes) {
+            if (id == child) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void closeDrawer() {
@@ -66,6 +106,8 @@ public class BaseActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        // TODO : allow changing screen orientation
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             String title = getResources().getString(R.string.app_name);
@@ -93,45 +135,53 @@ public class BaseActivity extends AppCompatActivity implements
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(Gravity.START)) {
             drawerLayout.closeDrawers();
-        } else if (currentMenuItemId != rootMenuItemId) {
-            MenuItem menuItem = getMenuItemById(rootMenuItemId);
+            return;
+        } else if (!isRootChild(currentMenuItemId)) {
+            MenuItem menuItem = getMenuItemById(rootActivity.getCurrentViewItemId());
             updateMenuItemSelection(menuItem);
-            //updateMenuItemId(menuItem);
-            rootDrawerListener.onNavigationItemSelected(menuItem);
-            super.onBackPressed();
+            rootActivity.onNavigationItemSelected(menuItem);
         }
+        super.onBackPressed();
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home && currentMenuItemId != rootMenuItemId) {
-            MenuItem menuItem = getMenuItemById(rootMenuItemId);
-            updateMenuItemSelection(menuItem);
-            //updateMenuItemId(menuItem);
-            rootDrawerListener.onNavigationItemSelected(menuItem);
+        if (item.getItemId() == android.R.id.home) {
             super.onBackPressed();
+            return true;
+        } else {
+            return false;
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         closeDrawer();
-        if (getCurrentMenuItemId() == menuItem.getItemId()) {
+        int id = menuItem.getItemId();
+        if (getCurrentMenuItemId() == id) {
             // Если нажали то, что сейчас открыто
             return false;
         } else {
-            finish();
-            return rootDrawerListener.onNavigationItemSelected(menuItem);
+            if (!isRootChild(currentMenuItemId)) {
+                finish();
+            }
+            return rootActivity.onNavigationItemSelected(menuItem);
         }
     }
 
     @Override
     public void finish() {
-        if (currentMenuItemId != rootMenuItemId) {
-            MenuItem menuItem = getMenuItemById(rootMenuItemId);
+        if (!isRootChild(currentMenuItemId)) {
+            MenuItem menuItem = getMenuItemById(rootActivity.getCurrentViewItemId());
             updateMenuItemSelection(menuItem);
-            rootDrawerListener.onNavigationItemSelected(menuItem);
+            rootActivity.onNavigationItemSelected(menuItem);
         }
         super.finish();
     }
+
+    public interface OnRootActivity {
+        int getCurrentViewItemId();
+
+        boolean onNavigationItemSelected(MenuItem menuItem);
+    }
+
 }
