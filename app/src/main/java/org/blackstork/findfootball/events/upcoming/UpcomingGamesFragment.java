@@ -112,7 +112,7 @@ public class UpcomingGamesFragment extends Fragment implements
         return new OnRecyclerViewItemClickListener() {
             @Override
             public void onClick(int pos) {
-
+                Toast.makeText(getContext(), "Coming soon!", Toast.LENGTH_SHORT).show();
             }
         };
     }

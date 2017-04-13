@@ -58,7 +58,6 @@
 
         <activity
             android:name=".events.MyGamesActivity"
-            android:label="@string/my_games_activity_title"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

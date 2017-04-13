@@ -13,19 +13,20 @@
         android:id="@+id/test_btn_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:text="Button 1"/>
 
     <Button
         android:id="@+id/test_btn_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button 2"/>
+        android:text="Button 2 (SignOut)"/>
 
     <Button
         android:id="@+id/test_btn_3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button 3"/>
+        android:text="Button 3 (Sign In/Up)"/>
 
 
     <FrameLayout

@@ -117,7 +117,7 @@ public class ArchivedGamesFragment extends Fragment implements
         return new OnRecyclerViewItemClickListener() {
             @Override
             public void onClick(int pos) {
-
+                Toast.makeText(getContext(), "Coming soon!", Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -139,26 +139,7 @@ public class ArchivedGamesFragment extends Fragment implements
         return new OnRecyclerViewItemClickListener() {
             @Override
             public void onClick(final int pos) {
-                final String[] actionsTitles = {"Delete"};
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Select Action");
-                builder.setItems(actionsTitles, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        switch (item) {
-                            case 0:
-                                deleteEvent(pos);
-                                break;
-                            default:
-                                Toast.makeText(getContext(), "Action: " + actionsTitles[item] + " p:" + pos, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }).setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                }).create().show();
+                Toast.makeText(getContext(), "Coming soon!", Toast.LENGTH_SHORT).show();
             }
         };
     }

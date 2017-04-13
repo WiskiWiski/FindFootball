@@ -44,9 +44,9 @@ public class MyGamesActivity extends BaseActivity implements
         toggle.syncState();
     }
 
-    private void setToolbarTitle(String title){
+    private void setToolbarTitle(String title) {
         ActionBar toolbar = getSupportActionBar();
-        if (toolbar != null){
+        if (toolbar != null) {
             toolbar.setTitle(title);
         }
     }
@@ -63,7 +63,6 @@ public class MyGamesActivity extends BaseActivity implements
             addRootActivityChildes(R.id.nav_upcoming_games, R.id.nav_archived_games);
             setDefaultMenuItemId(R.id.nav_upcoming_games);
         }
-
 
 
     }
