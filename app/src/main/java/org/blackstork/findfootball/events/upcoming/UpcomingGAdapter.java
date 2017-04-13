@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.objects.GameObj;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,15 +17,19 @@ import java.util.List;
 
 public class UpcomingGAdapter extends RecyclerView.Adapter<UpcomingGamesViewHolder> {
 
-
     private List<GameObj> gameList;
 
     public UpcomingGAdapter() {
+        gameList = new ArrayList<>();
     }
 
-    public void setGameList(List<GameObj> gameList){
+    void setGameList(List<GameObj> gameList) {
         this.gameList = gameList;
         notifyDataSetChanged();
+    }
+
+    public List<GameObj> getGameList() {
+        return gameList;
     }
 
     @Override
@@ -48,5 +53,10 @@ public class UpcomingGAdapter extends RecyclerView.Adapter<UpcomingGamesViewHold
         } else {
             return 0;
         }
+    }
+
+    void addGame(GameObj gameObj) {
+        gameList.add(gameObj);
+        notifyItemInserted(gameList.size() - 1);
     }
 }

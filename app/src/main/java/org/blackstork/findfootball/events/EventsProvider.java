@@ -30,7 +30,7 @@ public class EventsProvider {
 
     private Context context;
     private String uid;
-    private FBCompleteListener callback;
+    private EventsProviderListener listener;
 
     private EVENTS_TYPE requestType;
 
@@ -40,10 +40,10 @@ public class EventsProvider {
 
     private List<GameObj> gameList;
 
-    public EventsProvider(Context context, String uid, FBCompleteListener callback) {
+    public EventsProvider(Context context, String uid, EventsProviderListener listener) {
         this.context = context;
         this.uid = uid;
-        this.callback = callback;
+        this.listener = listener;
     }
 
     private Iterator<DataSnapshot> gamesIterator;
@@ -61,9 +61,7 @@ public class EventsProvider {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                callback.onFailed();
+                listener.onFailed(1, databaseError.toException().getLocalizedMessage());
             }
         };
         DatabaseReference mPostReference = FirebaseDatabase.getInstance().getReference();
@@ -92,14 +90,16 @@ public class EventsProvider {
                 if (object != null) {
                     GameObj game = (GameObj) object;
 
-                    Log.d(TAG, "game: " + game.getTitle() + " [" + game.getDescription() + "]");
+                    //Log.d(TAG, "game: " + game.getTitle() + " [" + game.getDescription() + "]");
                     if (game.getEventTime() > TimeProvider.getUtcTime() - 1000) { // - 1000 - просто так
                         if (requestType == EVENTS_TYPE.Upcoming) {
                             gameList.add(game);
+                            listener.onProgress(game);
                         }
                     } else {
                         if (requestType == EVENTS_TYPE.Archived) {
                             gameList.add(game);
+                            listener.onProgress(game);
                         }
                     }
                 } else {
@@ -110,7 +110,7 @@ public class EventsProvider {
                 if (gamesIterator.hasNext()) {
                     processData(gamesIterator.next());
                 } else {
-                    callback.onSuccess(gameList);
+                    listener.onSuccess(gameList);
                 }
             }
 
@@ -119,6 +119,16 @@ public class EventsProvider {
 
             }
         }, eid);
+    }
+
+
+    public interface EventsProviderListener {
+
+        void onProgress(GameObj gameObj);
+
+        void onSuccess(List<GameObj> gameList);
+
+        void onFailed(int code, String msg);
     }
 
 
