@@ -89,8 +89,6 @@ public class EventsProvider {
             public void onSuccess(Object object) {
                 if (object != null) {
                     GameObj game = (GameObj) object;
-
-                    //Log.d(TAG, "game: " + game.getTitle() + " [" + game.getDescription() + "]");
                     if (game.getEventTime() > TimeProvider.getUtcTime() - 1000) { // - 1000 - просто так
                         if (requestType == EVENTS_TYPE.Upcoming) {
                             gameList.add(game);
@@ -104,7 +102,7 @@ public class EventsProvider {
                     }
                 } else {
                     FBUserDatabase userDatabase = FBUserDatabase.newInstance(context, uid);
-                    userDatabase.removeFootballEvent(eid);
+                    userDatabase.removeFootballEvent(null, eid);
                     Log.d(TAG, "game has been removed: " + eid);
                 }
                 if (gamesIterator.hasNext()) {
@@ -115,7 +113,7 @@ public class EventsProvider {
             }
 
             @Override
-            public void onFailed() {
+            public void onFailed(int code, String msg) {
 
             }
         }, eid);

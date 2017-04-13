@@ -2,10 +2,14 @@ package org.blackstork.findfootball.firebase.database;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.time.TimeProvider;
@@ -56,10 +60,33 @@ public class FBUserDatabase {
                 .child(USERS_PATH).child(uid).child("events").child("football").child(eid).setValue(role);
     }
 
-    public void removeFootballEvent(String eid){
+    public void removeFootballEvent(final FBCompleteListener callback, final String eid) {
         // Убирает игру из списка игр пользователя (не удаляет сам ивент!)
-        FirebaseDatabase.getInstance().getReference()
-                .child(USERS_PATH).child(uid).child("events").child("football").child(eid).removeValue();
+        //FirebaseDatabase.getInstance().getReference().child(USERS_PATH).child(uid).child("events").child("football").child(eid).removeValue();
+        Log.d(TAG, "removeFootballEvent: eid: " + eid);
+        final DatabaseReference event = FirebaseDatabase.getInstance().getReference()
+                .child(USERS_PATH).child(uid).child("events").child("football").child(eid);
+        event.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                event.removeValue();
+                if (dataSnapshot == null) {
+                    if (callback != null) {
+                        callback.onSuccess(null);
+                    }
+                } else {
+                    if (callback != null) {
+                        callback.onSuccess(dataSnapshot.getValue());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                if (callback != null)
+                    callback.onFailed();
+            }
+        });
     }
 
 

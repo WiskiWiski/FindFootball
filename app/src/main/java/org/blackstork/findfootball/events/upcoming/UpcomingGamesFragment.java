@@ -2,9 +2,11 @@ package org.blackstork.findfootball.events.upcoming;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
 
@@ -19,6 +22,10 @@ import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.auth.UserAuth;
 import org.blackstork.findfootball.events.EventsProvider;
+import org.blackstork.findfootball.events.dialogs.ConfirmDialog;
+import org.blackstork.findfootball.firebase.database.FBCompleteListener;
+import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
+import org.blackstork.findfootball.firebase.database.FBUserDatabase;
 import org.blackstork.findfootball.objects.GameObj;
 
 import java.util.ArrayList;
@@ -57,6 +64,8 @@ public class UpcomingGamesFragment extends Fragment implements
 
         if (mAdapter == null) {
             mAdapter = new UpcomingGAdapter();
+            mAdapter.setItemClickListener(getItemClickListener());
+            mAdapter.setItemLongClickListener(getItemLongClickListener());
         }
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -100,6 +109,75 @@ public class UpcomingGamesFragment extends Fragment implements
                 UserAuth.requestUser(context);
             }
         }
+    }
+
+    private UpcomingGamesViewHolder.OnItemClickListener getItemClickListener() {
+        return new UpcomingGamesViewHolder.OnItemClickListener() {
+            @Override
+            public void onClick(int pos) {
+
+            }
+        };
+    }
+
+    private UpcomingGamesViewHolder.OnItemClickListener getItemLongClickListener() {
+        return new UpcomingGamesViewHolder.OnItemClickListener() {
+            @Override
+            public void onClick(final int pos) {
+                final String[] actionsTitles = {"Delete"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Select Action");
+                builder.setItems(actionsTitles, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        switch (item) {
+                            case 0:
+                                deleteEvent(pos);
+                                break;
+                            default:
+                                Toast.makeText(getContext(), "Action: " + actionsTitles[item] + " p:" + pos, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).create().show();
+            }
+        };
+    }
+
+    private void deleteEvent(int pos) {
+        Context context = getContext();
+        FirebaseUser user = UserAuth.getUser(context);
+        if (user != null) {
+            final GameObj game = mAdapter.getGameList().get(pos);
+            mAdapter.removeGame(pos);
+            FBUserDatabase userDatabase = FBUserDatabase.newInstance(context, user.getUid());
+            userDatabase.removeFootballEvent(new FBCompleteListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    if (object != null) {
+                        String status = (String) object;
+                        if (status.equals(FBUserDatabase.USER_ROLE_OWNER)) {
+                            FBFootballDatabase footballDatabase = FBFootballDatabase.newInstance(getContext());
+                            footballDatabase.deleteGame(game.getEid());
+                            Toast.makeText(getContext(), game.getTitle() + " successfully deleted", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailed(int code, String msg) {
+                    Toast.makeText(getContext(), game.getTitle() + " successfully deleted", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "onFailed: delete event error!");
+                }
+            }, game.getEid());
+        } else {
+            UserAuth.requestUser(context);
+        }
+
     }
 
     @Override

@@ -19,6 +19,9 @@ public class UpcomingGAdapter extends RecyclerView.Adapter<UpcomingGamesViewHold
 
     private List<GameObj> gameList;
 
+    private UpcomingGamesViewHolder.OnItemClickListener itemLongClickListener;
+    private UpcomingGamesViewHolder.OnItemClickListener itemClickListener;
+
     public UpcomingGAdapter() {
         gameList = new ArrayList<>();
     }
@@ -32,6 +35,14 @@ public class UpcomingGAdapter extends RecyclerView.Adapter<UpcomingGamesViewHold
         return gameList;
     }
 
+    public void setItemClickListener(UpcomingGamesViewHolder.OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    public void setItemLongClickListener(UpcomingGamesViewHolder.OnItemClickListener itemLongClickListener) {
+        this.itemLongClickListener = itemLongClickListener;
+    }
+
     @Override
     public UpcomingGamesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
@@ -42,6 +53,8 @@ public class UpcomingGAdapter extends RecyclerView.Adapter<UpcomingGamesViewHold
     @Override
     public void onBindViewHolder(UpcomingGamesViewHolder holder, int position) {
         GameObj game = gameList.get(position);
+        holder.setItemClickListener(itemClickListener);
+        holder.setItemLongClickListener(itemLongClickListener);
         holder.setTitle(game.getTitle());
         holder.setDay(String.valueOf(game.getEventTime()));
     }
@@ -59,4 +72,10 @@ public class UpcomingGAdapter extends RecyclerView.Adapter<UpcomingGamesViewHold
         gameList.add(gameObj);
         notifyItemInserted(gameList.size() - 1);
     }
+
+    void removeGame(int pos) {
+        gameList.remove(pos);
+        notifyItemRemoved(pos);
+    }
+
 }

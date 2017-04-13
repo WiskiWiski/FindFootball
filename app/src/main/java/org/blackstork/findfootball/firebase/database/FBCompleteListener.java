@@ -12,6 +12,6 @@ public interface FBCompleteListener {
 
     void onSuccess(Object object);
 
-    void onFailed();
+    void onFailed(int code, String msg);
 
 }

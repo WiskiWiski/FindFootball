@@ -2,7 +2,6 @@ package org.blackstork.findfootball.firebase.database;
 
 import android.content.Context;
 import android.location.Address;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -53,8 +52,6 @@ public class FBFootballDatabase {
     }
 
 
-
-
     public void saveGame(final GameObj gameObj, String uid) {
         final DatabaseReference thisGameReference = databaseReference.child(FOOTBALL_PATH).child(gameObj.getEid());
         thisGameReference.child(KEY_OWNER).setValue(uid);
@@ -86,12 +83,13 @@ public class FBFootballDatabase {
         ValueEventListener referenceListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot gameSnapshot) {
-                if (gameSnapshot.getValue() == null){
+                if (gameSnapshot.getValue() == null) {
                     callback.onSuccess(null);
                     return;
                 }
 
                 GameObj game = new GameObj();
+                game.setEid(gameSnapshot.getKey());
                 game.setTitle((String) gameSnapshot.child(KEY_TITLE).getValue());
                 game.setDescription((String) gameSnapshot.child(KEY_DESCRIPTION).getValue());
                 game.setEventTime((Long) gameSnapshot.child(KEY_EVENT_TIME).getValue());
@@ -121,4 +119,7 @@ public class FBFootballDatabase {
         return null;
     }
 
+    public void deleteGame(String eid) {
+        databaseReference.child(FOOTBALL_PATH).child(eid).removeValue();
+    }
 }

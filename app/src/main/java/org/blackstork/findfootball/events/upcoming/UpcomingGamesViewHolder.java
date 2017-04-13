@@ -12,15 +12,37 @@ import org.blackstork.findfootball.R;
 
 class UpcomingGamesViewHolder extends RecyclerView.ViewHolder {
 
+    private View itemView;
     private TextView titleTV;
     private TextView dateTimeTV;
     private TextView dateDayTV;
 
     public UpcomingGamesViewHolder(View itemView) {
         super(itemView);
+        this.itemView = itemView;
+
         titleTV = (TextView) itemView.findViewById(R.id.event_title);
         dateTimeTV = (TextView) itemView.findViewById(R.id.event_date_time);
         dateDayTV = (TextView) itemView.findViewById(R.id.event_date_day);
+    }
+
+    public void setItemClickListener(final OnItemClickListener itemListener) {
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemListener.onClick(getAdapterPosition());
+            }
+        });
+    }
+
+    public void setItemLongClickListener(final OnItemClickListener itemListener) {
+        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                itemListener.onClick(getAdapterPosition());
+                return true;
+            }
+        });
     }
 
     public void setTitle(String title) {
@@ -34,4 +56,9 @@ class UpcomingGamesViewHolder extends RecyclerView.ViewHolder {
     public void setDay(String day) {
         dateDayTV.setText(day);
     }
+
+    interface OnItemClickListener{
+        void onClick(int pos);
+    }
+
 }
