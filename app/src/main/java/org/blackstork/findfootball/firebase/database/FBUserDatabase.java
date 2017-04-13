@@ -84,7 +84,7 @@ public class FBUserDatabase {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 if (callback != null)
-                    callback.onFailed();
+                    callback.onFailed(1, databaseError.getMessage());
             }
         });
     }

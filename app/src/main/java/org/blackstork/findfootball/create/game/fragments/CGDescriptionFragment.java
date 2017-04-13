@@ -88,6 +88,6 @@ public class CGDescriptionFragment extends BaseCGFragment {
 
     @Override
     public void updateView(GameObj game) {
-
+        editText.setText(game.getDescription());
     }
 }

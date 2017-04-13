@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -34,6 +35,8 @@ public class CreateGameActivity extends BaseActivity implements
 
     private static final String TAG = App.G_TAG + ":CreateGameAct";
 
+    public static final String INTENT_GAME_KEY = "game_in_intent";
+
     private GameObj thisGameObj;
 
     private FrameLayout leftButton;
@@ -45,6 +48,7 @@ public class CreateGameActivity extends BaseActivity implements
 
     private CreateGameViewPager viewPager;
     private PagerAdapter adapter;
+
 
     @SuppressWarnings("ConstantConditions")
     private void initToolbar() {
@@ -63,7 +67,14 @@ public class CreateGameActivity extends BaseActivity implements
         }
         initToolbar();
 
-        thisGameObj = new GameObj();
+        Intent intent = getIntent();
+        if (intent != null) {
+            thisGameObj = intent.getParcelableExtra(INTENT_GAME_KEY);
+        }
+        if (thisGameObj == null) {
+            thisGameObj = new GameObj();
+        }
+
         adapter = new PagerAdapter(getSupportFragmentManager());
         adapter.addNext(new CGTitleFragment());
         adapter.addNext(new CGDescriptionFragment());
@@ -72,6 +83,7 @@ public class CreateGameActivity extends BaseActivity implements
 
         viewPager = (CreateGameViewPager) findViewById(R.id.pager);
         viewPager.setAdapter(adapter);
+        viewPager.getCurrentFragment().updateView(thisGameObj);
 
         leftButton = (FrameLayout) findViewById(R.id.left_btn);
         rightButton = (FrameLayout) findViewById(R.id.right_btn);

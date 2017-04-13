@@ -22,7 +22,7 @@ import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.auth.UserAuth;
 import org.blackstork.findfootball.events.EventsProvider;
-import org.blackstork.findfootball.events.dialogs.ConfirmDialog;
+import org.blackstork.findfootball.events.OnRecyclerViewItemClickListener;
 import org.blackstork.findfootball.firebase.database.FBCompleteListener;
 import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
 import org.blackstork.findfootball.firebase.database.FBUserDatabase;
@@ -31,9 +31,6 @@ import org.blackstork.findfootball.objects.GameObj;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class UpcomingGamesFragment extends Fragment implements
         SwipeRefreshLayout.OnRefreshListener {
 
@@ -51,7 +48,7 @@ public class UpcomingGamesFragment extends Fragment implements
 
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private UpcomingGAdapter mAdapter;
+    private UpcomingGamesAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,7 +60,7 @@ public class UpcomingGamesFragment extends Fragment implements
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
 
         if (mAdapter == null) {
-            mAdapter = new UpcomingGAdapter();
+            mAdapter = new UpcomingGamesAdapter();
             mAdapter.setItemClickListener(getItemClickListener());
             mAdapter.setItemLongClickListener(getItemLongClickListener());
         }
@@ -72,7 +69,6 @@ public class UpcomingGamesFragment extends Fragment implements
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        swipeRefreshLayout.setRefreshing(true);
         fillAdapter();
 
         return rootView;
@@ -83,6 +79,7 @@ public class UpcomingGamesFragment extends Fragment implements
             Context context = getContext();
             FirebaseUser user = UserAuth.getUser(context);
             if (user != null) {
+                swipeRefreshLayout.setRefreshing(true);
                 EventsProvider eventsProvider = new EventsProvider(context,
                         user.getUid(), new EventsProvider.EventsProviderListener() {
                     @Override
@@ -111,8 +108,8 @@ public class UpcomingGamesFragment extends Fragment implements
         }
     }
 
-    private UpcomingGamesViewHolder.OnItemClickListener getItemClickListener() {
-        return new UpcomingGamesViewHolder.OnItemClickListener() {
+    private OnRecyclerViewItemClickListener getItemClickListener() {
+        return new OnRecyclerViewItemClickListener() {
             @Override
             public void onClick(int pos) {
 
@@ -120,8 +117,8 @@ public class UpcomingGamesFragment extends Fragment implements
         };
     }
 
-    private UpcomingGamesViewHolder.OnItemClickListener getItemLongClickListener() {
-        return new UpcomingGamesViewHolder.OnItemClickListener() {
+    private OnRecyclerViewItemClickListener getItemLongClickListener() {
+        return new OnRecyclerViewItemClickListener() {
             @Override
             public void onClick(final int pos) {
                 final String[] actionsTitles = {"Delete"};

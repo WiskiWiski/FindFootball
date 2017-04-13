@@ -42,7 +42,7 @@ public class LocationSelectFragment extends SupportMapFragment {
     }
 
     public LocationSelectFragment setMarkerPosition(LatLng latLng) {
-        if (locationPicker != null) {
+        if (locationPicker != null && latLng != null) {
             locationPicker.setMarker(new MarkerOptions().position(latLng));
             locationPicker.moveCamera(latLng, GMapsPreferences.MARKER_SCALE);
         }

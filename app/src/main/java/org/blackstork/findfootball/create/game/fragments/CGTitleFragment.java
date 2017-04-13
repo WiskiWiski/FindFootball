@@ -24,6 +24,7 @@ public class CGTitleFragment extends BaseCGFragment {
     private static final int MINIMAL_TITLE_LENGTH = 6;
 
     private EditText editText;
+    private GameObj thisGame;
 
     public CGTitleFragment() {
         // Required empty public constructor
@@ -43,7 +44,9 @@ public class CGTitleFragment extends BaseCGFragment {
                 return false;
             }
         });
-
+        if (thisGame != null) {
+            editText.setText(thisGame.getTitle());
+        }
 
         return rootView;
     }
@@ -83,7 +86,7 @@ public class CGTitleFragment extends BaseCGFragment {
 
     @Override
     public void updateView(GameObj game) {
-
+        this.thisGame = game;
     }
 
 }

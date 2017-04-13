@@ -104,7 +104,7 @@ public class FBFootballDatabase {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                callback.onFailed();
+                callback.onFailed(1, databaseError.getMessage());
             }
         };
         DatabaseReference gameReference = databaseReference.child(FOOTBALL_PATH).child(eid);

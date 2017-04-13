@@ -48,7 +48,7 @@ public class MainActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void onFailed() {
+                    public void onFailed(int code, String msg) {
                         Log.d(TAG, "onFailed: ");
                     }
                 };

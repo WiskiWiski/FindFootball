@@ -22,6 +22,7 @@ import org.blackstork.findfootball.auth.UserAuth;
 import org.blackstork.findfootball.create.game.CreateGameActivity;
 import org.blackstork.findfootball.events.archived.ArchivedGamesFragment;
 import org.blackstork.findfootball.events.upcoming.UpcomingGamesFragment;
+import org.blackstork.findfootball.objects.GameObj;
 
 public class MyGamesActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener,

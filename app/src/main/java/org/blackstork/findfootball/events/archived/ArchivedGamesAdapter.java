@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.events.upcoming;
+package org.blackstork.findfootball.events.archived;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,23 +6,25 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.blackstork.findfootball.R;
+import org.blackstork.findfootball.events.OnRecyclerViewItemClickListener;
 import org.blackstork.findfootball.objects.GameObj;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by WiskiW on 12.04.2017.
+ * Created by WiskiW on 13.04.2017.
  */
 
-public class UpcomingGAdapter extends RecyclerView.Adapter<UpcomingGamesViewHolder> {
+public class ArchivedGamesAdapter extends RecyclerView.Adapter<ArchivedGamesViewHolder> {
 
     private List<GameObj> gameList;
 
-    private UpcomingGamesViewHolder.OnItemClickListener itemLongClickListener;
-    private UpcomingGamesViewHolder.OnItemClickListener itemClickListener;
+    private OnRecyclerViewItemClickListener itemLongClickListener;
+    private OnRecyclerViewItemClickListener itemClickListener;
+    private OnRecyclerViewItemClickListener itemRecreateBtnClickListener;
 
-    public UpcomingGAdapter() {
+    public ArchivedGamesAdapter() {
         gameList = new ArrayList<>();
     }
 
@@ -35,26 +37,31 @@ public class UpcomingGAdapter extends RecyclerView.Adapter<UpcomingGamesViewHold
         return gameList;
     }
 
-    public void setItemClickListener(UpcomingGamesViewHolder.OnItemClickListener itemClickListener) {
+    public void setItemClickListener(OnRecyclerViewItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
-    public void setItemLongClickListener(UpcomingGamesViewHolder.OnItemClickListener itemLongClickListener) {
+    public void setItemLongClickListener(OnRecyclerViewItemClickListener itemLongClickListener) {
         this.itemLongClickListener = itemLongClickListener;
     }
 
-    @Override
-    public UpcomingGamesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_upcoming_game, parent, false);
-        return new UpcomingGamesViewHolder(itemView);
+    public void setItemRecreateBtnClickListener(OnRecyclerViewItemClickListener itemRecreateBtnClickListener) {
+        this.itemRecreateBtnClickListener = itemRecreateBtnClickListener;
     }
 
     @Override
-    public void onBindViewHolder(UpcomingGamesViewHolder holder, int position) {
+    public ArchivedGamesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.list_item_archived_game, parent, false);
+        return new ArchivedGamesViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(ArchivedGamesViewHolder holder, int position) {
         GameObj game = gameList.get(position);
         holder.setItemClickListener(itemClickListener);
         holder.setItemLongClickListener(itemLongClickListener);
+        holder.setRecreateBtnClickListener(itemRecreateBtnClickListener);
         holder.setTitle(game.getTitle());
         holder.setDay(String.valueOf(game.getEventTime()));
     }
@@ -79,3 +86,4 @@ public class UpcomingGAdapter extends RecyclerView.Adapter<UpcomingGamesViewHold
     }
 
 }
+

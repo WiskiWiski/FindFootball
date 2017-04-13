@@ -58,6 +58,8 @@ public class CGLocationFragment extends BaseCGFragment {
 
     @Override
     public void updateView(GameObj game) {
-
+        if (locationSelectFragment != null) {
+            locationSelectFragment.setMarkerPosition(game.getLocation());
+        }
     }
 }
