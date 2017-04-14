@@ -1,10 +1,9 @@
-package org.blackstork.findfootball.create.game.fragments;
+package org.blackstork.findfootball.game.create.fragments;
 
 
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +13,8 @@ import android.widget.Toast;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.create.game.BaseCGFragment;
-import org.blackstork.findfootball.objects.GameObj;
+import org.blackstork.findfootball.game.create.BaseCGFragment;
+import org.blackstork.findfootball.game.GameObj;
 import org.blackstork.findfootball.time.TimeProvider;
 
 import java.util.Calendar;

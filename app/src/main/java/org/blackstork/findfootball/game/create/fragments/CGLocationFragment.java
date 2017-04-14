@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.create.game.fragments;
+package org.blackstork.findfootball.game.create.fragments;
 
 
 import android.os.Bundle;
@@ -12,9 +12,9 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.create.game.BaseCGFragment;
+import org.blackstork.findfootball.game.create.BaseCGFragment;
 import org.blackstork.findfootball.location.gmaps.fragments.LocationSelectFragment;
-import org.blackstork.findfootball.objects.GameObj;
+import org.blackstork.findfootball.game.GameObj;
 
 
 public class CGLocationFragment extends BaseCGFragment {

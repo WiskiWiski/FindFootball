@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.events;
+package org.blackstork.findfootball.game.my;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -19,10 +18,9 @@ import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.app.BaseActivity;
 import org.blackstork.findfootball.auth.UserAuth;
-import org.blackstork.findfootball.create.game.CreateGameActivity;
-import org.blackstork.findfootball.events.archived.ArchivedGamesFragment;
-import org.blackstork.findfootball.events.upcoming.UpcomingGamesFragment;
-import org.blackstork.findfootball.objects.GameObj;
+import org.blackstork.findfootball.game.create.CreateGameActivity;
+import org.blackstork.findfootball.game.my.archived.ArchivedGamesFragment;
+import org.blackstork.findfootball.game.my.upcoming.UpcomingGamesFragment;
 
 public class MyGamesActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener,

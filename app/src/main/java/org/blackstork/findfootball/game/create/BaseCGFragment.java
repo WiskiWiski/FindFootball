@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.create.game;
+package org.blackstork.findfootball.game.create;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.objects.GameObj;
+import org.blackstork.findfootball.game.GameObj;
 
 /**
  * Created by WiskiW on 02.04.2017.

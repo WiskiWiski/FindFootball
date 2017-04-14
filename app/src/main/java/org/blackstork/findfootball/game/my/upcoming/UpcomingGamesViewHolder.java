@@ -1,31 +1,27 @@
-package org.blackstork.findfootball.events.archived;
+package org.blackstork.findfootball.game.my.upcoming;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.blackstork.findfootball.R;
-import org.blackstork.findfootball.events.OnRecyclerViewItemClickListener;
+import org.blackstork.findfootball.game.my.OnRecyclerViewItemClickListener;
 
 /**
- * Created by WiskiW on 13.04.2017.
+ * Created by WiskiW on 12.04.2017.
  */
 
-public class ArchivedGamesViewHolder extends RecyclerView.ViewHolder {
-
+class UpcomingGamesViewHolder extends RecyclerView.ViewHolder {
 
     private View itemView;
     private TextView titleTV;
     private TextView dateTimeTV;
     private TextView dateDayTV;
-    private ImageView recreateBtn;
 
-    public ArchivedGamesViewHolder(View itemView) {
+    public UpcomingGamesViewHolder(View itemView) {
         super(itemView);
         this.itemView = itemView;
 
-        recreateBtn = (ImageView) itemView.findViewById(R.id.recreate_button);
         titleTV = (TextView) itemView.findViewById(R.id.event_title);
         dateTimeTV = (TextView) itemView.findViewById(R.id.event_date_time);
         dateDayTV = (TextView) itemView.findViewById(R.id.event_date_day);
@@ -50,15 +46,6 @@ public class ArchivedGamesViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void setRecreateBtnClickListener(final OnRecyclerViewItemClickListener itemListener){
-        recreateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemListener.onClick(getAdapterPosition());
-            }
-        });
-    }
-
     public void setTitle(String title) {
         titleTV.setText(title);
     }
@@ -70,6 +57,5 @@ public class ArchivedGamesViewHolder extends RecyclerView.ViewHolder {
     public void setDay(String day) {
         dateDayTV.setText(day);
     }
-
 
 }

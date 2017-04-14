@@ -1,12 +1,12 @@
-package org.blackstork.findfootball.create.game.view;
+package org.blackstork.findfootball.game.create.view;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-import org.blackstork.findfootball.create.game.BaseCGFragment;
-import org.blackstork.findfootball.create.game.PagerAdapter;
+import org.blackstork.findfootball.game.create.BaseCGFragment;
+import org.blackstork.findfootball.game.create.PagerAdapter;
 
 /**
  * Created by WiskiW on 02.04.2017.

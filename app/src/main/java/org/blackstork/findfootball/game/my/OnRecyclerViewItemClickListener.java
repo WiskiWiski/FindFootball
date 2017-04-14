@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.events;
+package org.blackstork.findfootball.game.my;
 
 /**
  * Created by WiskiW on 13.04.2017.

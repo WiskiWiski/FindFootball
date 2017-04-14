@@ -12,7 +12,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.location.LocationHelper;
-import org.blackstork.findfootball.objects.GameObj;
+import org.blackstork.findfootball.game.GameObj;
 
 /**
  * Created by WiskiW on 06.04.2017.

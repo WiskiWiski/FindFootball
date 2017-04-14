@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.objects;
+package org.blackstork.findfootball.game;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.events.archived;
+package org.blackstork.findfootball.game.my.archived;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.blackstork.findfootball.R;
-import org.blackstork.findfootball.events.OnRecyclerViewItemClickListener;
-import org.blackstork.findfootball.objects.GameObj;
+import org.blackstork.findfootball.game.my.OnRecyclerViewItemClickListener;
+import org.blackstork.findfootball.game.GameObj;
 
 import java.util.ArrayList;
 import java.util.List;

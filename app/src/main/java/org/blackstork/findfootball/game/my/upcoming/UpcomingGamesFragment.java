@@ -1,9 +1,8 @@
-package org.blackstork.findfootball.events.archived;
+package org.blackstork.findfootball.game.my.upcoming;
 
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,52 +21,48 @@ import com.google.firebase.auth.FirebaseUser;
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.auth.UserAuth;
-import org.blackstork.findfootball.create.game.CreateGameActivity;
-import org.blackstork.findfootball.events.EventsProvider;
-import org.blackstork.findfootball.events.OnRecyclerViewItemClickListener;
+import org.blackstork.findfootball.game.my.EventsProvider;
+import org.blackstork.findfootball.game.my.OnRecyclerViewItemClickListener;
 import org.blackstork.findfootball.firebase.database.FBCompleteListener;
 import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
 import org.blackstork.findfootball.firebase.database.FBUserDatabase;
-import org.blackstork.findfootball.objects.GameObj;
+import org.blackstork.findfootball.game.GameObj;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class ArchivedGamesFragment extends Fragment implements
+public class UpcomingGamesFragment extends Fragment implements
         SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String TAG = App.G_TAG + ":ArchGamesFrg";
-    public static final String F_TAG = "archived_games_frg";
+    private static final String TAG = App.G_TAG + ":UpcGamesFrg";
+    public static final String F_TAG = "upcoming_games_frg";
 
-    public ArchivedGamesFragment() {
+    public UpcomingGamesFragment() {
         // Required empty public constructor
     }
 
-    public static ArchivedGamesFragment newInstance() {
-        return new ArchivedGamesFragment();
+    public static UpcomingGamesFragment newInstance() {
+        return new UpcomingGamesFragment();
     }
+
 
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private ArchivedGamesAdapter mAdapter;
+    private UpcomingGamesAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_archived_games, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_upcoming_games, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
 
         if (mAdapter == null) {
-            mAdapter = new ArchivedGamesAdapter();
+            mAdapter = new UpcomingGamesAdapter();
             mAdapter.setItemClickListener(getItemClickListener());
             mAdapter.setItemLongClickListener(getItemLongClickListener());
-            mAdapter.setItemRecreateBtnClickListener(getRecreateBtnClickListener());
         }
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -106,7 +101,7 @@ public class ArchivedGamesFragment extends Fragment implements
                         Log.d(TAG, "onFailed [" + code + "] : " + msg);
                     }
                 });
-                eventsProvider.getArchivedGames();
+                eventsProvider.getUpcomingGames();
             } else {
                 UserAuth.requestUser(context);
             }
@@ -122,24 +117,30 @@ public class ArchivedGamesFragment extends Fragment implements
         };
     }
 
-    private OnRecyclerViewItemClickListener getRecreateBtnClickListener() {
-        return new OnRecyclerViewItemClickListener() {
-            @Override
-            public void onClick(int pos) {
-                GameObj gameObj = mAdapter.getGameList().get(pos);
-                Intent intent = new Intent(getContext(), CreateGameActivity.class);
-                intent.putExtra(CreateGameActivity.INTENT_GAME_KEY, gameObj);
-                startActivity(intent);
-
-            }
-        };
-    }
-
     private OnRecyclerViewItemClickListener getItemLongClickListener() {
         return new OnRecyclerViewItemClickListener() {
             @Override
             public void onClick(final int pos) {
-                Toast.makeText(getContext(), "Coming soon!", Toast.LENGTH_SHORT).show();
+                final String[] actionsTitles = {"Delete"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Select Action");
+                builder.setItems(actionsTitles, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        switch (item) {
+                            case 0:
+                                deleteEvent(pos);
+                                break;
+                            default:
+                                Toast.makeText(getContext(), "Action: " + actionsTitles[item] + " p:" + pos, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).create().show();
             }
         };
     }
@@ -181,5 +182,4 @@ public class ArchivedGamesFragment extends Fragment implements
         mAdapter.setGameList(new ArrayList<GameObj>());
         fillAdapter();
     }
-
 }

@@ -1,10 +1,9 @@
-package org.blackstork.findfootball.create.game;
+package org.blackstork.findfootball.game.create;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,14 +18,14 @@ import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.app.BaseActivity;
 import org.blackstork.findfootball.auth.UserAuth;
-import org.blackstork.findfootball.create.game.fragments.CGDescriptionFragment;
-import org.blackstork.findfootball.create.game.fragments.CGLocationFragment;
-import org.blackstork.findfootball.create.game.fragments.CGTempFragment;
-import org.blackstork.findfootball.create.game.fragments.CGTitleFragment;
-import org.blackstork.findfootball.create.game.view.CreateGameViewPager;
+import org.blackstork.findfootball.game.create.fragments.CGDescriptionFragment;
+import org.blackstork.findfootball.game.create.fragments.CGLocationFragment;
+import org.blackstork.findfootball.game.create.fragments.CGTempFragment;
+import org.blackstork.findfootball.game.create.fragments.CGTitleFragment;
+import org.blackstork.findfootball.game.create.view.CreateGameViewPager;
 import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
 import org.blackstork.findfootball.firebase.database.FBUserDatabase;
-import org.blackstork.findfootball.objects.GameObj;
+import org.blackstork.findfootball.game.GameObj;
 
 import java.util.Formatter;
 

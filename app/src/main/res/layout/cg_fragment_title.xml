@@ -7,7 +7,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context="org.blackstork.findfootball.create.game.fragments.CGTitleFragment">
+    tools:context=".game.create.fragments.CGTitleFragment">
 
     <TextView
         android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.create.game.fragments;
+package org.blackstork.findfootball.game.create.fragments;
 
 
 import android.os.Bundle;
@@ -14,8 +14,8 @@ import android.widget.Toast;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.create.game.BaseCGFragment;
-import org.blackstork.findfootball.objects.GameObj;
+import org.blackstork.findfootball.game.create.BaseCGFragment;
+import org.blackstork.findfootball.game.GameObj;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.events;
+package org.blackstork.findfootball.game.my;
 
 import android.content.Context;
 import android.util.Log;
@@ -13,7 +13,7 @@ import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.firebase.database.FBCompleteListener;
 import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
 import org.blackstork.findfootball.firebase.database.FBUserDatabase;
-import org.blackstork.findfootball.objects.GameObj;
+import org.blackstork.findfootball.game.GameObj;
 import org.blackstork.findfootball.time.TimeProvider;
 
 import java.util.ArrayList;

@@ -1,8 +1,7 @@
-package org.blackstork.findfootball.create.game;
+package org.blackstork.findfootball.game.create;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;

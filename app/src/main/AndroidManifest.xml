@@ -51,13 +51,13 @@
             android:theme="@style/VK.Transparent"/>
 
         <activity
-            android:name=".create.game.CreateGameActivity"
+            android:name=".game.create.CreateGameActivity"
             android:label="@string/cg_activity_title"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:name=".events.MyGamesActivity"
+            android:name=".game.my.MyGamesActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
