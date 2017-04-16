@@ -1,12 +1,15 @@
 package org.blackstork.findfootball.game;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 
 import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
+import org.blackstork.findfootball.location.LocationObj;
 import org.blackstork.findfootball.time.TimeProvider;
 
 import java.util.UUID;
@@ -17,9 +20,8 @@ import java.util.UUID;
 
 public class GameObj implements Parcelable {
 
-    // TODO : Add city and country
     private String eid;
-    private LatLng location;
+    private LocationObj location;
     private String title;
     private String description;
     private long eventTime;
@@ -39,14 +41,14 @@ public class GameObj implements Parcelable {
 
         double lat = (double) gameSnapshot.child(FBFootballDatabase.KEY_LOCATION_LATITUDE).getValue(); // FIXME: java.lang.ClassCastException: java.lang.Long cannot be cast to java.lang.Double
         double lng = (double) gameSnapshot.child(FBFootballDatabase.KEY_LOCATION_LONGITUDE).getValue();
-        setLocation(new LatLng(lat, lng));
+        setLocation(new LocationObj(lat, lng));
     }
 
-    public LatLng getLocation() {
+    public LocationObj getLocation() {
         return location;
     }
 
-    public void setLocation(LatLng location) {
+    public void setLocation(LocationObj location) {
         this.location = location;
     }
 

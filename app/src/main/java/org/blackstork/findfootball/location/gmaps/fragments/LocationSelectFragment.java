@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.blackstork.findfootball.app.App;
+import org.blackstork.findfootball.location.LocationObj;
 import org.blackstork.findfootball.location.gmaps.GMapsPreferences;
 import org.blackstork.findfootball.location.gmaps.LocationPicker;
 
@@ -35,10 +36,17 @@ public class LocationSelectFragment extends SupportMapFragment {
         return super.onCreateView(layoutInflater, viewGroup, bundle);
     }
 
-    public LatLng getMarkerPosition() {
+    public LocationObj getMarkerLocation() {
         if (locationPicker != null)
-            return locationPicker.getMarkerPosition();
+            return new LocationObj(locationPicker.getMarkerPosition());
         else return null;
+    }
+
+    public LocationSelectFragment setMarkerPosition(LocationObj locationObj) {
+        if (locationObj != null) {
+            setMarkerPosition(locationObj.getCoordinates());
+        }
+        return this;
     }
 
     public LocationSelectFragment setMarkerPosition(LatLng latLng) {

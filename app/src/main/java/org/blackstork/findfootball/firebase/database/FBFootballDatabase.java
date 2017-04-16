@@ -1,9 +1,8 @@
 package org.blackstork.findfootball.firebase.database;
 
 import android.content.Context;
-import android.location.Address;
+import android.util.Log;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -11,8 +10,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.location.LocationHelper;
 import org.blackstork.findfootball.game.GameObj;
+import org.blackstork.findfootball.location.LocationObj;
 
 /**
  * Created by WiskiW on 06.04.2017.
@@ -60,22 +59,20 @@ public class FBFootballDatabase {
         thisGameReference.child(KEY_CREATE_TIME).setValue(gameObj.getCreateTime());
         thisGameReference.child(KEY_EVENT_TIME).setValue(gameObj.getEventTime());
 
-        new Thread(new Runnable() {
-            public void run() {
-                thisGameReference.child(KEY_LOCATION_LATITUDE).setValue(gameObj.getLocation().latitude);
-                thisGameReference.child(KEY_LOCATION_LONGITUDE).setValue(gameObj.getLocation().longitude);
+        thisGameReference.child(KEY_LOCATION_LATITUDE).setValue(gameObj.getLocation().getLatitude());
+        thisGameReference.child(KEY_LOCATION_LONGITUDE).setValue(gameObj.getLocation().getLongitude());
 
-                Address address = LocationHelper.getStringAddress(context, gameObj.getLocation());
-                if (address != null) {
-                    String city = address.getLocality();
-                    if (city == null) {
-                        city = address.getSubAdminArea();
-                    }
-                    thisGameReference.child(KEY_LOCATION_CITY_NAME).setValue(city);
-                    thisGameReference.child(KEY_LOCATION_COUNTRY_NAME).setValue(address.getCountryName());
+        gameObj.getLocation().loadFullAddress(context, new LocationObj.LocationListener() {
+            @Override
+            public void onComplete(int resultCode, LocationObj location, String msg) {
+                thisGameReference.child(KEY_LOCATION_CITY_NAME).setValue(location.getCityName());
+                thisGameReference.child(KEY_LOCATION_COUNTRY_NAME).setValue(location.getCountryName());
+                if (resultCode != 0) {
+                    Log.w(TAG, "onComplete: loading string addresses problem, code: " + resultCode);
+                    // TODO : load full location exceptions processor
                 }
             }
-        }).start();
+        });
     }
 
 

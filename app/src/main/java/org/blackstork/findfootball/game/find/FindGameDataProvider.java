@@ -118,7 +118,7 @@ class FindGameDataProvider {
                             GameObj game;
                             for (DataSnapshot gameSnapshot : dataSnapshot.getChildren()) {
                                 String eventDataString = (String) gameSnapshot.child(orderPath).getValue();
-                                if (eventDataString.equals(requiredString)) {
+                                if (eventDataString != null && eventDataString.equals(requiredString)) {
                                     game = new GameObj(gameSnapshot);
 
                                     if (gamesCache.add(game)) {
@@ -127,7 +127,8 @@ class FindGameDataProvider {
                                         callbackListener.onProgress(game);
                                     }
                                 }
-                                lastEventTime = (long) gameSnapshot.child(FBFootballDatabase.KEY_EVENT_TIME).getValue() + 1;
+                                long newTime = (long) gameSnapshot.child(FBFootballDatabase.KEY_EVENT_TIME).getValue();
+                                lastEventTime = newTime != 0 ? newTime + 1 : lastEventTime;
                             }
                             if (itsEnough()) {
                                 callbackListener.onSuccess(new ArrayList<>(gamesCache));

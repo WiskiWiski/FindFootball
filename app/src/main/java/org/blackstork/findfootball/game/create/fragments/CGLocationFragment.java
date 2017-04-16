@@ -8,11 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.game.create.BaseCGFragment;
+import org.blackstork.findfootball.location.LocationObj;
 import org.blackstork.findfootball.location.gmaps.fragments.LocationSelectFragment;
 import org.blackstork.findfootball.game.GameObj;
 
@@ -35,10 +34,10 @@ public class CGLocationFragment extends BaseCGFragment {
         return rootView;
     }
 
-    private LatLng getLocation() {
-        LatLng location = null;
+    private LocationObj getLocation() {
+        LocationObj location = null;
         if (locationSelectFragment != null) {
-            location = locationSelectFragment.getMarkerPosition();
+            location = locationSelectFragment.getMarkerLocation();
         } else {
             Log.e(TAG, "getLocation: LocationSelectFragment is null!");
         }
@@ -47,7 +46,7 @@ public class CGLocationFragment extends BaseCGFragment {
 
     @Override
     public boolean saveResult(boolean checkForCorrect, GameObj game) {
-        LatLng location = getLocation();
+        LocationObj location = getLocation();
         if (checkForCorrect && location == null) {
             Toast.makeText(getContext(), "Please, select game location!", Toast.LENGTH_LONG).show();
             return false;
