@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.auth;
+package org.blackstork.findfootball.user.auth;
 
 import com.google.firebase.auth.FirebaseUser;
 

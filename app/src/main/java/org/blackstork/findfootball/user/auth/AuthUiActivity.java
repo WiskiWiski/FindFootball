@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.auth;
+package org.blackstork.findfootball.user.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,10 +15,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.auth.providers.MyEmailAuthAuthProvider;
-import org.blackstork.findfootball.auth.providers.MyFacebookAuthProvider;
-import org.blackstork.findfootball.auth.providers.MyGoogleAuthProvider;
-import org.blackstork.findfootball.auth.providers.MyVkontakteAuthAuthProvider;
+import org.blackstork.findfootball.user.auth.providers.MyEmailAuthAuthProvider;
+import org.blackstork.findfootball.user.auth.providers.MyFacebookAuthProvider;
+import org.blackstork.findfootball.user.auth.providers.MyGoogleAuthProvider;
+import org.blackstork.findfootball.user.auth.providers.MyVkontakteAuthAuthProvider;
 import org.blackstork.findfootball.firebase.database.FBUserDatabase;
 
 public class AuthUiActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.auth;
+package org.blackstork.findfootball.user.auth;
 
 /**
  * Created by WiskiW on 14.03.2017.

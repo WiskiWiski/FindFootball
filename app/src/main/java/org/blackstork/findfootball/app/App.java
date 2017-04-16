@@ -10,7 +10,7 @@ import com.vk.sdk.VKSdk;
 
 import org.blackstork.findfootball.BuildConfig;
 import org.blackstork.findfootball.R;
-import org.blackstork.findfootball.auth.UserAuth;
+import org.blackstork.findfootball.user.auth.UserAuth;
 import org.blackstork.findfootball.storage.PreferencesStorage;
 
 /**

@@ -17,7 +17,7 @@ import org.blackstork.findfootball.MainActivity;
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.app.BaseActivity;
-import org.blackstork.findfootball.auth.UserAuth;
+import org.blackstork.findfootball.user.auth.UserAuth;
 import org.blackstork.findfootball.game.create.CreateGameActivity;
 import org.blackstork.findfootball.game.find.FindGameActivity;
 import org.blackstork.findfootball.game.my.archived.ArchivedGamesFragment;

@@ -21,6 +21,7 @@ import java.util.UUID;
 public class GameObj implements Parcelable {
 
     private String eid;
+    private String ownerUid;
     private LocationObj location;
     private String title;
     private String description;
@@ -36,12 +37,21 @@ public class GameObj implements Parcelable {
         setEid(gameSnapshot.getKey());
         setTitle((String) gameSnapshot.child(FBFootballDatabase.KEY_TITLE).getValue());
         setDescription((String) gameSnapshot.child(FBFootballDatabase.KEY_DESCRIPTION).getValue());
+        setOwnerUid((String) gameSnapshot.child(FBFootballDatabase.KEY_OWNER).getValue());
         setEventTime((Long) gameSnapshot.child(FBFootballDatabase.KEY_EVENT_TIME).getValue());
         setCreateTime((Long) gameSnapshot.child(FBFootballDatabase.KEY_CREATE_TIME).getValue());
 
         double lat = (double) gameSnapshot.child(FBFootballDatabase.KEY_LOCATION_LATITUDE).getValue(); // FIXME: java.lang.ClassCastException: java.lang.Long cannot be cast to java.lang.Double
         double lng = (double) gameSnapshot.child(FBFootballDatabase.KEY_LOCATION_LONGITUDE).getValue();
         setLocation(new LocationObj(lat, lng));
+    }
+
+    public String getOwnerUid() {
+        return ownerUid;
+    }
+
+    public void setOwnerUid(String ownerUid) {
+        this.ownerUid = ownerUid;
     }
 
     public LocationObj getLocation() {
@@ -106,6 +116,7 @@ public class GameObj implements Parcelable {
     @Override
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(eid);
+        out.writeString(ownerUid);
         out.writeParcelable(location, flags);
         out.writeString(title);
         out.writeString(description);
@@ -127,6 +138,7 @@ public class GameObj implements Parcelable {
     // example constructor that takes a Parcel and gives you an object populated with it's values
     private GameObj(Parcel in) {
         eid = in.readString();
+        ownerUid = in.readString();
         location = in.readParcelable(LatLng.class.getClassLoader());
         title = in.readString();
         description = in.readString();

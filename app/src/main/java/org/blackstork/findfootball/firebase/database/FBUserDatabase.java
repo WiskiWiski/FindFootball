@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.time.TimeProvider;
+import org.blackstork.findfootball.user.PublicUserObj;
 
 /**
  * Created by WiskiW on 10.04.2017.
@@ -23,6 +24,12 @@ public class FBUserDatabase {
     public static final String TAG = App.G_TAG + ":FBUserDatabase";
 
     public final static String USERS_PATH = "/users/";
+
+    public final static String KEY_DISPLAY_NAME = "display_name";
+    public final static String KEY_EMAIL = "email";
+    public final static String KEY_PHOTO_URL = "photo_url";
+    public final static String KEY_REGISTER_TIME = "register_time";
+    public final static String KEY_LAST_ACTIVITY_TIME = "last_activity_time";
 
     private DatabaseReference databaseReference;
     private Context context;
@@ -93,21 +100,40 @@ public class FBUserDatabase {
     public static void signUpUser(FirebaseUser user) {
         final DatabaseReference thisUserReference = FirebaseDatabase.getInstance().getReference()
                 .child(USERS_PATH).child(user.getUid());
-        thisUserReference.child("email").setValue(user.getEmail());
-        thisUserReference.child("display_name").setValue(user.getDisplayName());
+        thisUserReference.child(KEY_EMAIL).setValue(user.getEmail());
+        thisUserReference.child(KEY_DISPLAY_NAME).setValue(user.getDisplayName());
         Uri photoUri = user.getPhotoUrl();
         if (photoUri != null) {
-            thisUserReference.child("photo_url").setValue(String.valueOf(photoUri));
+            thisUserReference.child(KEY_PHOTO_URL).setValue(String.valueOf(photoUri));
         }
 
-        thisUserReference.child("null_test").setValue(null);
-        thisUserReference.child("register_time").setValue(TimeProvider.getUtcTime());
-        thisUserReference.child("last_activity_time").setValue(TimeProvider.getUtcTime());
+        thisUserReference.child(KEY_REGISTER_TIME).setValue(TimeProvider.getUtcTime());
+        thisUserReference.child(KEY_LAST_ACTIVITY_TIME).setValue(TimeProvider.getUtcTime());
     }
 
     public void updateLastUserOnline() {
         final DatabaseReference thisUserReference = databaseReference.child(USERS_PATH).child(getUid());
-        thisUserReference.child("last_activity_time").setValue(TimeProvider.getUtcTime());
+        thisUserReference.child(KEY_LAST_ACTIVITY_TIME).setValue(TimeProvider.getUtcTime());
+    }
+
+    public static void loadUserByUid(final FBCompleteListener callback, String uid) {
+        final DatabaseReference userReference = FirebaseDatabase.getInstance().getReference()
+                .child(USERS_PATH).child(uid);
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot != null) {
+                    PublicUserObj publicUser = new PublicUserObj(dataSnapshot);
+                    callback.onSuccess(publicUser);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onFailed(1, databaseError.getMessage());
+            }
+        });
     }
 
 }

@@ -19,8 +19,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.auth.UserAuth;
+import org.blackstork.findfootball.user.auth.UserAuth;
 import org.blackstork.findfootball.game.create.CreateGameActivity;
+import org.blackstork.findfootball.game.info.GameInfoActivity;
 import org.blackstork.findfootball.game.my.EventsProvider;
 import org.blackstork.findfootball.game.my.OnRecyclerViewItemClickListener;
 import org.blackstork.findfootball.firebase.database.FBCompleteListener;
@@ -115,7 +116,9 @@ public class ArchivedGamesFragment extends Fragment implements
         return new OnRecyclerViewItemClickListener() {
             @Override
             public void onClick(int pos) {
-                Toast.makeText(getContext(), "Coming soon!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getContext(), GameInfoActivity.class);
+                intent.putExtra(GameInfoActivity.INTENT_GAME_KEY, mAdapter.getGameList().get(pos));
+                startActivity(intent);
             }
         };
     }

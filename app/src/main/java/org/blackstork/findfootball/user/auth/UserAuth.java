@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.auth;
+package org.blackstork.findfootball.user.auth;
 
 import android.app.Activity;
 import android.content.Context;

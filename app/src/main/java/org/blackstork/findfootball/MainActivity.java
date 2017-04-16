@@ -1,18 +1,14 @@
 package org.blackstork.findfootball;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.app.BaseActivity;
-import org.blackstork.findfootball.auth.UserAuth;
-import org.blackstork.findfootball.firebase.database.FBCompleteListener;
-import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
+import org.blackstork.findfootball.user.auth.UserAuth;
 
 public class MainActivity extends BaseActivity {
 

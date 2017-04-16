@@ -28,7 +28,7 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".auth.AuthUiActivity"
+            android:name=".user.auth.AuthUiActivity"
             android:label="@string/activity_title_auth"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -65,6 +65,10 @@
         <activity
             android:name=".game.find.FindGameActivity"
             android:label="@string/activity_title_find_game"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".game.info.GameInfoActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

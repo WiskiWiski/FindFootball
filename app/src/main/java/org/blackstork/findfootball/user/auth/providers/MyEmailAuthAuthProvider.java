@@ -1,9 +1,9 @@
-package org.blackstork.findfootball.auth.providers;
+package org.blackstork.findfootball.user.auth.providers;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.auth.ProviderCallback;
+import org.blackstork.findfootball.user.auth.ProviderCallback;
 
 /**
  * Created by WiskiW on 12.03.2017.

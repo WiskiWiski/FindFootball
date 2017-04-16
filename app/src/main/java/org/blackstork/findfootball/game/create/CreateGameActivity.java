@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.app.BaseActivity;
-import org.blackstork.findfootball.auth.UserAuth;
+import org.blackstork.findfootball.user.auth.UserAuth;
 import org.blackstork.findfootball.game.create.fragments.CGDescriptionFragment;
 import org.blackstork.findfootball.game.create.fragments.CGLocationFragment;
 import org.blackstork.findfootball.game.create.fragments.CGTempFragment;

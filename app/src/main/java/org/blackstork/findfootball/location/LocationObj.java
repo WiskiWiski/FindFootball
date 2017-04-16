@@ -10,6 +10,7 @@ import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -19,16 +20,14 @@ import java.util.Locale;
 
 public class LocationObj implements Parcelable {
 
-    private final static int CLOSES_CITES_NUMB = 5;
-
     private LatLng coordinates;
     private String cityName;
     private String countryName;
-    private String[] closesCites;
+    private List<String> closesCites;
 
     public LocationObj(LatLng coordinates) {
         this.coordinates = coordinates;
-        closesCites = new String[CLOSES_CITES_NUMB];
+        closesCites = new ArrayList<>();
     }
 
     public LocationObj(double lat, double lng) {
@@ -71,7 +70,7 @@ public class LocationObj implements Parcelable {
         this.countryName = countryName;
     }
 
-    public void setClosesCites(String... closesCites) {
+    public void setClosesCites(ArrayList<String> closesCites) {
         this.closesCites = closesCites;
     }
 
@@ -93,7 +92,7 @@ public class LocationObj implements Parcelable {
         out.writeParcelable(coordinates, flags);
         out.writeString(cityName);
         out.writeString(countryName);
-        out.writeArray(closesCites);
+        out.writeList(closesCites);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
@@ -112,7 +111,7 @@ public class LocationObj implements Parcelable {
         coordinates = in.readParcelable(LatLng.class.getClassLoader());
         cityName = in.readString();
         countryName = in.readString();
-        in.readStringArray(closesCites);
+        closesCites = in.readArrayList(String.class.getClassLoader());
     }
 
 

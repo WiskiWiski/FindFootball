@@ -1,4 +1,4 @@
-package org.blackstork.findfootball.auth.providers;
+package org.blackstork.findfootball.user.auth.providers;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,8 +17,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.auth.FailedResult;
-import org.blackstork.findfootball.auth.ProviderCallback;
+import org.blackstork.findfootball.user.auth.FailedResult;
+import org.blackstork.findfootball.user.auth.ProviderCallback;
 
 /**
  * Created by WiskiW on 14.03.2017.
