@@ -1,6 +1,5 @@
 package org.blackstork.findfootball.game.find;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -12,6 +11,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
 import org.blackstork.findfootball.game.GameObj;
+import org.blackstork.findfootball.location.LocationObj;
 import org.blackstork.findfootball.time.TimeProvider;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ class FindGameDataProvider {
 
     private static final int TOTAL_ITEM_EACH_LOAD = 5;
 
-    private Context context;
+    private LocationObj location;
     private EventsProviderListener callbackListener;
     private DatabaseReference databaseReference;
 
@@ -38,32 +38,19 @@ class FindGameDataProvider {
 
     private int searchLevel = 1;
 
-    private String uCity;
-    private String uCountry;
-
-
     private long lastEventTime;
 
-    public FindGameDataProvider(Context context, EventsProviderListener callbackListener) {
-        this.context = context;
+    public FindGameDataProvider(EventsProviderListener callbackListener) {
         this.callbackListener = callbackListener;
         gamesCache = new LinkedHashSet<>();
         lastEventTime = TimeProvider.getUtcTime();
-    }
-
-    public void setCity(String uCity) {
-        this.uCity = uCity;
-    }
-
-    public void setCountry(String uCountry) {
-        this.uCountry = uCountry;
     }
 
     private void levelUp() {
         searchLevel++;
         previewCacheSize = gamesCache.size();
         lastEventTime = TimeProvider.getUtcTime();
-        Log.w(TAG, "levelUp: search level updated: " + searchLevel);
+        //Log.w(TAG, "levelUp: baseSearch level updated: " + searchLevel);
     }
 
     private void moreData() {
@@ -72,39 +59,63 @@ class FindGameDataProvider {
             1: Time -> City
             TODO: Time -> Closes cites
             2: Time -> Country
+            3: Time -> all
 
         */
-        inProgress = true;
+
         switch (searchLevel) {
             case 1:
-                if (uCity != null) {
-                    searchLevelOne_Two(FBFootballDatabase.KEY_LOCATION_CITY_NAME, uCity);
+                if (location == null || location.getCityName() == null) {
+                    Log.w(TAG, "moreData: skip search level I !");
+                    levelUp();
+                    loadData();
                 } else {
-                    Log.w(TAG, "moreData: Set city before call loadData!");
+                    searchLevelI(location.getCityName());
                 }
                 break;
             case 2:
-                if (uCountry != null) {
-                    searchLevelOne_Two(FBFootballDatabase.KEY_LOCATION_COUNTRY_NAME, uCountry);
+                if (location == null || location.getCountryName() == null) {
+                    Log.w(TAG, "moreData: skip search level II !");
+                    levelUp();
+                    loadData();
                 } else {
-                    Log.w(TAG, "moreData: Set country before call loadData!");
+                    searchLevelII(location.getCountryName());
                 }
                 break;
+            case 3:
+                searchLevelIII();
+                break;
             default:
-                callbackListener.onFailed(2, "No more data!");
+                inProgress = false;
+                if (gamesCache.size() == 0) {
+                    callbackListener.onFailed(2, "No data found");
+                } else {
+                    callbackListener.onFailed(3, "No more data!");
+                }
                 break;
         }
     }
 
+    public void setLocation(LocationObj location) {
+        this.location = location;
+    }
+
     public void loadData() {
         if (inProgress) {
-            Log.d(TAG, "loadData: inProgress = true!");
+            Log.i(TAG, "loadData: inProgress = true!");
             return;
         }
         moreData();
     }
 
-    private void searchLevelOne_Two(final String orderPath, final String requiredString) {
+    public void reset() {
+        gamesCache.clear();
+        searchLevel = 1;
+        previewCacheSize = 0;
+    }
+
+    private void baseSearch(final GameElementSearchListener gameElementSearchListener) {
+        inProgress = true;
         DatabaseReference databaseReference = getDatabaseReference();
         databaseReference
                 .orderByChild(FBFootballDatabase.KEY_EVENT_TIME)
@@ -117,13 +128,15 @@ class FindGameDataProvider {
                         if (dataSnapshot.hasChildren()) {
                             GameObj game;
                             for (DataSnapshot gameSnapshot : dataSnapshot.getChildren()) {
-                                String eventDataString = (String) gameSnapshot.child(orderPath).getValue();
-                                if (eventDataString != null && eventDataString.equals(requiredString)) {
+                                if (gameSnapshot == null) {
+                                    continue;
+                                }
+                                boolean toAdd = gameElementSearchListener.onSnapshotReceived(gameSnapshot);
+                                if (toAdd) {
                                     game = new GameObj(gameSnapshot);
-
                                     if (gamesCache.add(game)) {
                                         // игры еще нет в кэше
-                                        Log.d(TAG, "searchLevelOne_Two: added: " + game.getTitle());
+                                        //Log.d(TAG, "searchLevel_One_Two_Three: added: " + game.getTitle());
                                         callbackListener.onProgress(game);
                                     }
                                 }
@@ -152,6 +165,40 @@ class FindGameDataProvider {
                 });
     }
 
+    private void searchLevelI(final String requiredCity) {
+        // ивенты города
+        baseSearch(new GameElementSearchListener() {
+            @Override
+            public boolean onSnapshotReceived(DataSnapshot gameSnapshot) {
+                String eventDataString = (String)
+                        gameSnapshot.child(FBFootballDatabase.KEY_LOCATION_CITY_NAME).getValue();
+                return eventDataString != null && eventDataString.equals(requiredCity);
+            }
+        });
+    }
+
+    private void searchLevelII(final String requiredCountry) {
+        // ивенты страны
+        baseSearch(new GameElementSearchListener() {
+            @Override
+            public boolean onSnapshotReceived(DataSnapshot gameSnapshot) {
+                String eventDataString = (String)
+                        gameSnapshot.child(FBFootballDatabase.KEY_LOCATION_COUNTRY_NAME).getValue();
+                return eventDataString != null && eventDataString.equals(requiredCountry);
+            }
+        });
+    }
+
+    private void searchLevelIII() {
+        // любые ивенты
+        baseSearch(new GameElementSearchListener() {
+            @Override
+            public boolean onSnapshotReceived(DataSnapshot gameSnapshot) {
+                return true;
+            }
+        });
+    }
+
     private boolean itsEnough() {
         return gamesCache.size() >= TOTAL_ITEM_EACH_LOAD + previewCacheSize;
     }
@@ -171,6 +218,11 @@ class FindGameDataProvider {
 
         void onFailed(int code, String msg);
 
+    }
+
+    private interface GameElementSearchListener {
+
+        boolean onSnapshotReceived(DataSnapshot gameSnapshot);
     }
 
 }

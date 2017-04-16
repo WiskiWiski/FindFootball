@@ -61,4 +61,9 @@ public class FindGameAdapter extends RecyclerView.Adapter<FindGameViewHolder> {
         gameList.add(gameObj);
         notifyItemInserted(gameList.size() - 1);
     }
+
+    public void clear(){
+        gameList.clear();
+        notifyDataSetChanged();
+    }
 }

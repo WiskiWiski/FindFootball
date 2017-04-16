@@ -17,9 +17,11 @@ import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.app.BaseActivity;
 import org.blackstork.findfootball.game.GameObj;
+import org.blackstork.findfootball.game.find.dialogs.FGSelectLocationDialog;
 import org.blackstork.findfootball.game.find.recyclerview.EndlessRecyclerOnScrollListener;
 import org.blackstork.findfootball.game.find.recyclerview.FindGameAdapter;
 import org.blackstork.findfootball.game.my.*;
+import org.blackstork.findfootball.location.LocationObj;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,9 @@ public class FindGameActivity extends BaseActivity {
 
     private FindGameDataProvider findGameDataProvider;
 
+    private FGSelectLocationDialog selectLocationDialog;
+    private LocationObj searchLocation;
+
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -47,12 +52,32 @@ public class FindGameActivity extends BaseActivity {
         toggle.syncState();
     }
 
+    private void initDialogs() {
+        selectLocationDialog = FGSelectLocationDialog.newInstance();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_game);
         initToolbar();
+        initDialogs();
+
+        selectLocationDialog.setListener(new FGSelectLocationDialog.LocationDialogListener() {
+            @Override
+            public void onSelect(LocationObj location) {
+                mAdapter.clear();
+                findGameDataProvider.reset();
+                searchLocation = location;
+                loadData();
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+        });
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -60,7 +85,7 @@ public class FindGameActivity extends BaseActivity {
         applyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                findGameDataProvider.loadData();
+                selectLocationDialog.show(getSupportFragmentManager(), FGSelectLocationDialog.F_TAG);
             }
         });
 
@@ -76,8 +101,7 @@ public class FindGameActivity extends BaseActivity {
         recyclerView.setAdapter(mAdapter);
 
 
-        findGameDataProvider = new FindGameDataProvider(getApplicationContext(),
-                new FindGameDataProvider.EventsProviderListener() {
+        findGameDataProvider = new FindGameDataProvider(new FindGameDataProvider.EventsProviderListener() {
             @Override
             public void onProgress(GameObj gameObj) {
                 mAdapter.addGame(gameObj);
@@ -85,30 +109,45 @@ public class FindGameActivity extends BaseActivity {
 
             @Override
             public void onSuccess(List<GameObj> gameList) {
+                progressBar.setVisibility(View.GONE);
                 Log.w(TAG, "onSuccess: " + gameList.size());
+                //Toast.makeText(getApplication(), "onSuccess: " + gameList.size(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailed(int code, String msg) {
+                progressBar.setVisibility(View.GONE);
                 Log.d(TAG, "onFailed: " + msg);
+                // Can't create handler inside thread that has not called Looper.prepare() android
+                Toast.makeText(getApplication(), "onFailed: " + msg, Toast.LENGTH_LONG).show();
             }
 
         });
-
-
-        findGameDataProvider.setCity("Минск");
-        findGameDataProvider.setCountry("Беларусь");
 
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int current_page) {
-                Log.w(TAG, "onLoadMore: " + current_page);
-                findGameDataProvider.loadData();
+                loadData();
             }
         });
-        findGameDataProvider.loadData();
+        loadData();
+    }
 
-
+    private void loadData() {
+        progressBar.setVisibility(View.VISIBLE);
+        if (searchLocation != null) {
+            searchLocation.loadFullAddress(getApplicationContext(), new LocationObj.LocationListener() {
+                @Override
+                public void onComplete(int resultCode, LocationObj location, String msg) {
+                    Log.d(TAG, "onComplete: city found: " + location.getCityName());
+                    Log.d(TAG, "onComplete: country found: " + location.getCountryName());
+                    findGameDataProvider.setLocation(location);
+                    findGameDataProvider.loadData();
+                }
+            });
+        } else {
+            findGameDataProvider.loadData();
+        }
     }
 
 

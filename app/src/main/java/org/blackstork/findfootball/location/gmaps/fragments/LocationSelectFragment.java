@@ -37,9 +37,13 @@ public class LocationSelectFragment extends SupportMapFragment {
     }
 
     public LocationObj getMarkerLocation() {
-        if (locationPicker != null)
-            return new LocationObj(locationPicker.getMarkerPosition());
-        else return null;
+        if (locationPicker != null) {
+            LatLng coordinates = locationPicker.getMarkerPosition();
+            if (coordinates != null) {
+                return new LocationObj(coordinates);
+            }
+        }
+        return null;
     }
 
     public LocationSelectFragment setMarkerPosition(LocationObj locationObj) {
