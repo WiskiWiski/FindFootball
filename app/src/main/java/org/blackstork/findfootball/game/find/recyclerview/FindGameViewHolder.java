@@ -1,24 +1,26 @@
-package org.blackstork.findfootball.game.my.upcoming;
+package org.blackstork.findfootball.game.find.recyclerview;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.game.my.OnRecyclerViewItemClickListener;
 
 /**
- * Created by WiskiW on 12.04.2017.
+ * Created by WiskiW on 13.04.2017.
  */
 
-class UpcomingGamesViewHolder extends RecyclerView.ViewHolder {
+public class FindGameViewHolder extends RecyclerView.ViewHolder {
+
 
     private View itemView;
     private TextView titleTV;
     private TextView dateTimeTV;
     private TextView dateDayTV;
 
-    public UpcomingGamesViewHolder(View itemView) {
+    public FindGameViewHolder(View itemView) {
         super(itemView);
         this.itemView = itemView;
 
@@ -61,5 +63,6 @@ class UpcomingGamesViewHolder extends RecyclerView.ViewHolder {
     public void setDay(String day) {
         dateDayTV.setText(day);
     }
+
 
 }

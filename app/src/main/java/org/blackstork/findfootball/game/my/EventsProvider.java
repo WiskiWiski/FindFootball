@@ -26,7 +26,7 @@ import java.util.List;
 
 public class EventsProvider {
 
-    public static final String TAG = App.G_TAG + ":EventsProvider";
+    public static final String TAG = App.G_TAG + ":FindGameDataProvider";
 
     private Context context;
     private String uid;

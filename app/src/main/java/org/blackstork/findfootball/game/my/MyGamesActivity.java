@@ -19,6 +19,7 @@ import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.app.BaseActivity;
 import org.blackstork.findfootball.auth.UserAuth;
 import org.blackstork.findfootball.game.create.CreateGameActivity;
+import org.blackstork.findfootball.game.find.FindGameActivity;
 import org.blackstork.findfootball.game.my.archived.ArchivedGamesFragment;
 import org.blackstork.findfootball.game.my.upcoming.UpcomingGamesFragment;
 
@@ -102,6 +103,10 @@ public class MyGamesActivity extends BaseActivity implements
             switch (itemId) {
                 case R.id.nav_main:
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    break;
+
+                case R.id.nav_find_game:
+                    startActivity(new Intent(getApplicationContext(), FindGameActivity.class));
                     break;
 
                 case R.id.nav_upcoming_games:

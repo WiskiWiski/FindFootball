@@ -4,7 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
 
+import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
 import org.blackstork.findfootball.time.TimeProvider;
 
 import java.util.UUID;
@@ -25,6 +27,19 @@ public class GameObj implements Parcelable {
 
     public GameObj() {
         createTime = TimeProvider.getUtcTime();
+    }
+
+    public GameObj(DataSnapshot gameSnapshot) {
+        // TODO : Try-catch
+        setEid(gameSnapshot.getKey());
+        setTitle((String) gameSnapshot.child(FBFootballDatabase.KEY_TITLE).getValue());
+        setDescription((String) gameSnapshot.child(FBFootballDatabase.KEY_DESCRIPTION).getValue());
+        setEventTime((Long) gameSnapshot.child(FBFootballDatabase.KEY_EVENT_TIME).getValue());
+        setCreateTime((Long) gameSnapshot.child(FBFootballDatabase.KEY_CREATE_TIME).getValue());
+
+        double lat = (double) gameSnapshot.child(FBFootballDatabase.KEY_LOCATION_LATITUDE).getValue(); // FIXME: java.lang.ClassCastException: java.lang.Long cannot be cast to java.lang.Double
+        double lng = (double) gameSnapshot.child(FBFootballDatabase.KEY_LOCATION_LONGITUDE).getValue();
+        setLocation(new LatLng(lat, lng));
     }
 
     public LatLng getLocation() {
@@ -115,5 +130,20 @@ public class GameObj implements Parcelable {
         description = in.readString();
         eventTime = in.readLong();
         createTime = in.readLong();
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof GameObj) {
+            return (((GameObj) obj).getEid()).equals(this.getEid());
+        } else {
+            return super.equals(obj);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getEid().hashCode();
     }
 }

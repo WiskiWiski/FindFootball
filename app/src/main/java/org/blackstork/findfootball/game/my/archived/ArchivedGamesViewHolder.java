@@ -35,7 +35,8 @@ public class ArchivedGamesViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemListener.onClick(getAdapterPosition());
+                if (itemListener != null)
+                    itemListener.onClick(getAdapterPosition());
             }
         });
     }
@@ -44,17 +45,21 @@ public class ArchivedGamesViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                itemListener.onClick(getAdapterPosition());
-                return true;
+                if (itemListener != null) {
+                    itemListener.onClick(getAdapterPosition());
+                    return true;
+                }
+                return false;
             }
         });
     }
 
-    public void setRecreateBtnClickListener(final OnRecyclerViewItemClickListener itemListener){
+    public void setRecreateBtnClickListener(final OnRecyclerViewItemClickListener itemListener) {
         recreateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemListener.onClick(getAdapterPosition());
+                if (itemListener != null)
+                    itemListener.onClick(getAdapterPosition());
             }
         });
     }

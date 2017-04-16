@@ -24,15 +24,15 @@ public class FBFootballDatabase {
 
     public final static String FOOTBALL_PATH = "/events/football/";
 
-    private final static String KEY_TITLE = "title";
-    private final static String KEY_OWNER = "owner";
-    private final static String KEY_DESCRIPTION = "description";
-    private final static String KEY_CREATE_TIME = "create_time";
-    private final static String KEY_EVENT_TIME = "event_time";
-    private final static String KEY_LOCATION_LATITUDE = "/location/latitude/";
-    private final static String KEY_LOCATION_LONGITUDE = "/location/longitude/";
-    private final static String KEY_LOCATION_CITY_NAME = "/location/city_name/";
-    private final static String KEY_LOCATION_COUNTRY_NAME = "/location/country_name/";
+    public final static String KEY_TITLE = "title";
+    public final static String KEY_OWNER = "owner";
+    public final static String KEY_DESCRIPTION = "description";
+    public final static String KEY_CREATE_TIME = "create_time";
+    public final static String KEY_EVENT_TIME = "event_time";
+    public final static String KEY_LOCATION_LATITUDE = "/location/latitude/";
+    public final static String KEY_LOCATION_LONGITUDE = "/location/longitude/";
+    public final static String KEY_LOCATION_CITY_NAME = "/location/city_name/";
+    public final static String KEY_LOCATION_COUNTRY_NAME = "/location/country_name/";
 
     private DatabaseReference databaseReference;
     private Context context;
@@ -88,17 +88,7 @@ public class FBFootballDatabase {
                     return;
                 }
 
-                GameObj game = new GameObj();
-                game.setEid(gameSnapshot.getKey());
-                game.setTitle((String) gameSnapshot.child(KEY_TITLE).getValue());
-                game.setDescription((String) gameSnapshot.child(KEY_DESCRIPTION).getValue());
-                game.setEventTime((Long) gameSnapshot.child(KEY_EVENT_TIME).getValue());
-                game.setCreateTime((Long) gameSnapshot.child(KEY_CREATE_TIME).getValue());
-
-                double lat = (double) gameSnapshot.child(KEY_LOCATION_LATITUDE).getValue();
-                double lng = (double) gameSnapshot.child(KEY_LOCATION_LONGITUDE).getValue();
-                game.setLocation(new LatLng(lat, lng));
-
+                GameObj game = new GameObj(gameSnapshot);
                 callback.onSuccess(game);
             }
 

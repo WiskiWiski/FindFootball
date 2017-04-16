@@ -4,11 +4,17 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="activity_title_main">@string/app_name</string>
+    <string name="activity_title_auth">Login</string>
+    <string name="activity_title_find_game">Find Game</string>
+    <string name="activity_title_create_game">Create Game</string>
+
     <string name="action_settings">Settings</string>
 
     <!-- === Navigation Drawer === -->
     <string name="nav_main_title">Debug</string>
-    <string name="nav_nav_upcoming_games_title">Upcoming Games</string>
+    <string name="nav_find_game_title">Find Game</string>
+    <string name="nav_upcoming_games_title">Upcoming Games</string>
     <string name="nav_nav_archived_games_title">Archived Games</string>
     <string name="nav_create_game_title">Create Game</string>
     <string name="nav_settings_title">Settings</string>
@@ -20,12 +26,10 @@
 
 
     <!-- === Auth === -->
-    <string name="auth_activity_title">Login</string>
     <string name="auth_required_re_authorization">Auth problem. Please sign in again</string>
 
 
     <!-- === Create Game === -->
-    <string name="cg_activity_title">Create Game</string>
     <string name="cg_game_created_msg" formatted="false">%s has been created!</string>
     <string name="cg_game_time_frg_time_offset_too_small" formatted="false">Minimal time offset: %d minutes!</string>
     <string name="cg_game_time_frg_time_in_the_past">You can\'t create game in the past!</string>
@@ -35,8 +39,6 @@
     <string name="my_games_activity_title">My Games</string>
     <string name="my_games_activity_title_archived_games">Archive</string>
     <string name="my_games_activity_title_upcoming_games">Upcoming</string>
-
-
 
 
 </resources>
