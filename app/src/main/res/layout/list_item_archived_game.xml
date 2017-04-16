@@ -22,7 +22,7 @@
             android:foreground="?attr/selectableItemBackground"
             android:rotation="180"
             android:src="@android:drawable/ic_menu_revert"
-            android:tint="@color/colorPrimaryDark"/>
+            android:tint="@color/colorPrimaryDark" />
 
         <LinearLayout
             android:id="@+id/event_container"
@@ -53,8 +53,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:textSize="14sp"
-                    tools:text="15:20"/>
+                    android:textSize="18sp"
+                    tools:text="15:20" />
 
                 <TextView
                     android:id="@+id/event_date_day"
@@ -62,8 +62,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:textSize="14sp"
-                    tools:text="15.05.2020"/>
+                    android:textSize="18sp"
+                    tools:text="15.05" />
 
             </LinearLayout>
 
