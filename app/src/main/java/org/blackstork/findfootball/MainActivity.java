@@ -8,6 +8,7 @@ import android.view.View;
 
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.app.BaseActivity;
+import org.blackstork.findfootball.user.AppUser;
 import org.blackstork.findfootball.user.auth.UserAuth;
 
 public class MainActivity extends BaseActivity {
@@ -42,14 +43,14 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.test_btn_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserAuth.signOut();
+                AppUser.signOut();
             }
         });
 
         findViewById(R.id.test_btn_3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserAuth.requestUser(view.getContext());
+                AppUser.getInstance(view.getContext(), true);
             }
         });
     }

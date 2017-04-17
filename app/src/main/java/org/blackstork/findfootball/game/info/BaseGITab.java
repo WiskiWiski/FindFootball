@@ -3,7 +3,7 @@ package org.blackstork.findfootball.game.info;
 import android.support.v4.app.Fragment;
 
 import org.blackstork.findfootball.game.GameObj;
-import org.blackstork.findfootball.user.PublicUserObj;
+import org.blackstork.findfootball.user.UserObj;
 
 /**
  * Created by WiskiW on 16.04.2017.
@@ -11,6 +11,6 @@ import org.blackstork.findfootball.user.PublicUserObj;
 
 public abstract class BaseGITab extends Fragment {
 
-    public abstract void setData(GameObj game, PublicUserObj gameOwner);
+    public abstract void setData(GameObj game, UserObj gameOwner);
 
 }

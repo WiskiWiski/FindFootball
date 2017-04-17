@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.app.BaseActivity;
+import org.blackstork.findfootball.user.AppUser;
 import org.blackstork.findfootball.user.auth.UserAuth;
 import org.blackstork.findfootball.game.create.fragments.CGDescriptionFragment;
 import org.blackstork.findfootball.game.create.fragments.CGLocationFragment;
@@ -114,10 +115,9 @@ public class CreateGameActivity extends BaseActivity implements
         if (!viewPager.getCurrentFragment().saveResult(true, thisGameObj)) {
             return;
         }
-        FirebaseUser user = UserAuth.getUser(this);
-        if (user == null) {
-            UserAuth.requestUser(this);
-        } else {
+        //FirebaseUser user = UserAuth.getUser(this);
+        AppUser user = AppUser.getInstance(this, true);
+        if (user != null) {
             Formatter formatter = new Formatter();
             formatter.format(getString(R.string.cg_game_created_msg), thisGameObj.getTitle());
 

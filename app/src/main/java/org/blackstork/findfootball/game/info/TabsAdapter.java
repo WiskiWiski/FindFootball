@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TabsAdapter extends FragmentPagerAdapter {
 
-    private final List<BaseGITab> mFragmentList;
+    private final List<Fragment> mFragmentList;
     private final List<String> mFragmentTitleList;
 
     public TabsAdapter(FragmentManager fm) {
@@ -24,7 +24,7 @@ public class TabsAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public BaseGITab getItem(int position) {
+    public Fragment getItem(int position) {
         return mFragmentList.get(position);
     }
 
@@ -33,7 +33,7 @@ public class TabsAdapter extends FragmentPagerAdapter {
         return mFragmentList.size();
     }
 
-    public void addFragment(BaseGITab fragment, String title) {
+    public void addFragment(Fragment fragment, String title) {
         mFragmentList.add(fragment);
         mFragmentTitleList.add(title);
     }

@@ -20,21 +20,18 @@ import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.game.GameObj;
 import org.blackstork.findfootball.game.info.BaseGITab;
 import org.blackstork.findfootball.time.TimeProvider;
-import org.blackstork.findfootball.user.PublicUserObj;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import org.blackstork.findfootball.user.UserObj;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GIAboutTab extends BaseGITab {
+public class GIAboutTab extends Fragment {
 
     private static final String TAG = App.G_TAG + ":GIAboutTab";
 
 
     private GameObj thisGameObj;
-    private PublicUserObj thisGameOwner;
+    private UserObj thisGameOwnerUser;
 
     private TextView gameDescription;
     private TextView gameDate;
@@ -58,21 +55,20 @@ public class GIAboutTab extends BaseGITab {
         return rootView;
     }
 
-    @Override
-    public void setData(GameObj game, PublicUserObj gameOwner) {
+    public void setData(GameObj game, UserObj gameOwner) {
         this.thisGameObj = game;
-        this.thisGameOwner = gameOwner;
+        this.thisGameOwnerUser = gameOwner;
         updateView();
     }
 
     private void updateView() {
-        if (thisGameOwner != null) {
-            userName.setText(thisGameOwner.getDisplayName());
-            if (thisGameOwner.getPhotoUrl() != null) {
+        if (thisGameOwnerUser != null) {
+            userName.setText(thisGameOwnerUser.getDisplayName());
+            if (thisGameOwnerUser.getPhotoUrl() != null) {
 
                 Glide
                         .with(this)
-                        .load(thisGameOwner.getPhotoUrl())
+                        .load(thisGameOwnerUser.getPhotoUrl())
                         .asBitmap()
                         .centerCrop()
                         .into(new BitmapImageViewTarget(userImage) {

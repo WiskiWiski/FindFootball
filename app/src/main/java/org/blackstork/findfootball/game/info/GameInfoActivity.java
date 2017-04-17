@@ -17,7 +17,7 @@ import org.blackstork.findfootball.firebase.database.FBUserDatabase;
 import org.blackstork.findfootball.game.GameObj;
 import org.blackstork.findfootball.game.info.tabs.GIAboutTab;
 import org.blackstork.findfootball.game.info.tabs.GIPlayersTab;
-import org.blackstork.findfootball.user.PublicUserObj;
+import org.blackstork.findfootball.user.UserObj;
 
 public class GameInfoActivity extends BaseActivity {
 
@@ -26,12 +26,15 @@ public class GameInfoActivity extends BaseActivity {
     public static final String INTENT_GAME_KEY = "game_in_intent";
     public static final String INTENT_TAB_NUM_KEY = "tab_num";
 
+    private GIAboutTab aboutTab;
+    private GIPlayersTab playersTab;
+
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private TabsAdapter mAdapter;
 
     private GameObj thisGameObj;
-    private PublicUserObj thisGameOwnerObj;
+    private UserObj thisGameOwnerUser;
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -63,7 +66,7 @@ public class GameInfoActivity extends BaseActivity {
             FBUserDatabase.loadUserByUid(new FBCompleteListener() {
                 @Override
                 public void onSuccess(Object object) {
-                    thisGameOwnerObj = (PublicUserObj) object;
+                    thisGameOwnerUser = (UserObj) object;
                     onOwnerLoadComplete();
                 }
 
@@ -82,8 +85,11 @@ public class GameInfoActivity extends BaseActivity {
     private void onOwnerLoadComplete() {
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
-        for (int i = 0; i < mAdapter.getCount(); i++) {
-            mAdapter.getItem(i).setData(thisGameObj, thisGameOwnerObj);
+        if (aboutTab != null) {
+            aboutTab.setData(thisGameObj, thisGameOwnerUser);
+        }
+        if (playersTab != null) {
+            playersTab.setData(thisGameObj);
         }
     }
 
@@ -95,8 +101,11 @@ public class GameInfoActivity extends BaseActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         mAdapter = new TabsAdapter(getSupportFragmentManager());
-        mAdapter.addFragment(new GIAboutTab(), "About");
-        mAdapter.addFragment(new GIPlayersTab(), "Players");
+        aboutTab = new GIAboutTab();
+        playersTab = new GIPlayersTab();
+
+        mAdapter.addFragment(aboutTab, "About");
+        mAdapter.addFragment(playersTab, "Players");
         viewPager.setAdapter(mAdapter);
     }
 

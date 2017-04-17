@@ -11,18 +11,17 @@ import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.game.GameObj;
 import org.blackstork.findfootball.game.info.BaseGITab;
-import org.blackstork.findfootball.user.PublicUserObj;
+import org.blackstork.findfootball.user.UserObj;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GIPlayersTab extends BaseGITab {
+public class GIPlayersTab  extends Fragment  {
 
     private static final String TAG = App.G_TAG + ":GIPlayersTab";
 
 
     private GameObj thisGameObj;
-    private PublicUserObj thisGameOwner;
 
     public GIPlayersTab() {
         // Required empty public constructor
@@ -36,8 +35,7 @@ public class GIPlayersTab extends BaseGITab {
         return rootView;
     }
 
-    @Override
-    public void setData(GameObj game, PublicUserObj gameOwner) {
+    public void setData(GameObj game) {
         this.thisGameObj = game;
     }
 }

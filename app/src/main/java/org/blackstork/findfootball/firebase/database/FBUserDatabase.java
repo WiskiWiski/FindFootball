@@ -13,7 +13,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.time.TimeProvider;
-import org.blackstork.findfootball.user.PublicUserObj;
+import org.blackstork.findfootball.user.UserObj;
 
 /**
  * Created by WiskiW on 10.04.2017.
@@ -123,7 +123,7 @@ public class FBUserDatabase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot != null) {
-                    PublicUserObj publicUser = new PublicUserObj(dataSnapshot);
+                    UserObj publicUser = new UserObj(dataSnapshot);
                     callback.onSuccess(publicUser);
                 }
 

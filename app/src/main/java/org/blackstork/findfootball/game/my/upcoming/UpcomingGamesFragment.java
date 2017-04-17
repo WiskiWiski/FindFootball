@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
+import org.blackstork.findfootball.user.AppUser;
 import org.blackstork.findfootball.user.auth.UserAuth;
 import org.blackstork.findfootball.game.info.GameInfoActivity;
 import org.blackstork.findfootball.game.my.EventsProvider;
@@ -79,7 +80,7 @@ public class UpcomingGamesFragment extends Fragment implements
     private void fillAdapter() {
         if (mAdapter.getItemCount() == 0) {
             Context context = getContext();
-            FirebaseUser user = UserAuth.getUser(context);
+            AppUser user = AppUser.getInstance(context);
             if (user != null) {
                 swipeRefreshLayout.setRefreshing(true);
                 EventsProvider eventsProvider = new EventsProvider(context,
@@ -104,8 +105,6 @@ public class UpcomingGamesFragment extends Fragment implements
                     }
                 });
                 eventsProvider.getUpcomingGames();
-            } else {
-                UserAuth.requestUser(context);
             }
         }
     }
@@ -151,7 +150,7 @@ public class UpcomingGamesFragment extends Fragment implements
 
     private void deleteEvent(int pos) {
         Context context = getContext();
-        FirebaseUser user = UserAuth.getUser(context);
+        AppUser user = AppUser.getInstance(context);
         if (user != null) {
             final GameObj game = mAdapter.getGameList().get(pos);
             mAdapter.removeGame(pos);
@@ -175,8 +174,6 @@ public class UpcomingGamesFragment extends Fragment implements
                     Log.e(TAG, "onFailed: delete event error!");
                 }
             }, game.getEid());
-        } else {
-            UserAuth.requestUser(context);
         }
 
     }
