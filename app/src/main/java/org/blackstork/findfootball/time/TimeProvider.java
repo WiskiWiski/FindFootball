@@ -1,5 +1,8 @@
 package org.blackstork.findfootball.time;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -8,12 +11,22 @@ import java.util.TimeZone;
 
 public class TimeProvider {
 
+    public static final String FORMAT_LONG = "HH:mm dd.MM.yyyy ";
+    public static final String FORMAT_SHORT = "H:mm dd.MM";
+
     public static long getUtcTime() {
-        return System.currentTimeMillis();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        return cal.getTimeInMillis();
     }
 
     public static long convertToLocal(long utcMs) {
         return utcMs + TimeZone.getDefault().getOffset(utcMs);
+    }
+
+    public static String getStringDate(String format, long time){
+        long localDate = TimeProvider.convertToLocal(time);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
+        return dateFormat.format(localDate);
     }
 
 

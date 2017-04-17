@@ -25,8 +25,6 @@ import org.blackstork.findfootball.user.PublicUserObj;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -92,8 +90,6 @@ public class GIAboutTab extends BaseGITab {
         gameDescription.setText(thisGameObj.getDescription());
 
         long localDate = TimeProvider.convertToLocal(thisGameObj.getEventTime());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy H:mm", Locale.getDefault());
-        String strDate = dateFormat.format(localDate);
-        gameDate.setText(strDate);
+        gameDate.setText(TimeProvider.getStringDate(TimeProvider.FORMAT_LONG, localDate));
     }
 }
