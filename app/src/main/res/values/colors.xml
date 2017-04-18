@@ -6,4 +6,8 @@
     <color name="colorPrimaryDark">#388E3C</color>
     <color name="colorAccent">#6A8EAE</color>
     <color name="colorAccent1">#05668D</color>
+
+
+    <color name="teamAColor">#ffb5b6</color>
+    <color name="teamBColor">#c4caff</color>
 </resources>

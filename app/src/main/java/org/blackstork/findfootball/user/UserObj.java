@@ -9,13 +9,14 @@ import com.google.firebase.database.DataSnapshot;
 
 import org.blackstork.findfootball.firebase.database.FBUserDatabase;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by WiskiW on 17.04.2017.
  */
 
-public class UserObj implements Parcelable {
+public class UserObj implements Parcelable, Serializable {
 
     private String uid;
     private String displayName;
@@ -24,6 +25,8 @@ public class UserObj implements Parcelable {
     private long registerTime;
     private Uri photoUrl;
     private ArrayList<String> gameEids;
+
+
 
     public UserObj() {
     }

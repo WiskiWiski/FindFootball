@@ -23,6 +23,10 @@ public class FindGameAdapter extends RecyclerView.Adapter<FindGameViewHolder> {
 
     private List<GameObj> gameList;
 
+    public List<GameObj> getGameList() {
+        return gameList;
+    }
+
 
     public FindGameAdapter(List<GameObj> gameList) {
         this.gameList = gameList;

@@ -1,9 +1,7 @@
 package org.blackstork.findfootball.game;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -12,6 +10,7 @@ import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
 import org.blackstork.findfootball.location.LocationObj;
 import org.blackstork.findfootball.time.TimeProvider;
 
+import java.util.LinkedHashSet;
 import java.util.UUID;
 
 /**
@@ -28,6 +27,11 @@ public class GameObj implements Parcelable {
     private long eventTime;
     private long createTime;
 
+    private PlayerListObj playerList;
+    //private int playerCount = 4;
+    //private LinkedHashSet<String> teamAUids;
+    //private LinkedHashSet<String> teamBUids;
+
     public GameObj() {
         createTime = TimeProvider.getUtcTime();
     }
@@ -41,9 +45,23 @@ public class GameObj implements Parcelable {
         setEventTime((Long) gameSnapshot.child(FBFootballDatabase.KEY_EVENT_TIME).getValue());
         setCreateTime((Long) gameSnapshot.child(FBFootballDatabase.KEY_CREATE_TIME).getValue());
 
+        playerList = new PlayerListObj(gameSnapshot);
+        /*
+        setTeamAUids((LinkedHashSet<String>) gameSnapshot.child(FBFootballDatabase.KEY_A_TEAM).getValue());
+        setTeamBUids((LinkedHashSet<String>) gameSnapshot.child(FBFootballDatabase.KEY_B_TEAM).getValue());
+        */
+
         double lat = (double) gameSnapshot.child(FBFootballDatabase.KEY_LOCATION_LATITUDE).getValue(); // FIXME: java.lang.ClassCastException: java.lang.Long cannot be cast to java.lang.Double
         double lng = (double) gameSnapshot.child(FBFootballDatabase.KEY_LOCATION_LONGITUDE).getValue();
         setLocation(new LocationObj(lat, lng));
+    }
+
+    public PlayerListObj getPlayerList() {
+        return playerList;
+    }
+
+    public void setPlayerList(PlayerListObj playerList) {
+        this.playerList = playerList;
     }
 
     public String getOwnerUid() {
@@ -118,10 +136,18 @@ public class GameObj implements Parcelable {
         out.writeString(eid);
         out.writeString(ownerUid);
         out.writeParcelable(location, flags);
+        out.writeParcelable(playerList, flags);
         out.writeString(title);
         out.writeString(description);
         out.writeLong(eventTime);
         out.writeLong(createTime);
+
+        // TODO :
+        /*
+        out.writeInt(playerCount);
+        out.writeSerializable(teamAUids);
+        out.writeSerializable(teamBUids);
+         */
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
@@ -140,10 +166,18 @@ public class GameObj implements Parcelable {
         eid = in.readString();
         ownerUid = in.readString();
         location = in.readParcelable(LatLng.class.getClassLoader());
+        playerList = in.readParcelable(PlayerListObj.class.getClassLoader());
         title = in.readString();
         description = in.readString();
         eventTime = in.readLong();
         createTime = in.readLong();
+
+        // TODO:
+        /*
+        playerCount = in.readInt();
+        teamAUids = (LinkedHashSet<String>) in.readSerializable();
+        teamBUids = (LinkedHashSet<String>) in.readSerializable();
+        */
     }
 
 
@@ -159,5 +193,10 @@ public class GameObj implements Parcelable {
     @Override
     public int hashCode() {
         return this.getEid().hashCode();
+    }
+
+
+    public interface GameListener {
+        void onComplete(int resultCode, GameObj game);
     }
 }

@@ -1,5 +1,6 @@
 package org.blackstork.findfootball.game.find;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,6 +21,7 @@ import org.blackstork.findfootball.game.GameObj;
 import org.blackstork.findfootball.game.find.dialogs.FGSelectLocationDialog;
 import org.blackstork.findfootball.game.find.recyclerview.EndlessRecyclerOnScrollListener;
 import org.blackstork.findfootball.game.find.recyclerview.FindGameAdapter;
+import org.blackstork.findfootball.game.info.GameInfoActivity;
 import org.blackstork.findfootball.game.my.*;
 import org.blackstork.findfootball.location.LocationObj;
 
@@ -155,7 +157,9 @@ public class FindGameActivity extends BaseActivity {
         return new OnRecyclerViewItemClickListener() {
             @Override
             public void onClick(int pos) {
-                Toast.makeText(getApplicationContext(), "Coming soon!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), GameInfoActivity.class);
+                intent.putExtra(GameInfoActivity.INTENT_GAME_KEY, mAdapter.getGameList().get(pos));
+                startActivity(intent);
             }
         };
     }

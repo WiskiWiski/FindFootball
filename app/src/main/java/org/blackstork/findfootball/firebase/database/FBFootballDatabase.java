@@ -32,6 +32,10 @@ public class FBFootballDatabase {
     public final static String KEY_LOCATION_LONGITUDE = "/location/longitude/";
     public final static String KEY_LOCATION_CITY_NAME = "/location/city_name/";
     public final static String KEY_LOCATION_COUNTRY_NAME = "/location/country_name/";
+    public final static String KEY_PLAYER_COUNT = "/player_count/";
+    public final static String KEY_PLAYERS = "/players/";
+    public final static String KEY_A_TEAM = "/teams/team_b/";
+    public final static String KEY_B_TEAM = "/teams/team_b/";
 
     private DatabaseReference databaseReference;
     private Context context;
@@ -58,6 +62,12 @@ public class FBFootballDatabase {
         thisGameReference.child(KEY_DESCRIPTION).setValue(gameObj.getDescription());
         thisGameReference.child(KEY_CREATE_TIME).setValue(gameObj.getCreateTime());
         thisGameReference.child(KEY_EVENT_TIME).setValue(gameObj.getEventTime());
+
+        thisGameReference.child(KEY_PLAYER_COUNT).setValue(gameObj.getPlayerList().getPlayersCount());
+        thisGameReference.child(KEY_PLAYERS).setValue(gameObj.getPlayerList().getHashMap());
+        //thisGameReference.child(KEY_PLAYERS).setValue(gameObj.getHashMap().getPlayerCount());
+        //thisGameReference.child(KEY_A_TEAM).setValue(gameObj.getTeamAUids());
+        //thisGameReference.child(KEY_B_TEAM).setValue(gameObj.getTeamBUids());
 
         thisGameReference.child(KEY_LOCATION_LATITUDE).setValue(gameObj.getLocation().getLatitude());
         thisGameReference.child(KEY_LOCATION_LONGITUDE).setValue(gameObj.getLocation().getLongitude());
