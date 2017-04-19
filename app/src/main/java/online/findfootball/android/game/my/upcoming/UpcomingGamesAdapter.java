@@ -57,7 +57,9 @@ public class UpcomingGamesAdapter extends RecyclerView.Adapter<UpcomingGamesView
         holder.setItemClickListener(itemClickListener);
         holder.setItemLongClickListener(itemLongClickListener);
         holder.setTitle(game.getTitle());
-        holder.setDay(String.valueOf(game.getEventTime()));
+        holder.setEventTime(game.getEventTime());
+        holder.setLocation(game.getLocation());
+        holder.setPlayerList(game.getPlayerList());
     }
 
     @Override

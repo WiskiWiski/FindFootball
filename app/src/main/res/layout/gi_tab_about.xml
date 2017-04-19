@@ -70,13 +70,24 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:ellipsize="end"
-        android:gravity="center"
         android:maxLines="2"
         android:paddingLeft="24dp"
         android:text="12.05.2017 15:30"
         android:textAllCaps="true"
         android:textSize="18sp"
         tools:text="12.05.2017 15:30"/>
+
+    <TextView
+        android:id="@+id/game_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingLeft="24dp"
+        android:text="Минск"
+        android:textSize="18sp"
+        tools:text="Минск"/>
 
     <FrameLayout
         android:id="@+id/gmap_button"

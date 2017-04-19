@@ -68,7 +68,11 @@ public class GameObj implements Parcelable, DatabaseInstance {
 
         double lat = (Double) gameSnapshot.child(PATH_LOCATION_LATITUDE).getValue(); // FIXME: java.lang.ClassCastException: java.lang.Long cannot be cast to java.lang.Double
         double lng = (Double) gameSnapshot.child(PATH_LOCATION_LONGITUDE).getValue();
-        setLocation(new LocationObj(lat, lng));
+        LocationObj locationObj = new LocationObj(lat, lng);
+        locationObj.setCityName((String) gameSnapshot.child(PATH_LOCATION_CITY_NAME).getValue());
+        locationObj.setCountryName((String) gameSnapshot.child(PATH_LOCATION_COUNTRY_NAME).getValue());
+        setLocation(locationObj);
+
     }
 
     public GameObj(String eid) {
@@ -251,9 +255,13 @@ public class GameObj implements Parcelable, DatabaseInstance {
 
                 setPlayerList(new PlayerListObj(gameSnapshot));
 
-                double lat = (double) gameSnapshot.child(PATH_LOCATION_LATITUDE).getValue(); // FIXME: java.lang.ClassCastException: java.lang.Long cannot be cast to java.lang.Double
-                double lng = (double) gameSnapshot.child(PATH_LOCATION_LONGITUDE).getValue();
-                setLocation(new LocationObj(lat, lng));
+                double lat = (Double) gameSnapshot.child(PATH_LOCATION_LATITUDE).getValue(); // FIXME: java.lang.ClassCastException: java.lang.Long cannot be cast to java.lang.Double
+                double lng = (Double) gameSnapshot.child(PATH_LOCATION_LONGITUDE).getValue();
+                LocationObj locationObj = new LocationObj(lat, lng);
+                locationObj.setCityName((String) gameSnapshot.child(PATH_LOCATION_CITY_NAME).getValue());
+                locationObj.setCountryName((String) gameSnapshot.child(PATH_LOCATION_COUNTRY_NAME).getValue());
+                setLocation(locationObj);
+
                 valueEventListener = null;
                 GameObj.this.onLoadListener.onSuccess(GameObj.this);
             }

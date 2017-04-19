@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.game.GameObj;
+import online.findfootball.android.location.LocationObj;
 import online.findfootball.android.time.TimeProvider;
 import online.findfootball.android.user.UserObj;
 
@@ -32,10 +34,12 @@ public class GIAboutTab extends Fragment {
     private GameObj thisGameObj;
     private UserObj thisGameOwnerUser;
 
-    private TextView gameDescription;
-    private TextView gameDate;
-    private TextView userName;
-    private ImageView userImage;
+    private TextView gameDescriptionView;
+    private TextView gameDateView;
+    private TextView userNameView;
+    private TextView userDescriptionView;
+    private TextView gameLocationView;
+    private ImageView userImageView;
 
     public GIAboutTab() {
         // Required empty public constructor
@@ -45,10 +49,12 @@ public class GIAboutTab extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.gi_tab_about, container, false);
-        gameDescription = (TextView) rootView.findViewById(R.id.game_description);
-        gameDate = (TextView) rootView.findViewById(R.id.game_date);
-        userName = (TextView) rootView.findViewById(R.id.user_name);
-        userImage = (ImageView) rootView.findViewById(R.id.user_photo);
+        gameDescriptionView = (TextView) rootView.findViewById(R.id.game_description);
+        gameDateView = (TextView) rootView.findViewById(R.id.game_date);
+        userNameView = (TextView) rootView.findViewById(R.id.user_name);
+        userImageView = (ImageView) rootView.findViewById(R.id.user_photo);
+        userDescriptionView = (TextView) rootView.findViewById(R.id.user_description);
+        gameLocationView = (TextView) rootView.findViewById(R.id.game_location);
 
 
         return rootView;
@@ -62,34 +68,58 @@ public class GIAboutTab extends Fragment {
 
     private void updateView() {
         if (thisGameOwnerUser != null && thisGameOwnerUser.hasLoaded()) {
-            if (userName != null) {
-                userName.setText(thisGameOwnerUser.getDisplayName());
+            if (userNameView != null) {
+                userNameView.setText(thisGameOwnerUser.getDisplayName());
             }
-            if (userImage != null && thisGameOwnerUser.getPhotoUrl() != null) {
+
+            if  (userDescriptionView != null){
+                userDescriptionView.setText(thisGameOwnerUser.getEmail());
+            }
+
+            if (userImageView != null && thisGameOwnerUser.getPhotoUrl() != null) {
                 Glide
                         .with(this)
                         .load(thisGameOwnerUser.getPhotoUrl())
                         .asBitmap()
                         .centerCrop()
-                        .into(new BitmapImageViewTarget(userImage) {
+                        .into(new BitmapImageViewTarget(userImageView) {
                             @Override
                             protected void setResource(Bitmap resource) {
                                 RoundedBitmapDrawable circularBitmapDrawable =
                                         RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
                                 circularBitmapDrawable.setCircular(true);
-                                userImage.setImageDrawable(circularBitmapDrawable);
+                                userImageView.setImageDrawable(circularBitmapDrawable);
                             }
                         });
             }
         }
 
-        if (gameDescription != null) {
-            gameDescription.setText(thisGameObj.getDescription());
+        if (gameDescriptionView != null) {
+            gameDescriptionView.setText(thisGameObj.getDescription());
         }
 
-        if (gameDate != null) {
-            long localDate = TimeProvider.convertToLocal(thisGameObj.getEventTime());
-            gameDate.setText(TimeProvider.getStringDate(TimeProvider.FORMAT_LONG, localDate));
+        if (gameLocationView != null) {
+            LocationObj location = thisGameObj.getLocation();
+            Log.d(TAG, "updateView: location: " + location);
+            if (location != null){
+                String addressCity = location.getCityName();
+                String addressCountry = location.getCountryName();
+                if (addressCity != null && addressCountry != null){
+                    gameLocationView.setText(addressCity + ", " + addressCountry);
+                } else {
+                    if (addressCity != null){
+                        gameLocationView.setText(addressCity);
+                    } else {
+                        gameLocationView.setText(addressCountry);
+                    }
+                }
+            }
         }
+
+        if (gameDateView != null) {
+            long localDate = TimeProvider.convertToLocal(thisGameObj.getEventTime());
+            gameDateView.setText(TimeProvider.getStringDate(TimeProvider.FORMAT_LONG, localDate));
+        }
+
     }
 }

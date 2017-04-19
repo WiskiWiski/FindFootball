@@ -63,7 +63,7 @@ public class ArchivedGamesAdapter extends RecyclerView.Adapter<ArchivedGamesView
         holder.setItemLongClickListener(itemLongClickListener);
         holder.setRecreateBtnClickListener(itemRecreateBtnClickListener);
         holder.setTitle(game.getTitle());
-        holder.setDay(String.valueOf(game.getEventTime()));
+        holder.setEventTime(game.getEventTime());
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import online.findfootball.android.R;
 import online.findfootball.android.game.my.OnRecyclerViewItemClickListener;
+import online.findfootball.android.time.TimeProvider;
 
 /**
  * Created by WiskiW on 13.04.2017.
@@ -16,9 +17,9 @@ public class ArchivedGamesViewHolder extends RecyclerView.ViewHolder {
 
 
     private View itemView;
-    private TextView titleTV;
-    private TextView dateTimeTV;
-    private TextView dateDayTV;
+    private TextView titleView;
+    private TextView dateTimeView;
+    private TextView dateDayView;
     private ImageView recreateBtn;
 
     public ArchivedGamesViewHolder(View itemView) {
@@ -26,9 +27,9 @@ public class ArchivedGamesViewHolder extends RecyclerView.ViewHolder {
         this.itemView = itemView;
 
         recreateBtn = (ImageView) itemView.findViewById(R.id.recreate_button);
-        titleTV = (TextView) itemView.findViewById(R.id.event_title);
-        dateTimeTV = (TextView) itemView.findViewById(R.id.event_date_time);
-        dateDayTV = (TextView) itemView.findViewById(R.id.event_date_day);
+        titleView = (TextView) itemView.findViewById(R.id.event_title);
+        dateTimeView = (TextView) itemView.findViewById(R.id.event_date_time);
+        dateDayView = (TextView) itemView.findViewById(R.id.event_date_day);
     }
 
     public void setItemClickListener(final OnRecyclerViewItemClickListener itemListener) {
@@ -65,16 +66,13 @@ public class ArchivedGamesViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setTitle(String title) {
-        titleTV.setText(title);
+        titleView.setText(title);
     }
 
-    public void setTime(String time) {
-        dateTimeTV.setText(time);
+    public void setEventTime(long eventTime) {
+        long localTime = TimeProvider.convertToLocal(eventTime);
+        dateDayView.setText(TimeProvider.getStringDate(TimeProvider.FORMAT_DAY_3, localTime));
+        dateTimeView.setText(TimeProvider.getStringDate(TimeProvider.FORMAT_TIME, localTime));
     }
-
-    public void setDay(String day) {
-        dateDayTV.setText(day);
-    }
-
 
 }

@@ -234,7 +234,9 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
                     }
                 }
 
-                UserObj.this.onLoadListener.onSuccess(UserObj.this);
+                if (isLoading()) {
+                    UserObj.this.onLoadListener.onSuccess(UserObj.this);
+                }
                 valueEventListener = null;
             }
 

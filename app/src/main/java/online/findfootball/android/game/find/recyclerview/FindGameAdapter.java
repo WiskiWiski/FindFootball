@@ -53,7 +53,9 @@ public class FindGameAdapter extends RecyclerView.Adapter<FindGameViewHolder> {
         holder.setItemClickListener(itemClickListener);
         holder.setItemLongClickListener(itemLongClickListener);
         holder.setTitle(game.getTitle());
-        holder.setDay(String.valueOf(game.getEventTime()));
+        holder.setEventTime(game.getEventTime());
+        holder.setLocation(game.getLocation());
+        holder.setPlayerList(game.getPlayerList());
     }
 
     @Override

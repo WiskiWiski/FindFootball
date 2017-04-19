@@ -42,7 +42,7 @@
             <TextView
                 android:layout_width="54dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/players"
+                android:id="@+id/event_players_count"
                 tools:text="3/22"
                 android:textColor="@color/wallet_hint_foreground_holo_dark"
                 android:textSize="18sp"
@@ -69,8 +69,10 @@
             <TextView
                 android:layout_width="198dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/location"
+                android:id="@+id/event_location"
                 tools:text="location"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:textAlignment="center"
                 android:textSize="16sp" />
 

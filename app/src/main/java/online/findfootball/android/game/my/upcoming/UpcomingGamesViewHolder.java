@@ -5,7 +5,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import online.findfootball.android.R;
+import online.findfootball.android.game.PlayerListObj;
 import online.findfootball.android.game.my.OnRecyclerViewItemClickListener;
+import online.findfootball.android.location.LocationObj;
+import online.findfootball.android.time.TimeProvider;
 
 /**
  * Created by WiskiW on 12.04.2017.
@@ -14,17 +17,21 @@ import online.findfootball.android.game.my.OnRecyclerViewItemClickListener;
 class UpcomingGamesViewHolder extends RecyclerView.ViewHolder {
 
     private View itemView;
-    private TextView titleTV;
-    private TextView dateTimeTV;
-    private TextView dateDayTV;
+    private TextView titleView;
+    private TextView dateTimeView;
+    private TextView dateDayView;
+    private TextView locationView;
+    private TextView playerCountView;
 
     public UpcomingGamesViewHolder(View itemView) {
         super(itemView);
         this.itemView = itemView;
 
-        titleTV = (TextView) itemView.findViewById(R.id.event_title);
-        dateTimeTV = (TextView) itemView.findViewById(R.id.event_date_time);
-        dateDayTV = (TextView) itemView.findViewById(R.id.event_date_day);
+        titleView = (TextView) itemView.findViewById(R.id.event_title);
+        dateTimeView = (TextView) itemView.findViewById(R.id.event_date_time);
+        dateDayView = (TextView) itemView.findViewById(R.id.event_date_day);
+        locationView = (TextView) itemView.findViewById(R.id.event_location);
+        playerCountView = (TextView) itemView.findViewById(R.id.event_players_count);
     }
 
     public void setItemClickListener(final OnRecyclerViewItemClickListener itemListener) {
@@ -51,15 +58,35 @@ class UpcomingGamesViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setTitle(String title) {
-        titleTV.setText(title);
+        titleView.setText(title);
     }
 
-    public void setTime(String time) {
-        dateTimeTV.setText(time);
+    public void setEventTime(long eventTime) {
+        long localTime = TimeProvider.convertToLocal(eventTime);
+        dateDayView.setText(TimeProvider.getStringDate(TimeProvider.FORMAT_DAY_2, localTime));
+        dateTimeView.setText(TimeProvider.getStringDate(TimeProvider.FORMAT_TIME, localTime));
     }
 
-    public void setDay(String day) {
-        dateDayTV.setText(day);
+    public void setLocation(LocationObj location){
+        if (location != null){
+            String addressCity = location.getCityName();
+            String addressCountry = location.getCountryName();
+            if (addressCity != null && addressCountry != null){
+                locationView.setText(addressCity + ", " + addressCountry);
+            } else {
+                if (addressCity != null){
+                    locationView.setText(addressCity);
+                } else {
+                    locationView.setText(addressCountry);
+                }
+            }
+        }
     }
 
+    public void setPlayerList(PlayerListObj playerList){
+        if (playerList != null){
+            String str = playerList.getList().size() + "/" + playerList.getPlayersCount();
+            playerCountView.setText(str);
+        }
+    }
 }

@@ -11,8 +11,13 @@ import java.util.TimeZone;
 
 public class TimeProvider {
 
-    public static final String FORMAT_LONG = "HH:mm dd.MM.yyyy ";
+    public static final String FORMAT_LONG = "HH:mm dd.MM.yyyy";
     public static final String FORMAT_SHORT = "H:mm dd.MM";
+
+    public static final String FORMAT_TIME = "HH:mm";
+    public static final String FORMAT_DAY_1 = "dd.MM.yyyy";
+    public static final String FORMAT_DAY_2 = "dd.MM E";
+    public static final String FORMAT_DAY_3 = "dd.MM";
 
     public static long getUtcTime() {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
