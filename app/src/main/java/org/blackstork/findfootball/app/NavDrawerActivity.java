@@ -1,13 +1,23 @@
 package org.blackstork.findfootball.app;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import org.blackstork.findfootball.R;
+import org.blackstork.findfootball.user.AppUser;
 
 import java.util.HashSet;
 
@@ -102,11 +112,49 @@ public class NavDrawerActivity extends BaseActivity implements
         getLayoutInflater().inflate(layoutResID, activityContainer, true);
         super.setContentView(drawerLayout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+        setUpNavigationHeader();
         navigationView.setNavigationItemSelectedListener(this);
         getMenuItemById(currentMenuItemId).setChecked(true);
     }
 
-    public boolean isDrawerOpen(){
+    private void setUpNavigationHeader() {
+        View headerLayout = navigationView.getHeaderView(0); // 0-index header
+        headerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO : Start profile activity
+            }
+        });
+        AppUser appUser = AppUser.getInstance(this, false);
+        if (appUser != null) {
+            final TextView nameView = (TextView) headerLayout.findViewById(R.id.user_display_name);
+            final TextView emailView = (TextView) headerLayout.findViewById(R.id.user_email);
+            final ImageView photoView = (ImageView) headerLayout.findViewById(R.id.user_photo);
+
+            nameView.setText(appUser.getDisplayName());
+            emailView.setText(appUser.getEmail());
+            if (photoView != null && appUser.getPhotoUrl() != null) {
+                Glide
+                        .with(this)
+                        .load(appUser.getPhotoUrl())
+                        .asBitmap()
+                        .centerCrop()
+                        .into(new BitmapImageViewTarget(photoView) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                RoundedBitmapDrawable circularBitmapDrawable =
+                                        RoundedBitmapDrawableFactory.create(getResources(), resource);
+                                circularBitmapDrawable.setCircular(true);
+                                photoView.setImageDrawable(circularBitmapDrawable);
+                            }
+                        });
+            }
+
+
+        }
+    }
+
+    public boolean isDrawerOpen() {
         return drawerLayout.isDrawerOpen(Gravity.START);
     }
 

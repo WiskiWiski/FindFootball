@@ -16,7 +16,7 @@
         android:visibility="visible">
 
         <ImageView
-            android:id="@+id/user_image"
+            android:id="@+id/user_photo"
             android:layout_width="78dp"
             android:layout_height="78dp"
             android:layout_centerVertical="true"
@@ -26,7 +26,7 @@
             android:id="@+id/user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/user_image"
+            android:layout_toRightOf="@+id/user_photo"
             android:ellipsize="end"
             android:maxLines="1"
             android:paddingLeft="24dp"
@@ -38,9 +38,9 @@
             android:id="@+id/user_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/user_image"
+            android:layout_alignBottom="@+id/user_photo"
             android:layout_below="@+id/user_name"
-            android:layout_toRightOf="@+id/user_image"
+            android:layout_toRightOf="@+id/user_photo"
             android:ellipsize="end"
             android:maxLines="2"
             android:paddingLeft="24dp"

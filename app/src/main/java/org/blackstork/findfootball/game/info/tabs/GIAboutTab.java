@@ -48,7 +48,7 @@ public class GIAboutTab extends Fragment {
         gameDescription = (TextView) rootView.findViewById(R.id.game_description);
         gameDate = (TextView) rootView.findViewById(R.id.game_date);
         userName = (TextView) rootView.findViewById(R.id.user_name);
-        userImage = (ImageView) rootView.findViewById(R.id.user_image);
+        userImage = (ImageView) rootView.findViewById(R.id.user_photo);
 
 
         return rootView;

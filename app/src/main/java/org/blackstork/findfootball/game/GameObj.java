@@ -85,6 +85,9 @@ public class GameObj implements Parcelable, DatabaseInstance {
     }
 
     public String getOwnerUid() {
+        if (ownerUid == null){
+            return "null";
+        }
         return ownerUid;
     }
 
