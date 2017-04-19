@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".game.create.fragments.CGLocationFragment">
+    tools:context="online.findfootball.android.game.create.fragments.CGLocationFragment">
 
     <fragment
         android:id="@+id/gmap_fragment"
-        android:name="org.blackstork.findfootball.location.gmaps.fragments.LocationSelectFragment"
+        android:name="online.findfootball.android.location.gmaps.fragments.LocationSelectFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

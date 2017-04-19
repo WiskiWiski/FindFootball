@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context="org.blackstork.findfootball.game.info.GameInfoActivity">
+    tools:context="org.blackstork.findfootball.online.blackstork.findfootball.game.info.GameInfoActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

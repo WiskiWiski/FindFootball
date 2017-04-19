@@ -8,61 +8,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:382058116065:android:afe84a9bc10f68d9",
+        "mobilesdk_app_id": "1:382058116065:android:91b185b1a2d48f27",
         "android_client_info": {
-          "package_name": "com.timikcool.findfootball"
+          "package_name": "org.blackstork.findfootball"
         }
       },
       "oauth_client": [
         {
-          "client_id": "382058116065-6pe1bo0vbb8ihuu7hh0ns9qjuao5q8be.apps.googleusercontent.com",
+          "client_id": "382058116065-1jfludsiqqapt37r6um9q6hgo58luik5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.timikcool.findfootball",
-            "certificate_hash": "2c639752fe946e50065275397c45191f08d53536"
-          }
-        },
-        {
-          "client_id": "382058116065-fagdrmftb2454b7vj0d1gbhiqh88slcc.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyA7Ox_kM8wCZZP2Z3_IsOwSp55MrsvrVYI"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "382058116065-fagdrmftb2454b7vj0d1gbhiqh88slcc.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:382058116065:android:e45629b36b8f808d",
-        "android_client_info": {
-          "package_name": "by.wiskiw.findfootball"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "382058116065-958v3m71fcgooh1vc7gl6ouuuemaf8c3.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "by.wiskiw.findfootball",
+            "package_name": "org.blackstork.findfootball",
             "certificate_hash": "97c864aa7a43aabc25545acd4a1d7fce61480aa9"
           }
         },
@@ -96,9 +52,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:382058116065:android:91b185b1a2d48f27",
+        "mobilesdk_app_id": "1:382058116065:android:0a03ebe3b3687050",
         "android_client_info": {
-          "package_name": "org.blackstork.findfootball"
+          "package_name": "online.findfootball.android"
         }
       },
       "oauth_client": [

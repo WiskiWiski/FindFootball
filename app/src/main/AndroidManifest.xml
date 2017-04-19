@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.blackstork.findfootball">
+          package="online.findfootball.android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
-        android:name=".app.App"
+        android:name="online.findfootball.android.app.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,12 +23,12 @@
             android:value="@string/facebook_app_id"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name="online.findfootball.android.MainActivity"
             android:label="@string/activity_title_main"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".user.auth.AuthUiActivity"
+            android:name="online.findfootball.android.user.auth.AuthUiActivity"
             android:label="@string/activity_title_auth"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -49,12 +49,12 @@
             android:label="ServiceActivity"
             android:theme="@style/VK.Transparent"/>
         <activity
-            android:name=".game.create.CreateGameActivity"
+            android:name="online.findfootball.android.game.create.CreateGameActivity"
             android:label="@string/activity_title_create_game"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".game.my.MyGamesActivity"
+            android:name="online.findfootball.android.game.my.MyGamesActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -63,12 +63,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".game.find.FindGameActivity"
+            android:name="online.findfootball.android.game.find.FindGameActivity"
             android:label="@string/activity_title_find_game"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".game.info.GameInfoActivity"
+            android:name="online.findfootball.android.game.info.GameInfoActivity"
             android:label="@string/activity_title_game_info"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

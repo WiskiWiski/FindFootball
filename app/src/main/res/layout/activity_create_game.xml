@@ -8,13 +8,13 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="org.blackstork.findfootball.game.create.CreateGameActivity">
+    tools:context="org.blackstork.findfootball.online.blackstork.findfootball.game.create.CreateGameActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <org.blackstork.findfootball.game.create.view.CreateGameViewPager
+        <online.findfootball.android.game.create.view.CreateGameViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

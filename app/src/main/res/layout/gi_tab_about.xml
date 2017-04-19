@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    tools:context="org.blackstork.findfootball.game.info.tabs.GIAboutTab">
+    tools:context="org.blackstork.findfootball.online.blackstork.findfootball.game.info.tabs.GIAboutTab">
 
     <RelativeLayout
         android:id="@+id/user_container"
