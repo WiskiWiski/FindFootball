@@ -5,7 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="activity_title_main">@string/app_name</string>
-    <string name="activity_title_auth">Login</string>
+    <string name="activity_title_auth">Authorization</string>
     <string name="activity_title_find_game">Find Game</string>
     <string name="activity_title_create_game">Create Game</string>
     <string name="activity_title_game_info">Game</string>
@@ -28,6 +28,11 @@
 
     <!-- === Auth === -->
     <string name="auth_required_re_authorization">Auth problem. Please sign in again</string>
+    <string name="auth_activity_default_msg">Please log in</string>
+    <string name="auth_activity_empty_email">Email cannot be empty!</string>
+    <string name="auth_activity_empty_password">Password cannot be empty!</string>
+    <string name="auth_activity_password_too_short">Password cannot be shorter than 6!</string>
+    <string name="auth_activity_bad_email">Email must constain \'@\' !</string>
 
 
     <!-- === Create Game === -->

@@ -219,7 +219,10 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
                 }
                 setUid(userSnapshot.getKey());
                 setDisplayName((String) userSnapshot.child(PATH_DISPLAY_NAME).getValue());
-                setPhotoUrl(Uri.parse((String) userSnapshot.child(PATH_PHOTO_URL).getValue()));
+                String url = (String) userSnapshot.child(PATH_PHOTO_URL).getValue();
+                if (url != null){
+                    setPhotoUrl(Uri.parse(url));
+                }
                 setEmail((String) userSnapshot.child(PATH_EMAIL).getValue());
                 setRegisterTime((Long) userSnapshot.child(PATH_REGISTER_TIME).getValue());
                 setLastActivityTime((Long) userSnapshot.child(PATH_LAST_ACTIVITY_TIME).getValue());

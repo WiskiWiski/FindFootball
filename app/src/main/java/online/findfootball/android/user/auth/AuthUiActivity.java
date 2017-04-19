@@ -1,13 +1,14 @@
 package online.findfootball.android.user.auth;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.widget.LoginButton;
@@ -15,13 +16,14 @@ import com.google.firebase.auth.FirebaseUser;
 
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
+import online.findfootball.android.app.BaseActivity;
 import online.findfootball.android.firebase.database.FBDatabase;
 import online.findfootball.android.user.auth.providers.MyEmailAuthAuthProvider;
 import online.findfootball.android.user.auth.providers.MyFacebookAuthProvider;
 import online.findfootball.android.user.auth.providers.MyGoogleAuthProvider;
 import online.findfootball.android.user.auth.providers.MyVkontakteAuthAuthProvider;
 
-public class AuthUiActivity extends AppCompatActivity {
+public class AuthUiActivity extends BaseActivity {
 
     private static final String TAG = App.G_TAG + ":AuthAct";
 
@@ -34,6 +36,7 @@ public class AuthUiActivity extends AppCompatActivity {
     private Button btnVKSignIn;
 
 
+    private boolean inProgress;
     private MyGoogleAuthProvider googleAuthProvider;
     private MyEmailAuthAuthProvider emailAuthProvider;
     private MyFacebookAuthProvider fbAuthProvider;
@@ -48,7 +51,9 @@ public class AuthUiActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         String signInMsg = getIntent().getStringExtra(SIGN_IN_MSG_INTENT_KEY);
-        // TODO : Show sign in message
+        if (signInMsg != null) {
+            ((TextView) findViewById(R.id.message)).setText(signInMsg);
+        }
 
         initProviders();
 
@@ -67,10 +72,9 @@ public class AuthUiActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
-                if (!email.isEmpty() && !password.isEmpty() && password.length() >= 6) {
+                if (validation(email, password)){
+                    disableButtons();
                     emailAuthProvider.signIn(email, password);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Check Input", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -97,7 +101,10 @@ public class AuthUiActivity extends AppCompatActivity {
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
                 // TODO: Fix multiple clicks
-                emailAuthProvider.signUp(email, password);
+                if (validation(email, password)){
+                    disableButtons();
+                    emailAuthProvider.signUp(email, password);
+                }
             }
         });
     }
@@ -118,6 +125,7 @@ public class AuthUiActivity extends AppCompatActivity {
                 setResult(UserAuth.RESULT_FAILED);
                 Log.d(TAG, "Authentication failed. " + result.toString());
                 Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
+                enableButtons();
             }
         };
         emailAuthProvider = new MyEmailAuthAuthProvider(providerCallback);
@@ -134,5 +142,35 @@ public class AuthUiActivity extends AppCompatActivity {
         googleAuthProvider.onActivityResult(requestCode, resultCode, data);
         fbAuthProvider.onActivityResult(requestCode, resultCode, data);
         vkAuthProvider.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void enableButtons(){
+        btnSignIn.setEnabled(true);
+        btnSignUp.setEnabled(true);
+        btnGoogleSignIn.setEnabled(true);
+        //btnVKSignIn.setEnabled(true);
+    }
+
+    private void disableButtons(){
+        btnSignIn.setEnabled(false);
+        btnSignUp.setEnabled(false);
+        btnGoogleSignIn.setEnabled(false);
+        //btnVKSignIn.setEnabled(false);
+    }
+
+    private boolean validation(String email, String password){
+        Context c = getApplicationContext();
+        if (email.isEmpty()){
+            Toast.makeText(c, getString(R.string.auth_activity_empty_email), Toast.LENGTH_SHORT).show();
+        } else if (!email.contains("@")){
+            Toast.makeText(c, getString(R.string.auth_activity_bad_email), Toast.LENGTH_SHORT).show();
+        } else if (password.isEmpty()){
+            Toast.makeText(c, getString(R.string.auth_activity_empty_password), Toast.LENGTH_SHORT).show();
+        } else if (password.length() < 6) {
+            Toast.makeText(c, getString(R.string.auth_activity_password_too_short), Toast.LENGTH_SHORT).show();
+        } else {
+            return true;
+        }
+        return false;
     }
 }

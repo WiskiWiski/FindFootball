@@ -18,6 +18,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import online.findfootball.android.R;
 import online.findfootball.android.user.AppUser;
+import online.findfootball.android.user.auth.UserAuth;
 
 import java.util.HashSet;
 
@@ -119,14 +120,15 @@ public class NavDrawerActivity extends BaseActivity implements
 
     private void setUpNavigationHeader() {
         View headerLayout = navigationView.getHeaderView(0); // 0-index header
-        headerLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO : Start profile activity
-            }
-        });
         AppUser appUser = AppUser.getInstance(this, false);
         if (appUser != null) {
+            headerLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO : Start profile activity
+                }
+            });
+
             final TextView nameView = (TextView) headerLayout.findViewById(R.id.user_display_name);
             final TextView emailView = (TextView) headerLayout.findViewById(R.id.user_email);
             final ImageView photoView = (ImageView) headerLayout.findViewById(R.id.user_photo);
@@ -149,8 +151,13 @@ public class NavDrawerActivity extends BaseActivity implements
                             }
                         });
             }
-
-
+        } else {
+            headerLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    UserAuth.requestUser(getApplicationContext());
+                }
+            });
         }
     }
 

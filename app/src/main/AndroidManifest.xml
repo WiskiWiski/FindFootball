@@ -32,7 +32,7 @@
         <activity
             android:name="online.findfootball.android.user.auth.AuthUiActivity"
             android:label="@string/activity_title_auth"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoToolBar">
         </activity>
         <activity
             android:name="com.facebook.CustomTabActivity"
