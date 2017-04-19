@@ -47,6 +47,9 @@ public class GameObj implements Parcelable, DatabaseInstance {
 
     private PlayerListObj playerList;
 
+    private ValueEventListener valueEventListener;
+    private OnLoadListener onLoadListener;
+
     public GameObj() {
         createTime = TimeProvider.getUtcTime();
         playerList = new PlayerListObj(getEid());
@@ -213,23 +216,27 @@ public class GameObj implements Parcelable, DatabaseInstance {
     }
 
     @Override
-    public boolean isLoaded() {
+    public boolean hasLoaded() {
         return false;
     }
 
     @Override
-    public void load(final OnLoadListener onLoadListener) {
+    public void load(OnLoadListener onLoadListener) {
+        this.onLoadListener = onLoadListener;
+        if (isLoading()) {
+            return;
+        }
         DatabaseReference thisGameReference = FBDatabase.getDatabaseReference(this);
-        thisGameReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot gameSnapshot) {
                 if (gameSnapshot == null) {
-                    onLoadListener.onFailed(OnLoadListener.FAILED_NULL_SNAPSHOT, null);
+                    GameObj.this.onLoadListener.onFailed(OnLoadListener.FAILED_NULL_SNAPSHOT, null);
                     return;
                 }
                 if (!gameSnapshot.hasChildren()) {
                     // ивент был удален из базы игр
-                    onLoadListener.onFailed(OnLoadListener.FAILED_HAS_REMOVED, "Game has been delete");
+                    GameObj.this.onLoadListener.onFailed(OnLoadListener.FAILED_HAS_REMOVED, "Game has been delete");
                     return;
                 }
                 setEid(gameSnapshot.getKey());
@@ -244,15 +251,38 @@ public class GameObj implements Parcelable, DatabaseInstance {
                 double lat = (double) gameSnapshot.child(PATH_LOCATION_LATITUDE).getValue(); // FIXME: java.lang.ClassCastException: java.lang.Long cannot be cast to java.lang.Double
                 double lng = (double) gameSnapshot.child(PATH_LOCATION_LONGITUDE).getValue();
                 setLocation(new LocationObj(lat, lng));
-                onLoadListener.onSuccess(GameObj.this);
+                valueEventListener = null;
+                GameObj.this.onLoadListener.onSuccess(GameObj.this);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                onLoadListener.onFailed(databaseError.getCode(), databaseError.getMessage());
+                valueEventListener = null;
+                GameObj.this.onLoadListener.onFailed(databaseError.getCode(), databaseError.getMessage());
             }
-        });
+        };
+        thisGameReference.addListenerForSingleValueEvent(valueEventListener);
     }
+
+    @Override
+    public boolean isLoading() {
+        return valueEventListener != null;
+    }
+
+    @Override
+    public void abortLoading() {
+        if (!isLoading()) {
+            return;
+        }
+        if (valueEventListener != null) {
+            FBDatabase.getDatabaseReference(this).removeEventListener(valueEventListener);
+            valueEventListener = null;
+        }
+        if (onLoadListener != null) {
+            onLoadListener.onFailed(OnLoadListener.FAILED_LOADING_ABORTED, OnLoadListener.MSG_LOADING_ABORTED);
+        }
+    }
+
 
     @Override
     public int save(Context context) {

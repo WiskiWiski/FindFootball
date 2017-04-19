@@ -36,6 +36,9 @@ public class ArchivedGamesFragment extends Fragment implements
     private static final String TAG = App.G_TAG + ":ArchGamesFrg";
     public static final String F_TAG = "archived_games_frg";
 
+    private EventsProvider eventsProvider;
+
+
     public ArchivedGamesFragment() {
         // Required empty public constructor
     }
@@ -68,8 +71,6 @@ public class ArchivedGamesFragment extends Fragment implements
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        fillAdapter();
-
         return rootView;
     }
 
@@ -79,7 +80,7 @@ public class ArchivedGamesFragment extends Fragment implements
             AppUser user = AppUser.getInstance(context);
             if (user != null) {
                 swipeRefreshLayout.setRefreshing(true);
-                EventsProvider eventsProvider = new EventsProvider(
+                eventsProvider = new EventsProvider(
                         user, new EventsProvider.EventsProviderListener() {
                     @Override
                     public void onProgress(GameObj gameObj) {
@@ -141,6 +142,21 @@ public class ArchivedGamesFragment extends Fragment implements
     @Override
     public void onRefresh() {
         mAdapter.setGameList(new ArrayList<GameObj>());
+        fillAdapter();
+    }
+
+    @Override
+    public void onPause() {
+        if (eventsProvider != null) {
+            eventsProvider.abortLoading();
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         fillAdapter();
     }
 

@@ -45,6 +45,9 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
     private Uri photoUrl;
     private HashSet<GameObj> gameSet;
 
+    private ValueEventListener valueEventListener;
+    private OnLoadListener onLoadListener;
+
 
     public UserObj(String uid) {
         this.uid = uid;
@@ -195,18 +198,22 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
 
 
     @Override
-    public boolean isLoaded() {
+    public boolean hasLoaded() {
         return photoUrl != null && email != null && displayName != null;
     }
 
     @Override
-    public void load(final OnLoadListener onLoadListener) {
+    public void load(OnLoadListener onLoadListener) {
+        this.onLoadListener = onLoadListener;
+        if (isLoading()){
+            return;
+        }
         DatabaseReference thisGameReference = FBDatabase.getDatabaseReference(this);
-        thisGameReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        this.valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot userSnapshot) {
                 if (userSnapshot == null) {
-                    onLoadListener.onFailed(OnLoadListener.FAILED_NULL_SNAPSHOT, null);
+                    UserObj.this.onLoadListener.onFailed(OnLoadListener.FAILED_NULL_SNAPSHOT, null);
                     return;
                 }
                 setUid(userSnapshot.getKey());
@@ -224,16 +231,36 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
                     it.remove(); // avoids a ConcurrentModificationException
                 }
 
-                onLoadListener.onSuccess(UserObj.this);
+                UserObj.this.onLoadListener.onSuccess(UserObj.this);
+                valueEventListener = null;
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                onLoadListener.onFailed(databaseError.getCode(), databaseError.getMessage());
+                valueEventListener = null;
+                UserObj.this.onLoadListener.onFailed(databaseError.getCode(), databaseError.getMessage());
             }
-        });
+        };
+        thisGameReference.addListenerForSingleValueEvent(valueEventListener);
+    }
 
+    @Override
+    public boolean isLoading() {
+        return valueEventListener != null;
+    }
 
+    @Override
+    public void abortLoading() {
+        if (!isLoading()){
+            return;
+        }
+        if (valueEventListener != null) {
+            FBDatabase.getDatabaseReference(this).removeEventListener(valueEventListener);
+            valueEventListener = null;
+        }
+        if (onLoadListener != null){
+            onLoadListener.onFailed(OnLoadListener.FAILED_LOADING_ABORTED, OnLoadListener.MSG_LOADING_ABORTED);
+        }
     }
 
     @Override

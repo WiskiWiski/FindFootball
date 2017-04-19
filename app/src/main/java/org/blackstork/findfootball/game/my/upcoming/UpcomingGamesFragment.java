@@ -47,6 +47,8 @@ public class UpcomingGamesFragment extends Fragment implements
     private SwipeRefreshLayout swipeRefreshLayout;
     private UpcomingGamesAdapter mAdapter;
 
+    private EventsProvider eventsProvider;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,7 +68,6 @@ public class UpcomingGamesFragment extends Fragment implements
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
-        fillAdapter();
 
         return rootView;
     }
@@ -77,7 +78,7 @@ public class UpcomingGamesFragment extends Fragment implements
             AppUser appUser = AppUser.getInstance(context);
             if (appUser != null) {
                 swipeRefreshLayout.setRefreshing(true);
-                EventsProvider eventsProvider = new EventsProvider(
+                eventsProvider = new EventsProvider(
                         appUser, new EventsProvider.EventsProviderListener() {
                     @Override
                     public void onProgress(GameObj gameObj) {
@@ -156,6 +157,21 @@ public class UpcomingGamesFragment extends Fragment implements
     @Override
     public void onRefresh() {
         mAdapter.setGameList(new ArrayList<GameObj>());
+        fillAdapter();
+    }
+
+    @Override
+    public void onPause() {
+        if (eventsProvider != null) {
+            eventsProvider.abortLoading();
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         fillAdapter();
     }
 }

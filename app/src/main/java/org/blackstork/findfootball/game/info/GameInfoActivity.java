@@ -63,22 +63,29 @@ public class GameInfoActivity extends BaseActivity {
             }
 
             thisGameOwnerUser = new UserObj(thisGameObj.getOwnerUid());
-            thisGameOwnerUser.load(new DatabaseInstance.OnLoadListener() {
-                @Override
-                public void onSuccess(DatabaseInstance instance) {
-                    thisGameOwnerUser = (UserObj) instance;
-                    onOwnerLoadComplete();
-                }
-
-                @Override
-                public void onFailed(int code, String msg) {
-                    onOwnerLoadComplete();
-                }
-            });
+            loadUser();
 
         } else {
             intentDataNotFound();
         }
+    }
+
+    private void loadUser(){
+        if (thisGameOwnerUser == null || thisGameOwnerUser.isLoading()){
+            return;
+        }
+        thisGameOwnerUser.load(new DatabaseInstance.OnLoadListener() {
+            @Override
+            public void onSuccess(DatabaseInstance instance) {
+                thisGameOwnerUser = (UserObj) instance;
+                onOwnerLoadComplete();
+            }
+
+            @Override
+            public void onFailed(int code, String msg) {
+                onOwnerLoadComplete();
+            }
+        });
     }
 
     private void onOwnerLoadComplete() {
@@ -119,6 +126,23 @@ public class GameInfoActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (playersTab != null) {
             playersTab.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (thisGameOwnerUser != null){
+            thisGameOwnerUser.abortLoading();
+        }
+        thisGameOwnerUser = null;
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (thisGameOwnerUser != null && !thisGameOwnerUser.hasLoaded()){
+            loadUser();
         }
     }
 }

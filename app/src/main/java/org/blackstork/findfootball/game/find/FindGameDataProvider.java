@@ -26,7 +26,7 @@ class FindGameDataProvider {
 
     private static final String TAG = App.G_TAG + ":FindGameProv";
 
-    private static final int TOTAL_ITEM_EACH_LOAD = 5;
+    private static final int TOTAL_ITEM_EACH_LOAD = 7;
 
     private LocationObj location;
     private EventsProviderListener callbackListener;
@@ -35,6 +35,7 @@ class FindGameDataProvider {
     private boolean inProgress = false;
     private int previewCacheSize = 0;
     private LinkedHashSet<GameObj> gamesCache;
+    private ValueEventListener baseSearhEventListener;
 
     private int searchLevel = 1;
 
@@ -116,53 +117,54 @@ class FindGameDataProvider {
 
     private void baseSearch(final GameElementSearchListener gameElementSearchListener) {
         inProgress = true;
+        baseSearhEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Log.d(TAG, "onDataChange: dataSnapshot [" + dataSnapshot.getChildrenCount() + "] :" + dataSnapshot.getValue());
+                if (dataSnapshot.hasChildren()) {
+                    GameObj game;
+                    for (DataSnapshot gameSnapshot : dataSnapshot.getChildren()) {
+                        if (gameSnapshot == null) {
+                            continue;
+                        }
+                        boolean toAdd = gameElementSearchListener.onSnapshotReceived(gameSnapshot);
+                        if (toAdd) {
+                            game = new GameObj(gameSnapshot);
+                            if (gamesCache.add(game)) {
+                                // игры еще нет в кэше
+                                //Log.d(TAG, "searchLevel_One_Two_Three: added: " + game.getTitle());
+                                callbackListener.onProgress(game);
+                            }
+                        }
+                        long newTime = (long) gameSnapshot.child(GameObj.PATH_EVENT_TIME).getValue();
+                        lastEventTime = newTime != 0 ? newTime + 1 : lastEventTime;
+                    }
+                    if (itsEnough()) {
+                        callbackListener.onSuccess(new ArrayList<>(gamesCache));
+                    } else {
+                        moreData();
+                        return;
+                    }
+                } else {
+                    levelUp();
+                    moreData();
+                    return;
+                }
+                inProgress = false;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callbackListener.onFailed(1, databaseError.getMessage());
+                inProgress = false;
+            }
+        };
         DatabaseReference databaseReference = getDatabaseReference();
         databaseReference
                 .orderByChild(GameObj.PATH_EVENT_TIME)
                 .startAt(lastEventTime)
                 .limitToFirst(TOTAL_ITEM_EACH_LOAD)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //Log.d(TAG, "onDataChange: dataSnapshot [" + dataSnapshot.getChildrenCount() + "] :" + dataSnapshot.getValue());
-                        if (dataSnapshot.hasChildren()) {
-                            GameObj game;
-                            for (DataSnapshot gameSnapshot : dataSnapshot.getChildren()) {
-                                if (gameSnapshot == null) {
-                                    continue;
-                                }
-                                boolean toAdd = gameElementSearchListener.onSnapshotReceived(gameSnapshot);
-                                if (toAdd) {
-                                    game = new GameObj(gameSnapshot);
-                                    if (gamesCache.add(game)) {
-                                        // игры еще нет в кэше
-                                        //Log.d(TAG, "searchLevel_One_Two_Three: added: " + game.getTitle());
-                                        callbackListener.onProgress(game);
-                                    }
-                                }
-                                long newTime = (long) gameSnapshot.child(GameObj.PATH_EVENT_TIME).getValue();
-                                lastEventTime = newTime != 0 ? newTime + 1 : lastEventTime;
-                            }
-                            if (itsEnough()) {
-                                callbackListener.onSuccess(new ArrayList<>(gamesCache));
-                            } else {
-                                moreData();
-                                return;
-                            }
-                        } else {
-                            levelUp();
-                            moreData();
-                            return;
-                        }
-                        inProgress = false;
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        callbackListener.onFailed(1, databaseError.getMessage());
-                        inProgress = false;
-                    }
-                });
+                .addListenerForSingleValueEvent(baseSearhEventListener);
     }
 
     private void searchLevelI(final String requiredCity) {
@@ -209,6 +211,15 @@ class FindGameDataProvider {
         }
         return databaseReference;
     }
+
+
+    public void abortLoading() {
+        databaseReference = null;
+        callbackListener.onSuccess(new ArrayList<>(gamesCache));
+        reset();
+        inProgress = false;
+    }
+
 
     public interface EventsProviderListener {
 

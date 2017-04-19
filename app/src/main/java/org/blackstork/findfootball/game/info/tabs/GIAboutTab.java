@@ -18,7 +18,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.game.GameObj;
-import org.blackstork.findfootball.game.info.BaseGITab;
 import org.blackstork.findfootball.time.TimeProvider;
 import org.blackstork.findfootball.user.UserObj;
 
@@ -62,9 +61,11 @@ public class GIAboutTab extends Fragment {
     }
 
     private void updateView() {
-        if (thisGameOwnerUser != null && thisGameOwnerUser.isLoaded()) {
-            userName.setText(thisGameOwnerUser.getDisplayName());
-            if (thisGameOwnerUser.getPhotoUrl() != null) {
+        if (thisGameOwnerUser != null && thisGameOwnerUser.hasLoaded()) {
+            if (userName != null) {
+                userName.setText(thisGameOwnerUser.getDisplayName());
+            }
+            if (userImage != null && thisGameOwnerUser.getPhotoUrl() != null) {
                 Glide
                         .with(this)
                         .load(thisGameOwnerUser.getPhotoUrl())
@@ -82,9 +83,13 @@ public class GIAboutTab extends Fragment {
             }
         }
 
-        gameDescription.setText(thisGameObj.getDescription());
+        if (gameDescription != null) {
+            gameDescription.setText(thisGameObj.getDescription());
+        }
 
-        long localDate = TimeProvider.convertToLocal(thisGameObj.getEventTime());
-        gameDate.setText(TimeProvider.getStringDate(TimeProvider.FORMAT_LONG, localDate));
+        if (gameDate != null) {
+            long localDate = TimeProvider.convertToLocal(thisGameObj.getEventTime());
+            gameDate.setText(TimeProvider.getStringDate(TimeProvider.FORMAT_LONG, localDate));
+        }
     }
 }

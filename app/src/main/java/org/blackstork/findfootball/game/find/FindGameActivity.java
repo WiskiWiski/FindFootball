@@ -22,7 +22,7 @@ import org.blackstork.findfootball.game.find.dialogs.FGSelectLocationDialog;
 import org.blackstork.findfootball.game.find.recyclerview.EndlessRecyclerOnScrollListener;
 import org.blackstork.findfootball.game.find.recyclerview.FindGameAdapter;
 import org.blackstork.findfootball.game.info.GameInfoActivity;
-import org.blackstork.findfootball.game.my.*;
+import org.blackstork.findfootball.game.my.OnRecyclerViewItemClickListener;
 import org.blackstork.findfootball.location.LocationObj;
 
 import java.util.ArrayList;
@@ -69,8 +69,9 @@ public class FindGameActivity extends BaseActivity {
         selectLocationDialog.setListener(new FGSelectLocationDialog.LocationDialogListener() {
             @Override
             public void onSelect(LocationObj location) {
-                mAdapter.clear();
+                findGameDataProvider.abortLoading();
                 findGameDataProvider.reset();
+                mAdapter.clear();
                 searchLocation = location;
                 loadData();
             }
@@ -152,6 +153,14 @@ public class FindGameActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onPause() {
+        if (findGameDataProvider != null) {
+            findGameDataProvider.abortLoading();
+            progressBar.setVisibility(View.GONE);
+        }
+        super.onPause();
+    }
 
     private OnRecyclerViewItemClickListener getItemClickListener() {
         return new OnRecyclerViewItemClickListener() {

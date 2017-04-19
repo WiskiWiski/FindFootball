@@ -22,9 +22,14 @@ public class EventsProvider {
     private EventsProviderListener listener;
 
     private EVENTS_TYPE requestType;
+    private LOADING_STATUS loadingStatus;
 
     private enum EVENTS_TYPE {
         Upcoming, Archived
+    }
+
+    private enum LOADING_STATUS {
+        IN_PROGRESS, NON, ABORTED
     }
 
     private List<GameObj> gameList;
@@ -36,23 +41,29 @@ public class EventsProvider {
 
 
     private void processData(final Iterator<GameObj> iterator) {
+        if (loadingStatus != LOADING_STATUS.IN_PROGRESS){
+            return;
+        }
         if (iterator.hasNext()) {
             final GameObj game = iterator.next();
             if (game != null) {
                 game.load(new DatabaseInstance.OnLoadListener() {
                     @Override
                     public void onSuccess(DatabaseInstance instance) {
+                        if (loadingStatus != LOADING_STATUS.IN_PROGRESS){
+                            return;
+                        }
                         if (instance != null) {
                             GameObj game = (GameObj) instance;
                             if (game.getEventTime() > TimeProvider.getUtcTime() - 1000) { // - 1000 - просто так
                                 if (requestType == EVENTS_TYPE.Upcoming) {
                                     gameList.add(game);
-                                    listener.onProgress(game);
+                                        listener.onProgress(game);
                                 }
                             } else {
                                 if (requestType == EVENTS_TYPE.Archived) {
                                     gameList.add(game);
-                                    listener.onProgress(game);
+                                        listener.onProgress(game);
                                 }
                             }
                         }
@@ -61,6 +72,9 @@ public class EventsProvider {
 
                     @Override
                     public void onFailed(int code, String msg) {
+                        if (loadingStatus != LOADING_STATUS.IN_PROGRESS){
+                            return;
+                        }
                         if (code == DatabaseInstance.OnLoadListener.FAILED_HAS_REMOVED) {
                             appUser.removeFootballGame(game);
                         }
@@ -80,6 +94,7 @@ public class EventsProvider {
 
 
     private void getGames() {
+        loadingStatus = LOADING_STATUS.IN_PROGRESS;
         gameList = new ArrayList<>();
         appUser.load(new DatabaseInstance.OnLoadListener() {
             @Override
@@ -110,6 +125,14 @@ public class EventsProvider {
     public void getArchivedGames() {
         requestType = EVENTS_TYPE.Archived;
         getGames();
+    }
+
+    public void abortLoading() {
+        loadingStatus = LOADING_STATUS.ABORTED;
+        if (appUser != null) {
+            appUser.abortLoading();
+            listener.onSuccess(gameList);
+        }
     }
 
 

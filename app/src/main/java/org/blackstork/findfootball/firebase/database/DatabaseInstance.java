@@ -12,9 +12,13 @@ public interface DatabaseInstance {
     int RESULT_FAILED_NULL_UID = 1;
     int RESULT_FAILED_NO_PERMISSIONS = 2;
 
-    boolean isLoaded();
+    boolean hasLoaded();
 
     void load(OnLoadListener onLoadListener);
+
+    boolean isLoading();
+
+    void abortLoading();
 
     int save(Context context);
 
@@ -24,6 +28,9 @@ public interface DatabaseInstance {
     interface OnLoadListener {
         int FAILED_NULL_SNAPSHOT = 1;
         int FAILED_HAS_REMOVED = 2;
+        int FAILED_LOADING_ABORTED = 3;
+
+        String MSG_LOADING_ABORTED = "Loading has been aborted";
 
         void onSuccess(DatabaseInstance instance);
 
