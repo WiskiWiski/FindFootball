@@ -2,12 +2,10 @@ package org.blackstork.findfootball.game.info;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
@@ -113,12 +111,6 @@ public class GameInfoActivity extends BaseActivity {
         mAdapter.addFragment(aboutTab, getString(R.string.game_info_activity_tab_title_about));
         mAdapter.addFragment(playersTab, getString(R.string.game_info_activity_tab_title_players));
         viewPager.setAdapter(mAdapter);
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        finish();
-        return super.onNavigationItemSelected(menuItem);
     }
 
     @Override

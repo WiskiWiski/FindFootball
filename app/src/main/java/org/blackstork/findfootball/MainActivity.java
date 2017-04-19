@@ -7,11 +7,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.app.BaseActivity;
+import org.blackstork.findfootball.app.NavDrawerActivity;
 import org.blackstork.findfootball.user.AppUser;
-import org.blackstork.findfootball.user.auth.UserAuth;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends NavDrawerActivity {
 
     private static final String TAG = App.G_TAG + ":MainAct";
 

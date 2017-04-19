@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.app.BaseActivity;
+import org.blackstork.findfootball.app.NavDrawerActivity;
 import org.blackstork.findfootball.user.AppUser;
 import org.blackstork.findfootball.user.auth.UserAuth;
 import org.blackstork.findfootball.game.create.fragments.CGDescriptionFragment;
@@ -26,7 +26,7 @@ import org.blackstork.findfootball.game.GameObj;
 
 import java.util.Formatter;
 
-public class CreateGameActivity extends BaseActivity implements
+public class CreateGameActivity extends NavDrawerActivity implements
         BaseCGFragment.CGTabEditListener {
 
     private static final String TAG = App.G_TAG + ":CreateGameAct";

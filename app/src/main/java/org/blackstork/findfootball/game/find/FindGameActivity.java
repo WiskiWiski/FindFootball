@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.app.BaseActivity;
+import org.blackstork.findfootball.app.NavDrawerActivity;
 import org.blackstork.findfootball.game.GameObj;
 import org.blackstork.findfootball.game.find.dialogs.FGSelectLocationDialog;
 import org.blackstork.findfootball.game.find.recyclerview.EndlessRecyclerOnScrollListener;
@@ -28,7 +28,7 @@ import org.blackstork.findfootball.location.LocationObj;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FindGameActivity extends BaseActivity {
+public class FindGameActivity extends NavDrawerActivity {
 
     private static final String TAG = App.G_TAG + ":FindGameAct";
 
