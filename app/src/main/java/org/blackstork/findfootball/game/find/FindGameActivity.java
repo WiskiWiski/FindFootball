@@ -113,18 +113,30 @@ public class FindGameActivity extends BaseActivity {
             @Override
             public void onSuccess(List<GameObj> gameList) {
                 progressBar.setVisibility(View.GONE);
-                Log.w(TAG, "onSuccess: " + gameList.size());
-                //Toast.makeText(getApplication(), "onSuccess: " + gameList.size(), Toast.LENGTH_SHORT).show();
+                //Log.w(TAG, "onSuccess: " + gameList.size());
             }
 
             @Override
             public void onFailed(int code, String msg) {
                 progressBar.setVisibility(View.GONE);
-                Log.d(TAG, "onFailed: " + msg);
-                // Can't create handler inside thread that has not called Looper.prepare() android
-                Toast.makeText(getApplication(), "onFailed: " + msg, Toast.LENGTH_LONG).show();
-            }
+                switch (code){
+                    case FindGameDataProvider.CODE_NO_DATA:
+                        Toast.makeText(getApplication(), getString(R.string.find_game_activity_no_data), Toast.LENGTH_LONG).show();
+                        break;
+                    /*
+                    case FindGameDataProvider.CODE_NO_MORE_DATA:
+                        Toast.makeText(getApplication(), getString(R.string.find_game_activity_no_more_data), Toast.LENGTH_LONG).show();
 
+                        break;
+                    */
+                    default:
+                        Log.w(TAG, "onFailed: " + msg);
+                        if (code == FindGameDataProvider.CODE_NO_MORE_DATA){
+                            return;
+                        }
+                        Toast.makeText(getApplication(), "onFailed: " + msg, Toast.LENGTH_LONG).show();
+                }
+            }
         });
 
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(mLayoutManager) {
@@ -142,8 +154,6 @@ public class FindGameActivity extends BaseActivity {
             searchLocation.loadFullAddress(getApplicationContext(), new LocationObj.LocationListener() {
                 @Override
                 public void onComplete(int resultCode, LocationObj location, String msg) {
-                    Log.d(TAG, "onComplete: city found: " + location.getCityName());
-                    Log.d(TAG, "onComplete: country found: " + location.getCountryName());
                     findGameDataProvider.setLocation(location);
                     findGameDataProvider.loadData();
                 }
@@ -177,7 +187,7 @@ public class FindGameActivity extends BaseActivity {
         return new OnRecyclerViewItemClickListener() {
             @Override
             public void onClick(final int pos) {
-                Toast.makeText(getApplicationContext(), "Coming soon!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.popup_msg_coming_soon), Toast.LENGTH_SHORT).show();
             }
         };
     }

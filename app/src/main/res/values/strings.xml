@@ -8,6 +8,7 @@
     <string name="activity_title_auth">Login</string>
     <string name="activity_title_find_game">Find Game</string>
     <string name="activity_title_create_game">Create Game</string>
+    <string name="activity_title_game_info">Game</string>
 
     <string name="action_settings">Settings</string>
 
@@ -31,14 +32,45 @@
 
     <!-- === Create Game === -->
     <string name="cg_game_created_msg" formatted="false">%s has been created!</string>
+
+    <string name="cg_game_title_frg_empty_title">Title cannot be empty!</string>
+    <string name="cg_game_title_frg_too_short_title">The minimal title length %d!</string>
+
+    <string name="cg_game_description_frg_empty_description">Description cannot be empty!</string>
+    <string name="cg_game_description_frg_too_short_description">The minimal description length %d!</string>
+
+    <string name="cg_game_location_frg_location_not_selected">Please, select game location!</string>
+
     <string name="cg_game_time_frg_time_offset_too_small" formatted="false">Minimal time offset: %d minutes!</string>
     <string name="cg_game_time_frg_time_in_the_past">You can\'t create game in the past!</string>
 
 
     <!-- === My Games Activity === -->
-    <string name="my_games_activity_title">My Games</string>
     <string name="my_games_activity_title_archived_games">Archive</string>
     <string name="my_games_activity_title_upcoming_games">Upcoming</string>
+    <string name="upcoming_games_fragment_no_data">Games not found</string>
+    <string name="archived_games_fragment_no_data">@string/upcoming_games_fragment_no_data</string>
+
+
+    <!-- === Find Game Activity === -->
+    <string name="find_game_activity_no_more_data">No more data!</string>
+    <string name="find_game_activity_no_data">Games not found!</string>
+
+
+    <!-- === Find Game Activity === -->
+    <string name="game_info_activity_tab_title_about">About</string>
+    <string name="game_info_activity_tab_title_players">Players</string>
+
+
+    <!-- === Popup === -->
+    <string name="popup_msg_coming_soon">Coming soon!</string>
+
+
+    <!-- === Context Menu === -->
+    <string name="context_menu_title">Select Action</string>
+    <string name="context_menu_btn_cancel_title">@android:string/cancel</string>
+    <string name="context_menu_btn_ok_title">@android:string/ok</string>
+    <string name="context_menu_item_delete_title">Delete</string>
 
 
 </resources>

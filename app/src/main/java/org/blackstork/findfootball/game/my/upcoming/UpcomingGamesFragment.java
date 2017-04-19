@@ -87,16 +87,21 @@ public class UpcomingGamesFragment extends Fragment implements
 
                     @Override
                     public void onSuccess(List<GameObj> gameList) {
-                        Log.w(TAG, "onSuccess: list size: " + gameList.size());
-                        if (mAdapter.getItemCount() != gameList.size()) {
-                            mAdapter.setGameList(gameList);
+                        //Log.w(TAG, "onSuccess: list size: " + gameList.size());
+                        if (gameList.size() == 0){
+                            Toast.makeText(getContext(), getString(R.string.upcoming_games_fragment_no_data),
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            if (mAdapter.getItemCount() != gameList.size()) {
+                                mAdapter.setGameList(gameList);
+                            }
                         }
                         swipeRefreshLayout.setRefreshing(false);
                     }
 
                     @Override
                     public void onFailed(int code, String msg) {
-                        Log.d(TAG, "onFailed [" + code + "] : " + msg);
+                        Log.w(TAG, "onFailed [" + code + "] : " + msg);
                     }
                 });
                 eventsProvider.getUpcomingGames();
@@ -119,9 +124,9 @@ public class UpcomingGamesFragment extends Fragment implements
         return new OnRecyclerViewItemClickListener() {
             @Override
             public void onClick(final int pos) {
-                final String[] actionsTitles = {"Delete"};
+                final String[] actionsTitles = {getString(R.string.context_menu_item_delete_title)};
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Select Action");
+                builder.setTitle(getString(R.string.context_menu_title));
                 builder.setItems(actionsTitles, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
@@ -130,10 +135,10 @@ public class UpcomingGamesFragment extends Fragment implements
                                 deleteEvent(pos);
                                 break;
                             default:
-                                Toast.makeText(getContext(), "Action: " + actionsTitles[item] + " p:" + pos, Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, "onClick: unknown action: " + actionsTitles[item] + " p:" + pos);
                         }
                     }
-                }).setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                }).setNegativeButton(getString(R.string.context_menu_btn_cancel_title), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();

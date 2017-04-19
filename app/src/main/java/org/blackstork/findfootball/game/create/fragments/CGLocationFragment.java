@@ -48,7 +48,8 @@ public class CGLocationFragment extends BaseCGFragment {
     public boolean saveResult(boolean checkForCorrect, GameObj game) {
         LocationObj location = getLocation();
         if (checkForCorrect && location == null) {
-            Toast.makeText(getContext(), "Please, select game location!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), getString(R.string.cg_game_location_frg_location_not_selected),
+                    Toast.LENGTH_LONG).show();
             return false;
         }
         game.setLocation(location);

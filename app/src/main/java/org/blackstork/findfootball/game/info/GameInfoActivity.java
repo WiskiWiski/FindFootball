@@ -70,8 +70,8 @@ public class GameInfoActivity extends BaseActivity {
         }
     }
 
-    private void loadUser(){
-        if (thisGameOwnerUser == null || thisGameOwnerUser.isLoading()){
+    private void loadUser() {
+        if (thisGameOwnerUser == null || thisGameOwnerUser.isLoading()) {
             return;
         }
         thisGameOwnerUser.load(new DatabaseInstance.OnLoadListener() {
@@ -110,8 +110,8 @@ public class GameInfoActivity extends BaseActivity {
         aboutTab = new GIAboutTab();
         playersTab = new GIPlayersTab();
 
-        mAdapter.addFragment(aboutTab, "About");
-        mAdapter.addFragment(playersTab, "Players");
+        mAdapter.addFragment(aboutTab, getString(R.string.game_info_activity_tab_title_about));
+        mAdapter.addFragment(playersTab, getString(R.string.game_info_activity_tab_title_players));
         viewPager.setAdapter(mAdapter);
     }
 
@@ -131,7 +131,7 @@ public class GameInfoActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
-        if (thisGameOwnerUser != null){
+        if (thisGameOwnerUser != null) {
             thisGameOwnerUser.abortLoading();
         }
         thisGameOwnerUser = null;
@@ -141,7 +141,7 @@ public class GameInfoActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (thisGameOwnerUser != null && !thisGameOwnerUser.hasLoaded()){
+        if (thisGameOwnerUser != null && !thisGameOwnerUser.hasLoaded()) {
             loadUser();
         }
     }

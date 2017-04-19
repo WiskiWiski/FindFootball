@@ -16,6 +16,8 @@ import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.game.create.BaseCGFragment;
 import org.blackstork.findfootball.game.GameObj;
 
+import java.util.Formatter;
+
 
 public class CGTitleFragment extends BaseCGFragment {
 
@@ -65,9 +67,13 @@ public class CGTitleFragment extends BaseCGFragment {
 
     private boolean verifyTitle(String title) {
         if (title.isEmpty()) {
-            Toast.makeText(getContext(), "Enter the title!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.cg_game_title_frg_empty_title),
+                    Toast.LENGTH_LONG).show();
         } else if (title.length() < MINIMAL_TITLE_LENGTH) {
-            Toast.makeText(getContext(), "The minimal title length " + MINIMAL_TITLE_LENGTH, Toast.LENGTH_SHORT).show();
+            Formatter formatter = new Formatter();
+            formatter.format(getString(R.string.cg_game_title_frg_too_short_title),
+                    MINIMAL_TITLE_LENGTH);
+            Toast.makeText(getContext(), formatter.toString(), Toast.LENGTH_LONG).show();
         } else {
             return true;
         }

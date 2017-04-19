@@ -89,16 +89,21 @@ public class ArchivedGamesFragment extends Fragment implements
 
                     @Override
                     public void onSuccess(List<GameObj> gameList) {
-                        Log.w(TAG, "onSuccess: list size: " + gameList.size());
-                        if (mAdapter.getItemCount() != gameList.size()) {
-                            mAdapter.setGameList(gameList);
+                        //Log.w(TAG, "onSuccess: list size: " + gameList.size());
+                        if (gameList.size() == 0){
+                            Toast.makeText(getContext(), getString(R.string.archived_games_fragment_no_data),
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            if (mAdapter.getItemCount() != gameList.size()) {
+                                mAdapter.setGameList(gameList);
+                            }
                         }
                         swipeRefreshLayout.setRefreshing(false);
                     }
 
                     @Override
                     public void onFailed(int code, String msg) {
-                        Log.d(TAG, "onFailed [" + code + "] : " + msg);
+                        Log.w(TAG, "onFailed [" + code + "] : " + msg);
                     }
                 });
                 eventsProvider.getArchivedGames();
@@ -134,7 +139,7 @@ public class ArchivedGamesFragment extends Fragment implements
         return new OnRecyclerViewItemClickListener() {
             @Override
             public void onClick(final int pos) {
-                Toast.makeText(getContext(), "Coming soon!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.popup_msg_coming_soon), Toast.LENGTH_SHORT).show();
             }
         };
     }

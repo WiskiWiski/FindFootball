@@ -131,7 +131,7 @@ public class EventsProvider {
         loadingStatus = LOADING_STATUS.ABORTED;
         if (appUser != null) {
             appUser.abortLoading();
-            listener.onSuccess(gameList);
+            //listener.onSuccess(gameList);
         }
     }
 

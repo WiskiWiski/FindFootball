@@ -14,8 +14,10 @@ import android.widget.Toast;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.game.create.BaseCGFragment;
 import org.blackstork.findfootball.game.GameObj;
+import org.blackstork.findfootball.game.create.BaseCGFragment;
+
+import java.util.Formatter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,10 +68,13 @@ public class CGDescriptionFragment extends BaseCGFragment {
 
     private boolean verifyDescription(String description) {
         if (description.isEmpty()) {
-            Toast.makeText(getContext(), "The description can't be empty!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.cg_game_description_frg_empty_description),
+                    Toast.LENGTH_LONG).show();
         } else if (description.length() < MINIMAL_DESCRIPTION_LENGTH) {
-            Toast.makeText(getContext(), "The description is too short!(" + MINIMAL_DESCRIPTION_LENGTH + ")",
-                    Toast.LENGTH_SHORT).show();
+            Formatter formatter = new Formatter();
+            formatter.format(getString(R.string.cg_game_description_frg_too_short_description),
+                    MINIMAL_DESCRIPTION_LENGTH);
+            Toast.makeText(getContext(), formatter.toString(), Toast.LENGTH_LONG).show();
         } else {
             return true;
         }

@@ -69,6 +69,7 @@
         </activity>
         <activity
             android:name=".game.info.GameInfoActivity"
+            android:label="@string/activity_title_game_info"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

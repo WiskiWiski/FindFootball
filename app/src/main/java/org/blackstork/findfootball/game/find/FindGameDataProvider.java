@@ -26,6 +26,10 @@ class FindGameDataProvider {
 
     private static final String TAG = App.G_TAG + ":FindGameProv";
 
+    public static final int CODE_NO_DATA = 2;
+    public static final int CODE_NO_MORE_DATA = 3;
+
+
     private static final int TOTAL_ITEM_EACH_LOAD = 7;
 
     private LocationObj location;
@@ -35,7 +39,7 @@ class FindGameDataProvider {
     private boolean inProgress = false;
     private int previewCacheSize = 0;
     private LinkedHashSet<GameObj> gamesCache;
-    private ValueEventListener baseSearhEventListener;
+    private ValueEventListener baseSearchEventListener;
 
     private int searchLevel = 1;
 
@@ -89,9 +93,9 @@ class FindGameDataProvider {
             default:
                 inProgress = false;
                 if (gamesCache.size() == 0) {
-                    callbackListener.onFailed(2, "No data found");
+                    callbackListener.onFailed(CODE_NO_DATA, "No data found");
                 } else {
-                    callbackListener.onFailed(3, "No more data!");
+                    callbackListener.onFailed(CODE_NO_MORE_DATA, "No more data!");
                 }
                 break;
         }
@@ -117,7 +121,7 @@ class FindGameDataProvider {
 
     private void baseSearch(final GameElementSearchListener gameElementSearchListener) {
         inProgress = true;
-        baseSearhEventListener = new ValueEventListener() {
+        baseSearchEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //Log.d(TAG, "onDataChange: dataSnapshot [" + dataSnapshot.getChildrenCount() + "] :" + dataSnapshot.getValue());
@@ -155,7 +159,7 @@ class FindGameDataProvider {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                callbackListener.onFailed(1, databaseError.getMessage());
+                callbackListener.onFailed(databaseError.getCode(), databaseError.getMessage());
                 inProgress = false;
             }
         };
@@ -164,7 +168,7 @@ class FindGameDataProvider {
                 .orderByChild(GameObj.PATH_EVENT_TIME)
                 .startAt(lastEventTime)
                 .limitToFirst(TOTAL_ITEM_EACH_LOAD)
-                .addListenerForSingleValueEvent(baseSearhEventListener);
+                .addListenerForSingleValueEvent(baseSearchEventListener);
     }
 
     private void searchLevelI(final String requiredCity) {
@@ -215,7 +219,7 @@ class FindGameDataProvider {
 
     public void abortLoading() {
         databaseReference = null;
-        callbackListener.onSuccess(new ArrayList<>(gamesCache));
+        //callbackListener.onSuccess(new ArrayList<>(gamesCache));
         reset();
         inProgress = false;
     }
