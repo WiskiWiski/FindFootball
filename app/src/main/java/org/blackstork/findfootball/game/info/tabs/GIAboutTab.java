@@ -62,10 +62,9 @@ public class GIAboutTab extends Fragment {
     }
 
     private void updateView() {
-        if (thisGameOwnerUser != null) {
+        if (thisGameOwnerUser != null && thisGameOwnerUser.isLoaded()) {
             userName.setText(thisGameOwnerUser.getDisplayName());
             if (thisGameOwnerUser.getPhotoUrl() != null) {
-
                 Glide
                         .with(this)
                         .load(thisGameOwnerUser.getPhotoUrl())

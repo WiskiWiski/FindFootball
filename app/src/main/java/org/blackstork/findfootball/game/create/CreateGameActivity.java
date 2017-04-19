@@ -12,8 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseUser;
-
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.app.BaseActivity;
@@ -24,8 +22,6 @@ import org.blackstork.findfootball.game.create.fragments.CGLocationFragment;
 import org.blackstork.findfootball.game.create.fragments.CGTempFragment;
 import org.blackstork.findfootball.game.create.fragments.CGTitleFragment;
 import org.blackstork.findfootball.game.create.view.CreateGameViewPager;
-import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
-import org.blackstork.findfootball.firebase.database.FBUserDatabase;
 import org.blackstork.findfootball.game.GameObj;
 
 import java.util.Formatter;
@@ -115,9 +111,9 @@ public class CreateGameActivity extends BaseActivity implements
         if (!viewPager.getCurrentFragment().saveResult(true, thisGameObj)) {
             return;
         }
-        //FirebaseUser user = UserAuth.getUser(this);
-        AppUser user = AppUser.getInstance(this, true);
-        if (user != null) {
+
+        AppUser appUser = AppUser.getInstance(this, true);
+        if (appUser != null) {
             Formatter formatter = new Formatter();
             formatter.format(getString(R.string.cg_game_created_msg), thisGameObj.getTitle());
 
@@ -126,9 +122,9 @@ public class CreateGameActivity extends BaseActivity implements
             Context context = getApplicationContext();
             Toast.makeText(context, formatter.toString(), Toast.LENGTH_LONG).show();
 
-            FBFootballDatabase.newInstance(context).saveGame(thisGameObj, user.getUid());
-            FBUserDatabase.newInstance(context, user.getUid())
-                    .addFootballEvent(thisGameObj.getEid(), FBUserDatabase.USER_ROLE_OWNER);
+            thisGameObj.setOwnerUid(appUser.getUid());
+            thisGameObj.save(getApplicationContext());
+            appUser.joinToFootballGame(thisGameObj);
             finish();
         }
 

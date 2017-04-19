@@ -18,8 +18,6 @@ public class FootballPlayer extends UserObj {
 
     private FootballPosition position;
 
-    public FootballPlayer() {
-    }
 
     public FootballPlayer(String uid) {
         super(uid);

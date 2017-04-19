@@ -15,11 +15,11 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
+import org.blackstork.findfootball.firebase.database.FBDatabase;
 import org.blackstork.findfootball.user.auth.providers.MyEmailAuthAuthProvider;
 import org.blackstork.findfootball.user.auth.providers.MyFacebookAuthProvider;
 import org.blackstork.findfootball.user.auth.providers.MyGoogleAuthProvider;
 import org.blackstork.findfootball.user.auth.providers.MyVkontakteAuthAuthProvider;
-import org.blackstork.findfootball.firebase.database.FBUserDatabase;
 
 public class AuthUiActivity extends AppCompatActivity {
 
@@ -108,7 +108,7 @@ public class AuthUiActivity extends AppCompatActivity {
             public void onResult(FirebaseUser user) {
                 Log.d(TAG, "Authentication success: " + user.getEmail());
                 Toast.makeText(getApplicationContext(), user.getEmail(), Toast.LENGTH_LONG).show();
-                FBUserDatabase.signUpUser(user);
+                FBDatabase.signUpUser(user);
                 setResult(UserAuth.RESULT_SUCCESS);
                 finish();
             }

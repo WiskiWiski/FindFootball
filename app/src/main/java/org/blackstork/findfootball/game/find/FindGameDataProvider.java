@@ -9,7 +9,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
+import org.blackstork.findfootball.firebase.database.FBDatabase;
 import org.blackstork.findfootball.game.GameObj;
 import org.blackstork.findfootball.location.LocationObj;
 import org.blackstork.findfootball.time.TimeProvider;
@@ -118,7 +118,7 @@ class FindGameDataProvider {
         inProgress = true;
         DatabaseReference databaseReference = getDatabaseReference();
         databaseReference
-                .orderByChild(FBFootballDatabase.KEY_EVENT_TIME)
+                .orderByChild(GameObj.PATH_EVENT_TIME)
                 .startAt(lastEventTime)
                 .limitToFirst(TOTAL_ITEM_EACH_LOAD)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -140,7 +140,7 @@ class FindGameDataProvider {
                                         callbackListener.onProgress(game);
                                     }
                                 }
-                                long newTime = (long) gameSnapshot.child(FBFootballDatabase.KEY_EVENT_TIME).getValue();
+                                long newTime = (long) gameSnapshot.child(GameObj.PATH_EVENT_TIME).getValue();
                                 lastEventTime = newTime != 0 ? newTime + 1 : lastEventTime;
                             }
                             if (itsEnough()) {
@@ -171,7 +171,7 @@ class FindGameDataProvider {
             @Override
             public boolean onSnapshotReceived(DataSnapshot gameSnapshot) {
                 String eventDataString = (String)
-                        gameSnapshot.child(FBFootballDatabase.KEY_LOCATION_CITY_NAME).getValue();
+                        gameSnapshot.child(GameObj.PATH_LOCATION_CITY_NAME).getValue();
                 return eventDataString != null && eventDataString.equals(requiredCity);
             }
         });
@@ -183,7 +183,7 @@ class FindGameDataProvider {
             @Override
             public boolean onSnapshotReceived(DataSnapshot gameSnapshot) {
                 String eventDataString = (String)
-                        gameSnapshot.child(FBFootballDatabase.KEY_LOCATION_COUNTRY_NAME).getValue();
+                        gameSnapshot.child(GameObj.PATH_LOCATION_COUNTRY_NAME).getValue();
                 return eventDataString != null && eventDataString.equals(requiredCountry);
             }
         });
@@ -205,7 +205,7 @@ class FindGameDataProvider {
 
     private DatabaseReference getDatabaseReference() {
         if (databaseReference == null) {
-            databaseReference = FirebaseDatabase.getInstance().getReference().child(FBFootballDatabase.FOOTBALL_PATH);
+            databaseReference = FirebaseDatabase.getInstance().getReference().child(FBDatabase.PATH_FOOTBALL_GAMES);
         }
         return databaseReference;
     }

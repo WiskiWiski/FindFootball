@@ -17,7 +17,7 @@ import com.vk.sdk.VKSdk;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.firebase.database.FBUserDatabase;
+import org.blackstork.findfootball.user.AppUser;
 
 /**
  * Created by WiskiW on 11.03.2017.
@@ -33,12 +33,13 @@ public class UserAuth {
     public final static int RESULT_CANCEL = 12;
 
 
-    public static FirebaseUser getUser(Context context) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            FBUserDatabase.newInstance(context, user.getUid()).updateLastUserOnline();
+    public static AppUser getUser() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if  (firebaseUser != null){
+            return new AppUser(firebaseUser);
+        } else {
+            return null;
         }
-        return user;
     }
 
 
@@ -57,13 +58,6 @@ public class UserAuth {
 
     public static void requestUser(Context context) {
         requestUser(context, null);
-    }
-
-    public static void updateLastUserOnline(Context context) {
-        FirebaseUser user = getUser(context);
-        if (user != null) {
-            FBUserDatabase.newInstance(context, user.getUid()).updateLastUserOnline();
-        }
     }
 
     public static void checkForAccountAvailability(final Context context) {

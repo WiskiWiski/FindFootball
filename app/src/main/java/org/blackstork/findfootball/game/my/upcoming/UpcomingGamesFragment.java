@@ -17,19 +17,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseUser;
-
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.user.AppUser;
-import org.blackstork.findfootball.user.auth.UserAuth;
+import org.blackstork.findfootball.game.GameObj;
 import org.blackstork.findfootball.game.info.GameInfoActivity;
 import org.blackstork.findfootball.game.my.EventsProvider;
 import org.blackstork.findfootball.game.my.OnRecyclerViewItemClickListener;
-import org.blackstork.findfootball.firebase.database.FBCompleteListener;
-import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
-import org.blackstork.findfootball.firebase.database.FBUserDatabase;
-import org.blackstork.findfootball.game.GameObj;
+import org.blackstork.findfootball.user.AppUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,11 +74,11 @@ public class UpcomingGamesFragment extends Fragment implements
     private void fillAdapter() {
         if (mAdapter.getItemCount() == 0) {
             Context context = getContext();
-            AppUser user = AppUser.getInstance(context);
-            if (user != null) {
+            AppUser appUser = AppUser.getInstance(context);
+            if (appUser != null) {
                 swipeRefreshLayout.setRefreshing(true);
-                EventsProvider eventsProvider = new EventsProvider(context,
-                        user.getUid(), new EventsProvider.EventsProviderListener() {
+                EventsProvider eventsProvider = new EventsProvider(
+                        appUser, new EventsProvider.EventsProviderListener() {
                     @Override
                     public void onProgress(GameObj gameObj) {
                         mAdapter.addGame(gameObj);
@@ -150,30 +144,11 @@ public class UpcomingGamesFragment extends Fragment implements
 
     private void deleteEvent(int pos) {
         Context context = getContext();
-        AppUser user = AppUser.getInstance(context);
-        if (user != null) {
+        AppUser appUser = AppUser.getInstance(context);
+        if (appUser != null) {
             final GameObj game = mAdapter.getGameList().get(pos);
             mAdapter.removeGame(pos);
-            FBUserDatabase userDatabase = FBUserDatabase.newInstance(context, user.getUid());
-            userDatabase.removeFootballEvent(new FBCompleteListener() {
-                @Override
-                public void onSuccess(Object object) {
-                    if (object != null) {
-                        String status = (String) object;
-                        if (status.equals(FBUserDatabase.USER_ROLE_OWNER)) {
-                            FBFootballDatabase footballDatabase = FBFootballDatabase.newInstance(getContext());
-                            footballDatabase.deleteGame(game.getEid());
-                            Toast.makeText(getContext(), game.getTitle() + " successfully deleted", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailed(int code, String msg) {
-                    Toast.makeText(getContext(), game.getTitle() + " successfully deleted", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "onFailed: delete event error!");
-                }
-            }, game.getEid());
+            appUser.removeFootballGame(game);
         }
 
     }

@@ -9,19 +9,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
+import org.blackstork.findfootball.firebase.database.FBDatabase;
 import org.blackstork.findfootball.user.UserObj;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +28,9 @@ public class PlayerListObj implements Parcelable {
 
     public static final String TAG = App.G_TAG + ":PlayerListObj";
 
+    public final static String PATH_PLAYER_COUNT = "/player_count/";
+    public final static String PATH_PLAYERS = "/players/";
+
     private String eid;
     private int playersCount = 4;
     private LinkedHashSet<UserObj> playerList;
@@ -39,9 +38,8 @@ public class PlayerListObj implements Parcelable {
     private DatabaseReference databaseReference;
     private ChildEventListener databaseListener;
 
-    public PlayerListObj(String eid, int playersCount) {
+    public PlayerListObj(String eid) {
         this.eid = eid;
-        this.playersCount = playersCount;
         this.playerList = new LinkedHashSet<>();
     }
 
@@ -49,7 +47,7 @@ public class PlayerListObj implements Parcelable {
         eid = gameSnapshot.getKey();
 
         playerList = new LinkedHashSet<>();
-        HashMap<String, String> hashMap = (HashMap<String, String>) gameSnapshot.child(FBFootballDatabase.KEY_PLAYERS).getValue();
+        HashMap<String, String> hashMap = (HashMap<String, String>) gameSnapshot.child(PATH_PLAYERS).getValue();
         if (hashMap != null) {
             Iterator it = hashMap.entrySet().iterator();
             while (it.hasNext()) {
@@ -59,7 +57,7 @@ public class PlayerListObj implements Parcelable {
             }
         }
 
-        Object teamSize = gameSnapshot.child(FBFootballDatabase.KEY_PLAYER_COUNT).getValue();
+        Object teamSize = gameSnapshot.child(PATH_PLAYER_COUNT).getValue();
         if (teamSize != null) {
             setPlayersCount(((Long) teamSize).intValue());
         }
@@ -83,8 +81,8 @@ public class PlayerListObj implements Parcelable {
 
     public void setChangeListener(final PlayerListChangeListener changeListener) {
         databaseReference = FirebaseDatabase.getInstance().getReference()
-                .child(FBFootballDatabase.FOOTBALL_PATH).child(eid)
-                .child(FBFootballDatabase.KEY_PLAYERS);
+                .child(FBDatabase.PATH_FOOTBALL_GAMES).child(eid)
+                .child(PATH_PLAYERS);
         databaseListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -147,6 +145,13 @@ public class PlayerListObj implements Parcelable {
 
     void joinTheTeam() {
 
+    }
+
+    public boolean removePlayer(UserObj user) {
+        if (playerList != null) {
+            return playerList.remove(user);
+        }
+        return false;
     }
 
     public interface PlayerListListener {

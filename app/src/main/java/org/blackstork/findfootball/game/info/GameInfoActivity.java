@@ -12,8 +12,7 @@ import android.view.MenuItem;
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
 import org.blackstork.findfootball.app.BaseActivity;
-import org.blackstork.findfootball.firebase.database.FBCompleteListener;
-import org.blackstork.findfootball.firebase.database.FBUserDatabase;
+import org.blackstork.findfootball.firebase.database.DatabaseInstance;
 import org.blackstork.findfootball.game.GameObj;
 import org.blackstork.findfootball.game.info.tabs.GIAboutTab;
 import org.blackstork.findfootball.game.info.tabs.GIPlayersTab;
@@ -63,10 +62,11 @@ public class GameInfoActivity extends BaseActivity {
                 viewPager.setCurrentItem(tabNum);
             }
 
-            FBUserDatabase.loadUserByUid(new FBCompleteListener() {
+            thisGameOwnerUser = new UserObj(thisGameObj.getOwnerUid());
+            thisGameOwnerUser.load(new DatabaseInstance.OnLoadListener() {
                 @Override
-                public void onSuccess(Object object) {
-                    thisGameOwnerUser = (UserObj) object;
+                public void onSuccess(DatabaseInstance instance) {
+                    thisGameOwnerUser = (UserObj) instance;
                     onOwnerLoadComplete();
                 }
 
@@ -74,8 +74,7 @@ public class GameInfoActivity extends BaseActivity {
                 public void onFailed(int code, String msg) {
                     onOwnerLoadComplete();
                 }
-            }, thisGameObj.getOwnerUid());
-
+            });
 
         } else {
             intentDataNotFound();

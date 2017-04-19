@@ -56,7 +56,6 @@ public class MyGamesActivity extends BaseActivity implements
         setContentView(R.layout.activity_my_games);
         initToolbar();
         if (savedInstanceState == null) {
-            UserAuth.updateLastUserOnline(this);
             // регистрируем главный NavDraw.ItemClickListener и передаем menu-id главного экрана
             registerRootActivity(this);
             addRootActivityChildes(R.id.nav_upcoming_games, R.id.nav_archived_games);

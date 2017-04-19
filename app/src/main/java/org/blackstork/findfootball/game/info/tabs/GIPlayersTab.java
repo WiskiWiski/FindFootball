@@ -14,8 +14,6 @@ import android.widget.Toast;
 
 import org.blackstork.findfootball.R;
 import org.blackstork.findfootball.app.App;
-import org.blackstork.findfootball.firebase.database.FBFootballDatabase;
-import org.blackstork.findfootball.firebase.database.FBUserDatabase;
 import org.blackstork.findfootball.game.GameObj;
 import org.blackstork.findfootball.game.PlayerListObj;
 import org.blackstork.findfootball.user.AppUser;
@@ -54,7 +52,6 @@ public class GIPlayersTab extends Fragment {
         playersLinearLayout = (LinearLayout) rootView.findViewById(R.id.players_container);
 
 
-
         return rootView;
     }
 
@@ -73,29 +70,28 @@ public class GIPlayersTab extends Fragment {
             public void onClick(View v) {
                 AppUser appUser = AppUser.getInstance(getContext());
                 if (appUser != null) {
-                   afterUserAuth(appUser);
+                    afterUserAuth(appUser);
                 }
             }
         });
         updateView();
     }
 
-    private void afterUserAuth(AppUser appUser){
+    private void afterUserAuth(AppUser appUser) {
         int result = thisGameObj.getPlayerList().addPlayer(appUser);
         switch (result) {
             case PlayerListObj.LIST_OK:
-                FBFootballDatabase.newInstance(getContext()).saveGame(thisGameObj, appUser.getUid());
-                FBUserDatabase.newInstance(getContext(), appUser.getUid())
-                        .addFootballEvent(thisGameObj.getEid(), FBUserDatabase.USER_ROLE_MEMBER);
+                appUser.joinToFootballGame(thisGameObj);
                 updateView();
                 break;
             case PlayerListObj.LIST_ALREADY_JOINED:
-                Log.d(TAG, "afterUserAuth: You already joined!");
-                // TODO: Toast.makeText(getContext(), "You already joined!", Toast.LENGTH_SHORT).show();
+                appUser.removeFootballGame(thisGameObj);
+                updateView();
                 break;
             case PlayerListObj.LIST_NO_SPACE:
                 Log.d(TAG, "afterUserAuth: Sorry, there are no space!");
-                // TODO: Toast.makeText(getContext(), "Sorry, there are no space!", Toast.LENGTH_SHORT).show();
+                // TODO: Sorry, there are no space!
+                Toast.makeText(getContext(), "Sorry, there are no space!", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
