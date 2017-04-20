@@ -69,7 +69,7 @@ public class AppUser extends UserObj {
         currentUser = null;
     }
 
-    public void joinToFootballGame(GameObj game, boolean isOwner) {
+    public GameObj joinToFootballGame(GameObj game, boolean isOwner) {
         // Auto saving to Firebase!
         // 1. Сохраняем в списки ивентов юзура
         pushGameToSet(game);
@@ -80,13 +80,14 @@ public class AppUser extends UserObj {
         game.getPlayerList().addPlayer(this);
         FBDatabase.getDatabaseReference(game)
                 .child(GameObj.PATH_PLAYERS).child(getUid()).setValue(String.valueOf(isOwner));
+        return game;
     }
 
-    public void joinToFootballGame(GameObj game) {
-        joinToFootballGame(game, false);
+    public GameObj joinToFootballGame(GameObj game) {
+        return joinToFootballGame(game, false);
     }
 
-    public void removeFootballGame(GameObj game) {
+    public GameObj removeFootballGame(GameObj game) {
         // Auto saving to Firebase!
         getGameSet().remove(game);
         FBDatabase.getDatabaseReference(this)
@@ -97,8 +98,9 @@ public class AppUser extends UserObj {
         } else {
             game.getPlayerList().removePlayer(this);
             FBDatabase.getDatabaseReference(game)
-                    .child(GameObj.PATH_PLAYERS).child(game.getEid()).removeValue();
+                    .child(GameObj.PATH_PLAYERS).child(getUid()).removeValue();
         }
+        return game;
 
     }
 

@@ -10,15 +10,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import online.findfootball.android.app.App;
-import online.findfootball.android.firebase.database.FBDatabase;
-import online.findfootball.android.user.UserObj;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
+
+import online.findfootball.android.app.App;
+import online.findfootball.android.firebase.database.DatabaseInstance;
+import online.findfootball.android.firebase.database.FBDatabase;
+import online.findfootball.android.user.UserObj;
 
 /**
  * Created by WiskiW on 17.04.2017.
@@ -33,20 +34,20 @@ public class PlayerListObj implements Parcelable {
 
     private String eid;
     private int playersCount = 4;
-    private LinkedHashSet<UserObj> playerList;
+    private ArrayList<UserObj> playerList;
 
     private DatabaseReference databaseReference;
     private ChildEventListener databaseListener;
 
     public PlayerListObj(String eid) {
         this.eid = eid;
-        this.playerList = new LinkedHashSet<>();
+        this.playerList = new ArrayList<>();
     }
 
     public PlayerListObj(DataSnapshot gameSnapshot) {
         eid = gameSnapshot.getKey();
 
-        playerList = new LinkedHashSet<>();
+        playerList = new ArrayList<>();
         HashMap<String, String> hashMap = (HashMap<String, String>) gameSnapshot.child(PATH_PLAYERS).getValue();
         if (hashMap != null) {
             Iterator it = hashMap.entrySet().iterator();
@@ -63,6 +64,10 @@ public class PlayerListObj implements Parcelable {
         }
     }
 
+    public boolean hasJoined(UserObj player){
+        return playerList.contains(player);
+    }
+
     public HashMap<String, String> getHashMap() {
         HashMap<String, String> hashMap = new LinkedHashMap<>();
         for (UserObj player : playerList) {
@@ -71,11 +76,11 @@ public class PlayerListObj implements Parcelable {
         return hashMap;
     }
 
-    public LinkedHashSet<UserObj> getList() {
+    public ArrayList<UserObj> getList() {
         return playerList;
     }
 
-    public void setList(LinkedHashSet<UserObj> list) {
+    public void setList(ArrayList<UserObj> list) {
         this.playerList = list;
     }
 
@@ -86,11 +91,23 @@ public class PlayerListObj implements Parcelable {
         databaseListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildAdded: dataSnapshot:" + dataSnapshot.getKey());
                 UserObj player = new UserObj(dataSnapshot.getKey());
-                if (playerList.add(player)) {
-                    Log.d(TAG, "onChildAdded: dataSnapshot:" + dataSnapshot.getKey());
-                    changeListener.onListChange(playerList);
-                }
+                player.load(new DatabaseInstance.OnLoadListener() {
+                    @Override
+                    public void onSuccess(DatabaseInstance instance) {
+                        UserObj player = (UserObj) instance;
+                        if (playerList.add(player)) {
+                            changeListener.onAdded(player);
+                        }
+                    }
+
+                    @Override
+                    public void onFailed(int code, String msg) {
+
+                    }
+                });
+
             }
 
             @Override
@@ -103,7 +120,7 @@ public class PlayerListObj implements Parcelable {
                 Log.d(TAG, "onChildRemoved: ");
                 UserObj player = new UserObj(dataSnapshot.getKey());
                 playerList.remove(player);
-                changeListener.onListChange(playerList);
+                changeListener.onRemoved(player);
             }
 
             @Override
@@ -159,7 +176,10 @@ public class PlayerListObj implements Parcelable {
     }
 
     public interface PlayerListChangeListener {
-        void onListChange(LinkedHashSet<UserObj> playerList);
+        void onAdded(UserObj player);
+
+        void onRemoved(UserObj player);
+        //void onListChange(LinkedHashSet<UserObj> playerList);
     }
 
 
@@ -192,7 +212,102 @@ public class PlayerListObj implements Parcelable {
     private PlayerListObj(Parcel in) {
         eid = in.readString();
         playersCount = in.readInt();
-        playerList = (LinkedHashSet<UserObj>) in.readSerializable();
+        playerList = (ArrayList<UserObj>) in.readSerializable();
+    }
+
+
+    private void load(final PlayersListListener listListener, final int index) {
+        if (listListener == null) {
+            return;
+        }
+        UserObj player = playerList.get(index);
+        player.load(new DatabaseInstance.OnLoadListener() {
+            @Override
+            public void onSuccess(DatabaseInstance instance) {
+                UserObj player = (UserObj) instance;
+                playerList.set(index, player);
+                listListener.onAdd(player);
+                if (index + 1 < playerList.size() && databaseListener != null) {
+                    load(listListener, index + 1);
+                }
+            }
+
+            @Override
+            public void onFailed(int code, String msg) {
+                if (index + 1 < playerList.size() && databaseListener != null) {
+                    load(listListener, index + 1);
+                }
+            }
+        });
+    }
+
+    private DatabaseReference getDatabaseReference() {
+        return FirebaseDatabase.getInstance().getReference()
+                .child(FBDatabase.PATH_FOOTBALL_GAMES).child(eid)
+                .child(PATH_PLAYERS);
+    }
+
+
+    public void loadList(final PlayersListListener listListener) {
+        databaseReference = getDatabaseReference();
+        databaseListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                UserObj player = new UserObj(dataSnapshot.getKey());
+                int index = playerList.indexOf(player);
+                // TODO: check this logic
+                if (index != -1) {
+                    // есть
+                    load(listListener, 0);
+                } else {
+                    playerList.add(player);
+                    load(listListener, playerList.size() - 1);
+                    //load(listListener, index);
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                //Log.d(TAG, "onChildChanged: ");
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                //Log.d(TAG, "onChildRemoved: ");
+                UserObj player = new UserObj(dataSnapshot.getKey());
+                int index = playerList.indexOf(player);
+                if (index != -1){
+                    playerList.remove(player);
+                }
+                listListener.onRemove(player);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+            }
+        };
+        databaseReference.addChildEventListener(databaseListener);
+    }
+
+
+    public void stopLoading() {
+        if (databaseReference != null && databaseListener != null) {
+            databaseReference.removeEventListener(databaseListener);
+            databaseListener = null;
+        }
+    }
+
+    public interface PlayersListListener {
+
+        void onAdd(UserObj player);
+
+        void onRemove(UserObj player);
+
     }
 
 

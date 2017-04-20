@@ -13,7 +13,7 @@ import online.findfootball.android.app.BaseActivity;
 import online.findfootball.android.firebase.database.DatabaseInstance;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.info.tabs.GIAboutTab;
-import online.findfootball.android.game.info.tabs.GIPlayersTab;
+import online.findfootball.android.game.info.tabs.players.GIPlayersTab;
 import online.findfootball.android.user.UserObj;
 
 public class GameInfoActivity extends BaseActivity {
@@ -60,14 +60,35 @@ public class GameInfoActivity extends BaseActivity {
                 viewPager.setCurrentItem(tabNum);
             }
 
-            thisGameOwnerUser = new UserObj(thisGameObj.getOwnerUid());
-            loadUser();
+            thisGameObj.load(new DatabaseInstance.OnLoadListener() {
+                @Override
+                public void onSuccess(DatabaseInstance instance) {
+                    thisGameObj = (GameObj) instance;
+                    setupViewPager(viewPager);
+                    tabLayout.setupWithViewPager(viewPager);
+                    if (aboutTab != null) {
+                        aboutTab.setData(thisGameObj);
+                    }
+                    if (playersTab != null) {
+                        playersTab.setData(thisGameObj);
+                    }
+                }
+
+                @Override
+                public void onFailed(int code, String msg) {
+                    Log.e(TAG, "onFailed: " + code + " - " + msg);
+                }
+            });
+
 
         } else {
             intentDataNotFound();
         }
     }
 
+
+
+/*
     private void loadUser() {
         if (thisGameOwnerUser == null || thisGameOwnerUser.isLoading()) {
             return;
@@ -90,12 +111,15 @@ public class GameInfoActivity extends BaseActivity {
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
         if (aboutTab != null) {
-            aboutTab.setData(thisGameObj, thisGameOwnerUser);
+            //aboutTab.setData(thisGameObj, thisGameOwnerUser);
         }
         if (playersTab != null) {
             playersTab.setData(thisGameObj);
         }
     }
+
+
+*/
 
     private void intentDataNotFound() {
         Log.e(TAG, "onCreate: you must put game object into intent!");
@@ -118,23 +142,6 @@ public class GameInfoActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (playersTab != null) {
             playersTab.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        if (thisGameOwnerUser != null) {
-            thisGameOwnerUser.abortLoading();
-        }
-        thisGameOwnerUser = null;
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (thisGameOwnerUser != null && !thisGameOwnerUser.hasLoaded()) {
-            loadUser();
         }
     }
 }

@@ -1,26 +1,28 @@
-package online.findfootball.android.game.info.tabs;
+package online.findfootball.android.game.info.tabs.players;
 
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.PlayerListObj;
+import online.findfootball.android.game.info.tabs.players.recyclerview.PlayerListAdapter;
 import online.findfootball.android.user.AppUser;
 import online.findfootball.android.user.UserObj;
 import online.findfootball.android.user.auth.UserAuth;
-
-import java.util.LinkedHashSet;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,8 +34,14 @@ public class GIPlayersTab extends Fragment {
 
     private GameObj thisGameObj;
 
+    private Button joinLeaveBtn;
     private TextView playersCountTextView;
     private LinearLayout playersLinearLayout;
+
+    private PlayerListAdapter mAdapter;
+    private RecyclerView recyclerView;
+
+    private PlayerListObj.PlayersListListener listener;
 
     public GIPlayersTab() {
         // Required empty public constructor
@@ -42,7 +50,18 @@ public class GIPlayersTab extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        thisGameObj.getPlayerList().removeChangeListener();
+        if (thisGameObj != null) {
+            thisGameObj.getPlayerList().stopLoading();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (thisGameObj != null) {
+            mAdapter.clear();
+            thisGameObj.getPlayerList().loadList(listener);
+        }
     }
 
     @Override
@@ -50,22 +69,30 @@ public class GIPlayersTab extends Fragment {
         View rootView = inflater.inflate(R.layout.gi_tab_players, container, false);
         playersCountTextView = (TextView) rootView.findViewById(R.id.count_text);
         playersLinearLayout = (LinearLayout) rootView.findViewById(R.id.players_container);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.player_list);
+        joinLeaveBtn = (Button) rootView.findViewById(R.id.join_leave_btn);
 
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        mAdapter = new PlayerListAdapter();
+        recyclerView.setAdapter(mAdapter);
 
-        return rootView;
-    }
-
-    public void setData(GameObj game) {
-        this.thisGameObj = game;
-        thisGameObj.getPlayerList().setChangeListener(new PlayerListObj.PlayerListChangeListener() {
+        listener = new PlayerListObj.PlayersListListener() {
             @Override
-            public void onListChange(LinkedHashSet<UserObj> playerList) {
-                thisGameObj.getPlayerList().setList(playerList);
-                updateView();
+            public void onAdd(UserObj player) {
+                mAdapter.addPlayer(player);
+                updatePlayerNumb();
             }
-        });
 
-        playersLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onRemove(UserObj player) {
+                mAdapter.removePlayer(player);
+                updatePlayerNumb();
+            }
+        };
+
+        joinLeaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AppUser appUser = AppUser.getInstance(getContext());
@@ -74,30 +101,38 @@ public class GIPlayersTab extends Fragment {
                 }
             }
         });
-        updateView();
+        return rootView;
+    }
+
+    private void updatePlayerNumb() {
+        if (thisGameObj == null || mAdapter == null) {
+            return;
+        }
+        playersCountTextView.setText(mAdapter.getItemCount() + "/" + thisGameObj.getPlayerList().getPlayersCount());
+    }
+
+    public void setData(GameObj game) {
+        if (thisGameObj != null) {
+            thisGameObj.getPlayerList().stopLoading();
+        }
+        this.thisGameObj = game;
+        thisGameObj.getPlayerList().loadList(listener);
+
     }
 
     private void afterUserAuth(AppUser appUser) {
-        int result = thisGameObj.getPlayerList().addPlayer(appUser);
-        switch (result) {
-            case PlayerListObj.LIST_OK:
-                appUser.joinToFootballGame(thisGameObj);
-                updateView();
-                break;
-            case PlayerListObj.LIST_ALREADY_JOINED:
-                appUser.removeFootballGame(thisGameObj);
-                updateView();
-                break;
-            case PlayerListObj.LIST_NO_SPACE:
-                Log.d(TAG, "afterUserAuth: Sorry, there are no space!");
-                // TODO: Sorry, there are no space!
-                Toast.makeText(getContext(), "Sorry, there are no space!", Toast.LENGTH_SHORT).show();
-                break;
+        Log.d(TAG, "afterUserAuth: " + thisGameObj.getPlayerList().hasJoined(appUser));
+        if (thisGameObj.getPlayerList().hasJoined(appUser)) {
+            thisGameObj = appUser.removeFootballGame(thisGameObj);
+        } else {
+            thisGameObj = appUser.joinToFootballGame(thisGameObj);
         }
     }
 
+
+    /*
     private void updateView() {
-        LinkedHashSet<UserObj> list = thisGameObj.getPlayerList().getList();
+        ArrayList<UserObj> list = thisGameObj.getPlayerList().getList();
         playersCountTextView.setText(list.size() + "/" + thisGameObj.getPlayerList().getPlayersCount());
         playersLinearLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -108,6 +143,7 @@ public class GIPlayersTab extends Fragment {
             playersLinearLayout.addView(view);
         }
     }
+    */
 
 
     @Override
@@ -116,7 +152,7 @@ public class GIPlayersTab extends Fragment {
         if (requestCode == UserAuth.AUTH_REQUEST_CODE) {
             switch (resultCode) {
                 case UserAuth.RESULT_SUCCESS:
-                    AppUser appUser = AppUser.getInstance(getContext());
+                    AppUser appUser = AppUser.getInstance(getContext(), false);
                     if (appUser != null) {
                         afterUserAuth(appUser);
                     }
