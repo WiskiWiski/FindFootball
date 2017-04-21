@@ -22,7 +22,6 @@ import online.findfootball.android.game.PlayerListObj;
 import online.findfootball.android.game.info.tabs.players.recyclerview.PlayerListAdapter;
 import online.findfootball.android.user.AppUser;
 import online.findfootball.android.user.UserObj;
-import online.findfootball.android.user.auth.UserAuth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,7 +35,6 @@ public class GIPlayersTab extends Fragment {
 
     private Button joinLeaveBtn;
     private TextView playersCountTextView;
-    private LinearLayout playersLinearLayout;
 
     private PlayerListAdapter mAdapter;
     private RecyclerView recyclerView;
@@ -121,7 +119,6 @@ public class GIPlayersTab extends Fragment {
     }
 
     private void afterUserAuth(AppUser appUser) {
-        Log.d(TAG, "afterUserAuth: " + thisGameObj.getPlayerList().hasJoined(appUser));
         if (thisGameObj.getPlayerList().hasJoined(appUser)) {
             thisGameObj = appUser.removeFootballGame(thisGameObj);
         } else {
@@ -130,28 +127,13 @@ public class GIPlayersTab extends Fragment {
     }
 
 
-    /*
-    private void updateView() {
-        ArrayList<UserObj> list = thisGameObj.getPlayerList().getList();
-        playersCountTextView.setText(list.size() + "/" + thisGameObj.getPlayerList().getPlayersCount());
-        playersLinearLayout.removeAllViews();
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View view;
-        for (UserObj player : list) {
-            view = inflater.inflate(R.layout.gi_team_list_item, playersLinearLayout, false);
-            ((TextView) view.findViewById(R.id.player_name)).setText(player.getUid());
-            playersLinearLayout.addView(view);
-        }
-    }
-    */
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == UserAuth.AUTH_REQUEST_CODE) {
+        if (requestCode == AppUser.AUTH_REQUEST_CODE) {
             switch (resultCode) {
-                case UserAuth.RESULT_SUCCESS:
+                case AppUser.RESULT_SUCCESS:
                     AppUser appUser = AppUser.getInstance(getContext(), false);
                     if (appUser != null) {
                         afterUserAuth(appUser);

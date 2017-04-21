@@ -16,7 +16,6 @@ import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.app.NavDrawerActivity;
 import online.findfootball.android.user.AppUser;
-import online.findfootball.android.user.auth.UserAuth;
 import online.findfootball.android.game.create.fragments.CGDescriptionFragment;
 import online.findfootball.android.game.create.fragments.CGLocationFragment;
 import online.findfootball.android.game.create.fragments.CGTempFragment;
@@ -132,15 +131,15 @@ public class CreateGameActivity extends NavDrawerActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == UserAuth.AUTH_REQUEST_CODE) {
+        if (requestCode == AppUser.AUTH_REQUEST_CODE) {
             switch (resultCode) {
-                case UserAuth.RESULT_SUCCESS:
+                case AppUser.RESULT_SUCCESS:
                     onGameCreated();
                     break;
-                case UserAuth.RESULT_FAILED:
+                case AppUser.RESULT_FAILED:
 
                     break;
-                case UserAuth.RESULT_CANCEL:
+                case AppUser.RESULT_CANCEL:
 
                     break;
             }

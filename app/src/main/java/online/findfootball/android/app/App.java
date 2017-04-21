@@ -11,7 +11,7 @@ import com.vk.sdk.VKSdk;
 import online.findfootball.android.BuildConfig;
 import online.findfootball.android.R;
 import online.findfootball.android.storage.PreferencesStorage;
-import online.findfootball.android.user.auth.UserAuth;
+import online.findfootball.android.user.AppUser;
 
 /**
  * Created by WiskiW on 02.03.2017.
@@ -34,7 +34,7 @@ public class App extends Application implements LaunchCounter.OnFirstStartListen
             if (newToken == null) {
                 // VKAccessToken is invalid
                 // Если AccessToken стал невалиден (например, пользователь сменил пароль)
-                UserAuth.signOut();
+                AppUser.signOut();
                 // TODO : https://vk.com/dev/android_sdk
             }
         }
@@ -48,7 +48,7 @@ public class App extends Application implements LaunchCounter.OnFirstStartListen
 
         vkAccessTokenTracker.startTracking();
         VKSdk.initialize(this);
-        UserAuth.checkForAccountAvailability(this);
+        AppUser.checkForAccountAvailability(this);
 
     }
 

@@ -18,6 +18,7 @@ import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.app.BaseActivity;
 import online.findfootball.android.firebase.database.FBDatabase;
+import online.findfootball.android.user.AppUser;
 import online.findfootball.android.user.auth.providers.MyEmailAuthAuthProvider;
 import online.findfootball.android.user.auth.providers.MyFacebookAuthProvider;
 import online.findfootball.android.user.auth.providers.MyGoogleAuthProvider;
@@ -116,13 +117,20 @@ public class AuthUiActivity extends BaseActivity {
                 Log.d(TAG, "Authentication success: " + user.getEmail());
                 Toast.makeText(getApplicationContext(), user.getEmail(), Toast.LENGTH_LONG).show();
                 FBDatabase.signUpUser(user);
-                setResult(UserAuth.RESULT_SUCCESS);
+                setResult(AppUser.RESULT_SUCCESS);
                 finish();
+                AppUser.UserStateListener userStateListener = AppUser.getUserStateListener();
+                if (userStateListener != null){
+                    AppUser appUser = AppUser.getUser();
+                    if(appUser !=null){
+                        userStateListener.onLogin(AppUser.getUser());
+                    }
+                }
             }
 
             @Override
             public void onFailed(FailedResult result) {
-                setResult(UserAuth.RESULT_FAILED);
+                setResult(AppUser.RESULT_FAILED);
                 Log.d(TAG, "Authentication failed. " + result.toString());
                 Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
                 enableButtons();

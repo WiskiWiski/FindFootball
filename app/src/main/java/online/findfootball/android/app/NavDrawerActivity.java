@@ -16,20 +16,25 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import java.util.HashSet;
+
 import online.findfootball.android.R;
 import online.findfootball.android.user.AppUser;
-import online.findfootball.android.user.auth.UserAuth;
-
-import java.util.HashSet;
 
 /**
  * Created by WiskiW on 16.03.2017.
  */
 
 public class NavDrawerActivity extends BaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener,
+        AppUser.UserStateListener {
 
     private static final String TAG = App.G_TAG + ":NavDrawerActivity";
+
+    private View navDrawHeaderLayout;
+    private TextView nameView;
+    private TextView emailView;
+    private ImageView photoView;
 
     private static int currentMenuItemId;
     private static int defaultMenuItemId;
@@ -118,46 +123,59 @@ public class NavDrawerActivity extends BaseActivity implements
         getMenuItemById(currentMenuItemId).setChecked(true);
     }
 
-    private void setUpNavigationHeader() {
-        View headerLayout = navigationView.getHeaderView(0); // 0-index header
-        AppUser appUser = AppUser.getInstance(this, false);
-        if (appUser != null) {
-            headerLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO : Start profile activity
-                }
-            });
 
-            final TextView nameView = (TextView) headerLayout.findViewById(R.id.user_display_name);
-            final TextView emailView = (TextView) headerLayout.findViewById(R.id.user_email);
-            final ImageView photoView = (ImageView) headerLayout.findViewById(R.id.user_photo);
-
-            nameView.setText(appUser.getDisplayName());
-            emailView.setText(appUser.getEmail());
-            if (photoView != null && appUser.getPhotoUrl() != null) {
-                Glide
-                        .with(this)
-                        .load(appUser.getPhotoUrl())
-                        .asBitmap()
-                        .centerCrop()
-                        .into(new BitmapImageViewTarget(photoView) {
-                            @Override
-                            protected void setResource(Bitmap resource) {
-                                RoundedBitmapDrawable circularBitmapDrawable =
-                                        RoundedBitmapDrawableFactory.create(getResources(), resource);
-                                circularBitmapDrawable.setCircular(true);
-                                photoView.setImageDrawable(circularBitmapDrawable);
-                            }
-                        });
+    @Override
+    public void onLogin(AppUser appUser) {
+        navDrawHeaderLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO : Start profile activity
             }
-        } else {
-            headerLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    UserAuth.requestUser(getApplicationContext());
-                }
-            });
+        });
+        nameView.setText(appUser.getDisplayName());
+        emailView.setText(appUser.getEmail());
+        if (photoView != null && appUser.getPhotoUrl() != null) {
+            Glide
+                    .with(this)
+                    .load(appUser.getPhotoUrl())
+                    .asBitmap()
+                    .centerCrop()
+                    .into(new BitmapImageViewTarget(photoView) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            photoView.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
+        }
+    }
+
+    @Override
+    public void onSignOut() {
+        navDrawHeaderLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppUser.requestUser(getApplicationContext());
+            }
+        });
+        photoView.setImageDrawable(null);
+        nameView.setText(null);
+        emailView.setText(null);
+    }
+
+
+    private void setUpNavigationHeader() {
+        navDrawHeaderLayout = navigationView.getHeaderView(0); // 0-index header
+        nameView = (TextView) navDrawHeaderLayout.findViewById(R.id.user_display_name);
+        emailView = (TextView) navDrawHeaderLayout.findViewById(R.id.user_email);
+        photoView = (ImageView) navDrawHeaderLayout.findViewById(R.id.user_photo);
+
+        AppUser.setUserStateListener(this);
+        AppUser appUser = AppUser.getInstance(this, false);
+        if (appUser == null) {
+            onSignOut();
         }
     }
 
