@@ -1,6 +1,8 @@
 package online.findfootball.android.app;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -20,6 +22,7 @@ import java.util.HashSet;
 
 import online.findfootball.android.R;
 import online.findfootball.android.user.AppUser;
+import online.findfootball.android.user.ProfileActivity;
 
 /**
  * Created by WiskiW on 16.03.2017.
@@ -125,11 +128,17 @@ public class NavDrawerActivity extends BaseActivity implements
 
 
     @Override
-    public void onLogin(AppUser appUser) {
+    public void onLogin(final AppUser appUser) {
+        if (appUser == null) {
+            return;
+        }
         navDrawHeaderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO : Start profile activity
+                closeDrawer();
+                Intent intent = new Intent(NavDrawerActivity.this, ProfileActivity.class);
+                intent.putExtra(ProfileActivity.INTENT_USER_KEY, (Parcelable) appUser);
+                startActivity(intent);
             }
         });
         nameView.setText(appUser.getDisplayName());

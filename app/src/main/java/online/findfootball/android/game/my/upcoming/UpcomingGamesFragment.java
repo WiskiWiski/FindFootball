@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -114,7 +115,7 @@ public class UpcomingGamesFragment extends Fragment implements
             @Override
             public void onClick(int pos) {
                 Intent intent = new Intent(getContext(), GameInfoActivity.class);
-                intent.putExtra(GameInfoActivity.INTENT_GAME_KEY, mAdapter.getGameList().get(pos));
+                intent.putExtra(GameInfoActivity.INTENT_GAME_KEY, (Parcelable) mAdapter.getGameList().get(pos));
                 startActivity(intent);
             }
         };

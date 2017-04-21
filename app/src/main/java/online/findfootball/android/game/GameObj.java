@@ -15,13 +15,14 @@ import online.findfootball.android.firebase.database.FBDatabase;
 import online.findfootball.android.location.LocationObj;
 import online.findfootball.android.time.TimeProvider;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  * Created by WiskiW on 02.04.2017.
  */
 
-public class GameObj implements Parcelable, DatabaseInstance {
+public class GameObj implements Parcelable, Serializable, DatabaseInstance {
 
 
     public final static String PATH_TITLE = "title";

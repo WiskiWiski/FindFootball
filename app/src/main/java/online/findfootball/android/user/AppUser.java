@@ -173,7 +173,7 @@ public class AppUser extends UserObj {
 
     public GameObj removeFootballGame(GameObj game) {
         // Auto saving to Firebase!
-        getGameSet().remove(game);
+        getGameList().remove(game);
         FBDatabase.getDatabaseReference(this)
                 .child(PATH_GAMES_FOOTBALL).child(game.getEid()).removeValue();
         if (game.getOwnerUid().equals(getUid())) {
@@ -199,7 +199,7 @@ public class AppUser extends UserObj {
         thisUserReference.child(PATH_LAST_ACTIVITY_TIME).setValue(getLastActivityTime());
 
 
-        for (GameObj game : getGameSet()) {
+        for (GameObj game : getGameList()) {
             thisUserReference.child(PATH_GAMES_FOOTBALL).child(game.getEid()).setValue(game.getEid());
             game.save(context);
         }

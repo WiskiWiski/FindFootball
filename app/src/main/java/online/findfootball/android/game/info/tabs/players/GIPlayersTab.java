@@ -66,7 +66,6 @@ public class GIPlayersTab extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.gi_tab_players, container, false);
         playersCountTextView = (TextView) rootView.findViewById(R.id.count_text);
-        playersLinearLayout = (LinearLayout) rootView.findViewById(R.id.players_container);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.player_list);
         joinLeaveBtn = (Button) rootView.findViewById(R.id.join_leave_btn);
 

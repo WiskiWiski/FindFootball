@@ -83,6 +83,7 @@ public class AuthUiActivity extends BaseActivity {
         btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                disableButtons();
                 googleAuthProvider.signIn();
             }
         });
@@ -92,6 +93,7 @@ public class AuthUiActivity extends BaseActivity {
         btnVKSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                disableButtons();
                 vkAuthProvider.signIn();
             }
         });

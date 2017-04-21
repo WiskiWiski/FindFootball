@@ -4,6 +4,7 @@ package online.findfootball.android.game.my.archived;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -116,7 +117,7 @@ public class ArchivedGamesFragment extends Fragment implements
             @Override
             public void onClick(int pos) {
                 Intent intent = new Intent(getContext(), GameInfoActivity.class);
-                intent.putExtra(GameInfoActivity.INTENT_GAME_KEY, mAdapter.getGameList().get(pos));
+                intent.putExtra(GameInfoActivity.INTENT_GAME_KEY, (Parcelable) mAdapter.getGameList().get(pos));
                 startActivity(intent);
             }
         };
@@ -128,7 +129,7 @@ public class ArchivedGamesFragment extends Fragment implements
             public void onClick(int pos) {
                 GameObj gameObj = mAdapter.getGameList().get(pos);
                 Intent intent = new Intent(getContext(), CreateGameActivity.class);
-                intent.putExtra(CreateGameActivity.INTENT_GAME_KEY, gameObj);
+                intent.putExtra(CreateGameActivity.INTENT_GAME_KEY, (Parcelable) gameObj);
                 startActivity(intent);
 
             }

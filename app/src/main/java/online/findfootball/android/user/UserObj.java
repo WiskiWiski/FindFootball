@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -12,16 +11,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import online.findfootball.android.firebase.database.DatabaseInstance;
-import online.findfootball.android.firebase.database.FBDatabase;
-import online.findfootball.android.game.GameObj;
-
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import online.findfootball.android.firebase.database.DatabaseInstance;
+import online.findfootball.android.firebase.database.FBDatabase;
+import online.findfootball.android.game.GameObj;
 
 /**
  * Created by WiskiW on 17.04.2017.
@@ -44,7 +43,7 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
     private long lastActivityTime;
     private long registerTime;
     private Uri photoUrl;
-    private HashSet<GameObj> gameSet;
+    private List<GameObj> gameList;
 
     private ValueEventListener valueEventListener;
     private OnLoadListener onLoadListener;
@@ -52,11 +51,11 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
 
     public UserObj(String uid) {
         this.uid = uid;
-        this.gameSet = new HashSet<>();
+        this.gameList = new ArrayList<>();
     }
 
     public UserObj(FirebaseUser firebaseUser) {
-        this.gameSet = new HashSet<>();
+        this.gameList = new ArrayList<>();
         setUid(firebaseUser.getUid());
         setDisplayName(firebaseUser.getDisplayName());
         setEmail(firebaseUser.getEmail());
@@ -64,8 +63,7 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
     }
 
     public UserObj(DataSnapshot userSnapshot) {
-        this.gameSet = new HashSet<>();
-        // TODO : Try-catch
+        this.gameList = new ArrayList<>();
         setUid(userSnapshot.getKey());
         setDisplayName((String) userSnapshot.child(PATH_DISPLAY_NAME).getValue());
         setPhotoUrl(Uri.parse((String) userSnapshot.child(PATH_PHOTO_URL).getValue()));
@@ -73,24 +71,19 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
         setLastActivityTime((Long) userSnapshot.child(PATH_LAST_ACTIVITY_TIME).getValue());
     }
 
-    public HashSet<GameObj> getGameSet() {
-        return gameSet;
+    public List<GameObj> getGameList() {
+        return gameList;
     }
 
-    public void setGameSet(List<GameObj> gameList) {
-        gameSet.clear();
-        gameSet = new HashSet<>(gameList);
-    }
-
-    public void setGameSet(HashSet<GameObj> gameSet) {
-        this.gameSet = gameSet;
+    public void setGameList(List<GameObj> gameList) {
+        this.gameList = gameList;
     }
 
     public void pushGameToSet(GameObj gameObj) {
-        if (gameSet.contains(gameObj)) {
-            gameSet.remove(gameObj);
+        if (gameList.contains(gameObj)) {
+            gameList.remove(gameObj);
         }
-        gameSet.add(gameObj);
+        gameList.add(gameObj);
     }
 
     public String getUid() {
@@ -157,7 +150,8 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
         out.writeLong(lastActivityTime);
         out.writeLong(registerTime);
         out.writeParcelable(photoUrl, flags);
-        out.writeSerializable(gameSet);
+        out.writeList(gameList);
+        //out.writeSerializable(gameList);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
@@ -179,7 +173,8 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
         lastActivityTime = in.readLong();
         registerTime = in.readLong();
         photoUrl = in.readParcelable(Uri.class.getClassLoader());
-        gameSet = (HashSet<GameObj>) in.readSerializable();
+        gameList = in.readArrayList(GameObj.class.getClassLoader());
+        //gameList = (HashSet<GameObj>) in.readSerializable();
     }
 
 
@@ -206,7 +201,7 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
     @Override
     public void load(OnLoadListener onLoadListener) {
         this.onLoadListener = onLoadListener;
-        if (isLoading()){
+        if (isLoading()) {
             return;
         }
         DatabaseReference thisGameReference = FBDatabase.getDatabaseReference(this);
@@ -220,7 +215,7 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
                 setUid(userSnapshot.getKey());
                 setDisplayName((String) userSnapshot.child(PATH_DISPLAY_NAME).getValue());
                 String url = (String) userSnapshot.child(PATH_PHOTO_URL).getValue();
-                if (url != null){
+                if (url != null) {
                     setPhotoUrl(Uri.parse(url));
                 }
                 setEmail((String) userSnapshot.child(PATH_EMAIL).getValue());
@@ -259,14 +254,14 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
 
     @Override
     public void abortLoading() {
-        if (!isLoading()){
+        if (!isLoading()) {
             return;
         }
         if (valueEventListener != null) {
             FBDatabase.getDatabaseReference(this).removeEventListener(valueEventListener);
             valueEventListener = null;
         }
-        if (onLoadListener != null){
+        if (onLoadListener != null) {
             onLoadListener.onFailed(OnLoadListener.FAILED_LOADING_ABORTED, OnLoadListener.MSG_LOADING_ABORTED);
         }
     }

@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,7 +26,7 @@ import online.findfootball.android.user.UserObj;
  * Created by WiskiW on 17.04.2017.
  */
 
-public class PlayerListObj implements Parcelable {
+public class PlayerListObj implements Parcelable, Serializable {
 
     public static final String TAG = App.G_TAG + ":PlayerListObj";
 

@@ -10,6 +10,9 @@ import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -18,24 +21,23 @@ import java.util.Locale;
  * Created by WiskiW on 16.04.2017.
  */
 
-public class LocationObj implements Parcelable {
+public class LocationObj implements Parcelable, Serializable {
 
-    private LatLng coordinates;
+    private double latitude;
+    private double longitude;
     private String cityName;
     private String countryName;
     private List<String> closesCites;
 
     public LocationObj(LatLng coordinates) {
-        this.coordinates = coordinates;
+        this.latitude = coordinates.latitude;
+        this.longitude = coordinates.longitude;
         closesCites = new ArrayList<>();
     }
 
     public LocationObj(double lat, double lng) {
-        this.coordinates = new LatLng(lat, lng);
-    }
-
-    public LatLng getCoordinates() {
-        return coordinates;
+        this.latitude = lat;
+        this.longitude = lng;
     }
 
     public void loadFullAddress(final Context context, final LocationListener callback) {
@@ -46,16 +48,20 @@ public class LocationObj implements Parcelable {
         new LoadStringLocation(context, callback).execute();
     }
 
+    public LatLng getCoordinates(){
+        return new LatLng(latitude, longitude);
+    }
+
     public String getCityName() {
         return cityName;
     }
 
     public double getLongitude() {
-        return coordinates.longitude;
+        return longitude;
     }
 
     public double getLatitude() {
-        return coordinates.latitude;
+        return latitude;
     }
 
     public void setCityName(String cityName) {
@@ -89,7 +95,8 @@ public class LocationObj implements Parcelable {
     // write your object's data to the passed-in Parcel
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeParcelable(coordinates, flags);
+        out.writeDouble(latitude);
+        out.writeDouble(longitude);
         out.writeString(cityName);
         out.writeString(countryName);
         out.writeList(closesCites);
@@ -108,7 +115,8 @@ public class LocationObj implements Parcelable {
 
     // example constructor that takes a Parcel and gives you an object populated with it's values
     private LocationObj(Parcel in) {
-        coordinates = in.readParcelable(LatLng.class.getClassLoader());
+        latitude = in.readDouble();
+        longitude = in.readDouble();
         cityName = in.readString();
         countryName = in.readString();
         closesCites = in.readArrayList(String.class.getClassLoader());

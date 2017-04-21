@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="online.findfootball.android.user.ProfileActivity">
+
+    <include layout="@layout/toolbar"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
+        <LinearLayout
+            android:id="@+id/user_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/user_photo"
+                    android:layout_width="78dp"
+                    android:layout_height="78dp"
+                    android:layout_centerVertical="true"
+                    android:scaleType="fitCenter"/>
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/user_photo"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingLeft="24dp"
+                    android:text="Username"
+                    android:textSize="24sp"
+                    tools:text="Username"/>
+
+                <TextView
+                    android:id="@+id/user_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/user_photo"
+                    android:layout_below="@+id/user_name"
+                    android:layout_toRightOf="@+id/user_photo"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:paddingLeft="24dp"
+                    android:textSize="16sp"
+                    tools:text="email"/>
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/sign_out_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/profile_activity_sign_out_btn_text"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

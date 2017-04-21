@@ -2,6 +2,7 @@ package online.findfootball.android.game.find;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -177,7 +178,7 @@ public class FindGameActivity extends NavDrawerActivity {
             @Override
             public void onClick(int pos) {
                 Intent intent = new Intent(getApplicationContext(), GameInfoActivity.class);
-                intent.putExtra(GameInfoActivity.INTENT_GAME_KEY, mAdapter.getGameList().get(pos));
+                intent.putExtra(GameInfoActivity.INTENT_GAME_KEY, (Parcelable) mAdapter.getGameList().get(pos));
                 startActivity(intent);
             }
         };

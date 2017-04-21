@@ -86,7 +86,7 @@ public class EventsProvider {
             }
             iterator.remove();
         } else {
-            appUser.setGameSet(gameList);
+            appUser.setGameList(gameList);
             AppUser.updateInstance(appUser);
             listener.onSuccess(gameList);
         }
@@ -105,7 +105,7 @@ public class EventsProvider {
                 }
                 AppUser appUser = (AppUser) instance;
                 AppUser.updateInstance(appUser);
-                processData(appUser.getGameSet().iterator());
+                processData(appUser.getGameList().iterator());
             }
 
             @Override
