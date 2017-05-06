@@ -17,11 +17,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Arrays;
+
 import online.findfootball.android.app.App;
 import online.findfootball.android.user.auth.FailedResult;
 import online.findfootball.android.user.auth.ProviderCallback;
-
-import java.util.Arrays;
 
 /**
  * Created by WiskiW on 14.03.2017.
@@ -38,26 +38,17 @@ public class MyFacebookAuthProvider extends RootAuthProvider {
 
     private ProviderCallback callback;
     private Activity activity;
-    private LoginButton loginButton;
 
     private CallbackManager fbCallbackManager;
 
-    public MyFacebookAuthProvider(Activity activity, LoginButton loginButton, ProviderCallback callback) {
+    public MyFacebookAuthProvider(Activity activity, ProviderCallback callback) {
         this.activity = activity;
-        this.loginButton = loginButton;
         this.callback = callback;
     }
 
-    public void setupButtonListener() {
-        if (loginButton == null) {
-            Log.d(TAG, "signIn: loginButton is null!");
-            // TODO : throw exception
-            return;
-        }
+    public void signIn() {
         fbCallbackManager = CallbackManager.Factory.create();
-        //loginButton.setReadPermissions(scope);
-        loginButton.setReadPermissions(Arrays.asList(scope));
-        loginButton.registerCallback(fbCallbackManager, new FacebookCallback<LoginResult>() {
+        LoginManager.getInstance().registerCallback(fbCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 AuthCredential credential = FacebookAuthProvider.getCredential(loginResult.getAccessToken().getToken());
@@ -84,6 +75,7 @@ public class MyFacebookAuthProvider extends RootAuthProvider {
                 callback.onFailed(result);
             }
         });
+        LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList(scope));
     }
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {

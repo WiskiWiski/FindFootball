@@ -62,13 +62,12 @@
             android:layout_weight="1"
             android:text="G+"/>
 
-        <com.facebook.login.widget.LoginButton
+        <Button
             android:id="@+id/facebook_sign_in_btn"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="facebook"/>
+            android:text="FB"/>
 
         <Button
             android:id="@+id/vk_sign_in_btn"

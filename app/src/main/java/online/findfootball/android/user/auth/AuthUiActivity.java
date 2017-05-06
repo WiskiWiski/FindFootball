@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseUser;
 
 import online.findfootball.android.R;
@@ -32,9 +31,10 @@ public class AuthUiActivity extends BaseActivity {
 
     private EditText inputEmail, inputPassword;
     private Button btnSignIn;
-    private Button btnSignUp;
     private Button btnGoogleSignIn;
     private Button btnVKSignIn;
+    private Button btnFBSignIn;
+    private Button btnSignUp;
 
 
     private boolean inProgress;
@@ -65,6 +65,7 @@ public class AuthUiActivity extends BaseActivity {
 
         btnSignIn = (Button) findViewById(R.id.sign_in_btn);
         btnGoogleSignIn = (Button) findViewById(R.id.google_sign_in_btn);
+        btnFBSignIn = (Button) findViewById(R.id.facebook_sign_in_btn);
         btnVKSignIn = (Button) findViewById(R.id.vk_sign_in_btn);
 
 
@@ -73,7 +74,7 @@ public class AuthUiActivity extends BaseActivity {
             public void onClick(View v) {
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
-                if (validation(email, password)){
+                if (validation(email, password)) {
                     disableButtons();
                     emailAuthProvider.signIn(email, password);
                 }
@@ -88,7 +89,13 @@ public class AuthUiActivity extends BaseActivity {
             }
         });
 
-        fbAuthProvider.setupButtonListener();
+        btnFBSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                disableButtons();
+                fbAuthProvider.signIn();
+            }
+        });
 
         btnVKSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +111,7 @@ public class AuthUiActivity extends BaseActivity {
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
                 // TODO: Fix multiple clicks
-                if (validation(email, password)){
+                if (validation(email, password)) {
                     disableButtons();
                     emailAuthProvider.signUp(email, password);
                 }
@@ -122,9 +129,9 @@ public class AuthUiActivity extends BaseActivity {
                 setResult(AppUser.RESULT_SUCCESS);
                 finish();
                 AppUser.UserStateListener userStateListener = AppUser.getUserStateListener();
-                if (userStateListener != null){
+                if (userStateListener != null) {
                     AppUser appUser = AppUser.getUser();
-                    if(appUser !=null){
+                    if (appUser != null) {
                         userStateListener.onLogin(AppUser.getUser());
                     }
                 }
@@ -140,8 +147,7 @@ public class AuthUiActivity extends BaseActivity {
         };
         emailAuthProvider = new MyEmailAuthAuthProvider(providerCallback);
         googleAuthProvider = new MyGoogleAuthProvider(this, providerCallback);
-        fbAuthProvider = new MyFacebookAuthProvider(this,
-                (LoginButton) findViewById(R.id.facebook_sign_in_btn), providerCallback);
+        fbAuthProvider = new MyFacebookAuthProvider(this, providerCallback);
         vkAuthProvider = new MyVkontakteAuthAuthProvider(this, providerCallback);
     }
 
@@ -154,27 +160,29 @@ public class AuthUiActivity extends BaseActivity {
         vkAuthProvider.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void enableButtons(){
+    private void enableButtons() {
         btnSignIn.setEnabled(true);
         btnSignUp.setEnabled(true);
         btnGoogleSignIn.setEnabled(true);
+        btnFBSignIn.setEnabled(true);
         //btnVKSignIn.setEnabled(true);
     }
 
-    private void disableButtons(){
+    private void disableButtons() {
         btnSignIn.setEnabled(false);
         btnSignUp.setEnabled(false);
         btnGoogleSignIn.setEnabled(false);
+        btnFBSignIn.setEnabled(false);
         //btnVKSignIn.setEnabled(false);
     }
 
-    private boolean validation(String email, String password){
+    private boolean validation(String email, String password) {
         Context c = getApplicationContext();
-        if (email.isEmpty()){
+        if (email.isEmpty()) {
             Toast.makeText(c, getString(R.string.auth_activity_empty_email), Toast.LENGTH_SHORT).show();
-        } else if (!email.contains("@")){
+        } else if (!email.contains("@")) {
             Toast.makeText(c, getString(R.string.auth_activity_bad_email), Toast.LENGTH_SHORT).show();
-        } else if (password.isEmpty()){
+        } else if (password.isEmpty()) {
             Toast.makeText(c, getString(R.string.auth_activity_empty_password), Toast.LENGTH_SHORT).show();
         } else if (password.length() < 6) {
             Toast.makeText(c, getString(R.string.auth_activity_password_too_short), Toast.LENGTH_SHORT).show();
