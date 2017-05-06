@@ -1,90 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <include layout="@layout/toolbar"/>
-
-    <TextView
-        android:maxLines="3"
-        android:ellipsize="end"
-        android:padding="16dp"
-        android:id="@+id/message"
-        android:gravity="center"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:text="@string/auth_activity_default_msg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    android:weightSum="1"
+    android:baselineAligned="false">
 
     <View
-        android:background="@color/colorPrimaryDark"
         android:layout_width="match_parent"
-        android:layout_height="1dp"/>
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryDark" />
 
-    <EditText
-        android:paddingTop="8dp"
-        android:id="@+id/email_et"
+    <TextView
+        android:id="@+id/message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textEmailAddress"/>
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="3"
+        android:padding="16dp"
+        android:text="@string/activity_title_auth"
+        android:textColor="@android:color/background_light"
+        android:textSize="24sp" />
 
     <EditText
-        android:paddingTop="8dp"
         android:id="@+id/password_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autoText="false"
         android:ems="10"
         android:hint="Password"
-        android:inputType="textPassword"/>
-
-    <Button
+        android:inputType="textPassword"
         android:paddingTop="8dp"
-        android:id="@+id/sign_in_btn"
+        android:textColor="@color/cardview_light_background"
+        android:textColorHint="@color/cardview_light_background"
+        android:textCursorDrawable="@color/cardview_light_background" />
+
+    <EditText
+        android:id="@+id/email_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"/>
+        android:autoLink="email"
+        android:ems="10"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:paddingTop="8dp"
+        android:textAllCaps="false"
+        android:textColor="@color/cardview_light_background"
+        android:textColorHint="@color/cardview_light_background"
+        android:textCursorDrawable="@color/cardview_light_background"
+        />
 
-    <LinearLayout
+    <Button
+        android:id="@+id/sign_in_btn"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/google_sign_in_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="G+"/>
-
-        <Button
-            android:id="@+id/facebook_sign_in_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="FB"/>
-
-        <Button
-            android:id="@+id/vk_sign_in_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:enabled="false"
-            android:text="VK"/>
-
-    </LinearLayout>
+        android:layout_height="46dp"
+        android:background="@color/colorPrimaryDark"
+        android:paddingTop="8dp"
+        android:text="Login"
+        android:textColor="@color/cardview_light_background"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/sign_up_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Sign Up"/>
+        android:background="@color/colorPrimaryDark"
+        android:text="Sign Up"
+        android:textColor="@color/cardview_light_background"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="3"
+        android:padding="16dp"
+        android:text="or use social network"
+        android:textColor="@android:color/background_light"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="114dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.00"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true">
+
+
+                <TextView
+                    android:id="@+id/facebook_sign_in_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:background="@mipmap/ic_facebook"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="120dp"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:id="@+id/vk_sign_in_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@mipmap/ic_vk"
+                    android:elevation="0dp"
+                    android:enabled="false" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true">
+
+                <ImageButton
+                    android:id="@+id/google_sign_in_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@mipmap/ic_google_plus"
+                    android:padding="@dimen/activity_horizontal_margin" />
+            </FrameLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
 
 
 </LinearLayout>

@@ -33,7 +33,7 @@
     <string name="auth_activity_empty_email">Email cannot be empty!</string>
     <string name="auth_activity_empty_password">Password cannot be empty!</string>
     <string name="auth_activity_password_too_short">Password cannot be shorter than 6!</string>
-    <string name="auth_activity_bad_email">Email must constain \'@\' !</string>
+    <string name="auth_activity_bad_email">Email must contain \'@\' !</string>
 
 
     <!--- === Profile Activity === -->
