@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
+    android:baselineAligned="false"
     android:orientation="vertical"
-    android:weightSum="1"
-    android:baselineAligned="false">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimaryDark" />
+    android:padding="14dp"
+    android:weightSum="1">
 
     <TextView
         android:id="@+id/message"
@@ -25,20 +20,7 @@
         android:padding="16dp"
         android:text="@string/activity_title_auth"
         android:textColor="@android:color/background_light"
-        android:textSize="24sp" />
-
-    <EditText
-        android:id="@+id/password_et"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autoText="false"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:paddingTop="8dp"
-        android:textColor="@color/cardview_light_background"
-        android:textColorHint="@color/cardview_light_background"
-        android:textCursorDrawable="@color/cardview_light_background" />
+        android:textSize="24sp"/>
 
     <EditText
         android:id="@+id/email_et"
@@ -46,24 +28,33 @@
         android:layout_height="wrap_content"
         android:autoLink="email"
         android:ems="10"
-        android:hint="Email"
+        android:hint="@string/auth_activity_hint_email"
         android:inputType="textEmailAddress"
         android:paddingTop="8dp"
         android:textAllCaps="false"
-        android:textColor="@color/cardview_light_background"
-        android:textColorHint="@color/cardview_light_background"
-        android:textCursorDrawable="@color/cardview_light_background"
-        />
+        android:textColor="@android:color/white"
+        android:theme="@style/AppTheme.Widget.EditText"/>
+
+    <EditText
+        android:id="@+id/password_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/auth_activity_hint_password"
+        android:inputType="textPassword"
+        android:paddingTop="8dp"
+        android:textColor="@android:color/white"
+        android:theme="@style/AppTheme.Widget.EditText"/>
 
     <Button
+        android:layout_marginTop="16dp"
         android:id="@+id/sign_in_btn"
         android:layout_width="match_parent"
         android:layout_height="46dp"
         android:background="@color/colorPrimaryDark"
-        android:paddingTop="8dp"
-        android:text="Login"
+        android:text="@string/auth_activity_button_sign_in"
         android:textColor="@color/cardview_light_background"
-        android:textSize="18sp" />
+        android:textSize="18sp"/>
 
     <Button
         android:id="@+id/sign_up_btn"
@@ -71,9 +62,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:background="@color/colorPrimaryDark"
-        android:text="Sign Up"
+        android:text="@string/auth_activity_button_sign_up"
         android:textColor="@color/cardview_light_background"
-        android:textSize="18sp" />
+        android:textSize="18sp"/>
 
     <TextView
         android:id="@+id/textView2"
@@ -83,69 +74,48 @@
         android:gravity="center"
         android:maxLines="3"
         android:padding="16dp"
-        android:text="or use social network"
+        android:text="@string/auth_activity_msg_other_networks"
         android:textColor="@android:color/background_light"
-        android:textSize="14sp" />
+        android:textSize="14sp"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="114dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <ImageButton
+            android:id="@+id/facebook_sign_in_btn"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="@mipmap/ic_facebook"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"/>
 
-            <FrameLayout
-                android:layout_width="120dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.00"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true">
+        <ImageButton
+            android:id="@+id/vk_sign_in_btn"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@mipmap/ic_vk"
+            android:enabled="false"
+            android:foreground="?attr/selectableItemBackground"/>
 
 
-                <TextView
-                    android:id="@+id/facebook_sign_in_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
-                    android:background="@mipmap/ic_facebook"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
-            </FrameLayout>
+        <ImageButton
+            android:id="@+id/google_sign_in_btn"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="@mipmap/ic_google_plus"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="@dimen/activity_horizontal_margin"/>
 
-            <FrameLayout
-                android:layout_width="120dp"
-                android:layout_height="match_parent">
-
-                <ImageButton
-                    android:id="@+id/vk_sign_in_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@mipmap/ic_vk"
-                    android:elevation="0dp"
-                    android:enabled="false" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="120dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true">
-
-                <ImageButton
-                    android:id="@+id/google_sign_in_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@mipmap/ic_google_plus"
-                    android:padding="@dimen/activity_horizontal_margin" />
-            </FrameLayout>
-        </RelativeLayout>
-
-    </LinearLayout>
-
+    </RelativeLayout>
 
 </LinearLayout>

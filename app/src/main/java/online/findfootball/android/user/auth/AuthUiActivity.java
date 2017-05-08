@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +32,9 @@ public class AuthUiActivity extends BaseActivity {
 
     private EditText inputEmail, inputPassword;
     private Button btnSignIn;
-    private Button btnGoogleSignIn;
-    private Button btnVKSignIn;
-    private Button btnFBSignIn;
+    private ImageButton btnGoogleSignIn;
+    private ImageButton btnVKSignIn;
+    private ImageButton btnFBSignIn;
     private Button btnSignUp;
 
 
@@ -64,9 +65,9 @@ public class AuthUiActivity extends BaseActivity {
         btnSignUp = (Button) findViewById(R.id.sign_up_btn);
 
         btnSignIn = (Button) findViewById(R.id.sign_in_btn);
-        btnGoogleSignIn = (Button) findViewById(R.id.google_sign_in_btn);
-        btnFBSignIn = (Button) findViewById(R.id.facebook_sign_in_btn);
-        btnVKSignIn = (Button) findViewById(R.id.vk_sign_in_btn);
+        btnGoogleSignIn = (ImageButton) findViewById(R.id.google_sign_in_btn);
+        btnFBSignIn = (ImageButton) findViewById(R.id.facebook_sign_in_btn);
+        btnVKSignIn = (ImageButton) findViewById(R.id.vk_sign_in_btn);
 
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {

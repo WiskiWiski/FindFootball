@@ -34,6 +34,11 @@
     <string name="auth_activity_empty_password">Password cannot be empty!</string>
     <string name="auth_activity_password_too_short">Password cannot be shorter than 6!</string>
     <string name="auth_activity_bad_email">Email must contain \'@\' !</string>
+    <string name="auth_activity_hint_password">Password</string>
+    <string name="auth_activity_hint_email">Email</string>
+    <string name="auth_activity_button_sign_in">Login</string>
+    <string name="auth_activity_button_sign_up">Sign Up</string>
+    <string name="auth_activity_msg_other_networks">or use social network</string>
 
 
     <!--- === Profile Activity === -->
