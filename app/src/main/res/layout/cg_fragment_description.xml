@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Game Description"
-        android:inputType="textPersonName"
+        android:inputType="textCapSentences|textAutoCorrect"
         android:padding="16dp"
         android:textColor="@android:color/white"
         android:textColorHint="#62ffffff"/>

@@ -71,8 +71,10 @@ public class CGDescriptionFragment extends BaseCGFragment {
     @Override
     public void updateView(GameObj game) {
         String desc = game.getDescription();
-        editText.setText(desc);
-        editText.setSelection(desc.length());
+        if (desc != null && editText != null){
+            editText.setText(desc);
+            editText.setSelection(desc.length());
+        }
     }
 
     @Override

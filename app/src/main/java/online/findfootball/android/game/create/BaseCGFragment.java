@@ -16,7 +16,7 @@ import online.findfootball.android.game.GameObj;
 public abstract class BaseCGFragment extends Fragment {
 
     private static final String TAG = App.G_TAG + ":BaseCGFrg";
-    private static final long VIBRATION_DURATION = 35;
+    private static final long VIBRATION_DURATION = 25;
 
     private CGTabEditListener callback;
 
