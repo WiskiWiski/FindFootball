@@ -16,6 +16,7 @@ import online.findfootball.android.game.GameObj;
 public abstract class BaseCGFragment extends Fragment {
 
     private static final String TAG = App.G_TAG + ":BaseCGFrg";
+    private static final long VIBRATION_DURATION = 35;
 
     private CGTabEditListener callback;
 
@@ -49,17 +50,23 @@ public abstract class BaseCGFragment extends Fragment {
         }
     }
 
-    private void hideSoftKeyboard() {
+    public void hideSoftKeyboard() {
         try {
             InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Log.w(TAG, "HideSoftKeyboard: couldn't hide the keyboard!", e);
         }
     }
 
-    public abstract boolean saveResult(boolean checkForCorrect, GameObj game); // return : были ли данных сохранены успешно
+    protected void vibrate() {
+        App.vibrate(getContext(), VIBRATION_DURATION);
+    }
+
+    public abstract void saveResult(GameObj game); // return : были ли данных сохранены успешно
 
     public abstract void updateView(GameObj game);
+
+    public abstract boolean verifyData(boolean showToast); // проверка данных на корректность
 
 }

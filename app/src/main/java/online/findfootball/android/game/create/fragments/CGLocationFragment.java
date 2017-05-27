@@ -10,10 +10,10 @@ import android.widget.Toast;
 
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
+import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.create.BaseCGFragment;
 import online.findfootball.android.location.LocationObj;
 import online.findfootball.android.location.gmaps.fragments.LocationSelectFragment;
-import online.findfootball.android.game.GameObj;
 
 
 public class CGLocationFragment extends BaseCGFragment {
@@ -45,15 +45,8 @@ public class CGLocationFragment extends BaseCGFragment {
     }
 
     @Override
-    public boolean saveResult(boolean checkForCorrect, GameObj game) {
-        LocationObj location = getLocation();
-        if (checkForCorrect && location == null) {
-            Toast.makeText(getContext(), getString(R.string.cg_game_location_frg_location_not_selected),
-                    Toast.LENGTH_LONG).show();
-            return false;
-        }
-        game.setLocation(location);
-        return true;
+    public void saveResult(GameObj game) {
+        game.setLocation(getLocation());
     }
 
     @Override
@@ -61,5 +54,19 @@ public class CGLocationFragment extends BaseCGFragment {
         if (locationSelectFragment != null) {
             locationSelectFragment.setMarkerPosition(game.getLocation());
         }
+    }
+
+    @Override
+    public boolean verifyData(boolean showToast) {
+        LocationObj location = getLocation();
+        if (location == null) {
+            if (showToast){
+                Toast.makeText(getContext(), getString(R.string.cg_game_location_frg_location_not_selected),
+                        Toast.LENGTH_SHORT).show();
+                vibrate();
+            }
+            return false;
+        }
+        return true;
     }
 }

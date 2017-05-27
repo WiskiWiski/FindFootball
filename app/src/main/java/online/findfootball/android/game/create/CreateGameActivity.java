@@ -12,27 +12,27 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.util.Formatter;
+
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.app.NavDrawerActivity;
-import online.findfootball.android.user.AppUser;
+import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.create.fragments.CGDescriptionFragment;
 import online.findfootball.android.game.create.fragments.CGLocationFragment;
 import online.findfootball.android.game.create.fragments.CGTempFragment;
 import online.findfootball.android.game.create.fragments.CGTitleFragment;
 import online.findfootball.android.game.create.view.CreateGameViewPager;
-import online.findfootball.android.game.GameObj;
-
-import java.util.Formatter;
+import online.findfootball.android.user.AppUser;
 
 public class CreateGameActivity extends NavDrawerActivity implements
-        BaseCGFragment.CGTabEditListener {
+        BaseCGFragment.CGTabEditListener,
+        CreateGameViewPager.CreateGameListener {
 
     private static final String TAG = App.G_TAG + ":CreateGameAct";
 
     public static final String INTENT_GAME_KEY = "game_in_intent";
 
-    private GameObj thisGameObj;
 
     private FrameLayout leftButton;
     private FrameLayout rightButton;
@@ -62,13 +62,23 @@ public class CreateGameActivity extends NavDrawerActivity implements
         }
         initToolbar();
 
+
+        viewPager = (CreateGameViewPager) findViewById(R.id.pager);
+        adapter = new PagerAdapter(getSupportFragmentManager());
+        adapter.addNext(new CGTitleFragment());
+        adapter.addNext(new CGDescriptionFragment());
+        adapter.addNext(new CGLocationFragment());
+        adapter.addNext(new CGTempFragment());
+        viewPager.setAdapter(adapter);
+
         Intent intent = getIntent();
         if (intent != null) {
-            thisGameObj = intent.getParcelableExtra(INTENT_GAME_KEY);
+            viewPager.setGameObj((GameObj) intent.getParcelableExtra(INTENT_GAME_KEY));
         }
-        if (thisGameObj == null) {
-            thisGameObj = new GameObj();
+        if (viewPager.getGameObj() == null) {
+            viewPager.setGameObj(new GameObj());
         }
+        viewPager.setCreateGameListener(this);
 
         adapter = new PagerAdapter(getSupportFragmentManager());
         adapter.addNext(new CGTitleFragment());
@@ -76,9 +86,6 @@ public class CreateGameActivity extends NavDrawerActivity implements
         adapter.addNext(new CGLocationFragment());
         adapter.addNext(new CGTempFragment());
 
-        viewPager = (CreateGameViewPager) findViewById(R.id.pager);
-        viewPager.setAdapter(adapter);
-        viewPager.getCurrentFragment().updateView(thisGameObj);
 
         leftButton = (FrameLayout) findViewById(R.id.left_btn);
         rightButton = (FrameLayout) findViewById(R.id.right_btn);
@@ -91,42 +98,16 @@ public class CreateGameActivity extends NavDrawerActivity implements
         leftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                previewClick();
+                viewPager.tryGoBack();
             }
         });
-
 
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tryNextButtonClick();
+                viewPager.tryGoNext();
             }
         });
-
-    }
-
-    private void onGameCreated() {
-        // сохраняем данных с предыдущего таба
-        if (!viewPager.getCurrentFragment().saveResult(true, thisGameObj)) {
-            return;
-        }
-
-        AppUser appUser = AppUser.getInstance(this, true);
-        if (appUser != null) {
-            Formatter formatter = new Formatter();
-            formatter.format(getString(R.string.cg_game_created_msg), thisGameObj.getTitle());
-
-            Log.d(TAG, "onGameCreated: " + formatter);
-
-            Context context = getApplicationContext();
-            Toast.makeText(context, formatter.toString(), Toast.LENGTH_LONG).show();
-
-            thisGameObj.setOwnerUid(appUser.getUid());
-            thisGameObj.save(getApplicationContext());
-            appUser.joinToFootballGame(thisGameObj);
-            finish();
-        }
-
     }
 
     @Override
@@ -134,7 +115,7 @@ public class CreateGameActivity extends NavDrawerActivity implements
         if (requestCode == AppUser.AUTH_REQUEST_CODE) {
             switch (resultCode) {
                 case AppUser.RESULT_SUCCESS:
-                    onGameCreated();
+                    onGameCreated(viewPager.getGameObj());
                     break;
                 case AppUser.RESULT_FAILED:
 
@@ -154,46 +135,13 @@ public class CreateGameActivity extends NavDrawerActivity implements
         updateButtonsVisibility();
     }
 
-    private boolean previewClick() {
-        // return: был ли сменен таб
-        viewPager.getCurrentFragment().saveResult(false, thisGameObj); // сохраняем данных с предыдущего таба
-        if (viewPager.goBack()) {
-            updateButtonsVisibility();
-            // обновляем данные в следующем табе
-            viewPager.getCurrentFragment().updateView(thisGameObj);
-            return true;
-        }
-        return false;
-    }
-
-    private void tryNextButtonClick() {
-        if (viewPager.getCurrentItem() == adapter.getCount() - 1) {
-            onGameCreated();
-        } else {
-            nextClick();
-        }
-    }
-
-    private void nextClick() {
-        // сохраняем данных с предыдущего таба
-        if (!viewPager.getCurrentFragment().saveResult(true, thisGameObj)) {
-            return;
-        }
-        if (viewPager.goNext()) {
-            updateButtonsVisibility();
-            // обновляем данные в следующем табе
-            viewPager.getCurrentFragment().updateView(thisGameObj);
-        }
-    }
-
     private void updateButtonsVisibility() {
-        int current = viewPager.getCurrentItem();
-        if (current == adapter.getCount() - 1) {
+        if (!viewPager.hasNext()) {
             // последний таб
             showPreviewBtn(true);
             showNextBtn(false);
             showFinishBtn(true);
-        } else if (current == 0) {
+        } else if (!viewPager.hasPreview()) {
             // первый таб
             showPreviewBtn(false);
             showNextBtn(true);
@@ -207,9 +155,7 @@ public class CreateGameActivity extends NavDrawerActivity implements
 
     @Override
     public void onBackPressed() {
-        if (viewPager.hasPreview()) {
-            previewClick();
-        } else {
+        if (!viewPager.tryGoBack()) {
             super.onBackPressed();
         }
     }
@@ -244,6 +190,35 @@ public class CreateGameActivity extends NavDrawerActivity implements
     // Create Game Tab Callback
     @Override
     public void onDoneEdit() {
-        tryNextButtonClick();
+        viewPager.tryGoNext();
+    }
+
+    @Override
+    public void onGameCreated(GameObj game) {
+        AppUser appUser = AppUser.getInstance(this, true);
+        if (appUser != null) {
+            Formatter formatter = new Formatter();
+            formatter.format(getString(R.string.cg_game_created_msg), viewPager.getGameObj().getTitle());
+
+            Log.d(TAG, "onGameCreated: " + formatter);
+
+            Context context = getApplicationContext();
+            Toast.makeText(context, formatter.toString(), Toast.LENGTH_LONG).show();
+
+            game.setOwnerUid(appUser.getUid());
+            game.save(getApplicationContext());
+            appUser.joinToFootballGame(game);
+            finish();
+        }
+    }
+
+    @Override
+    public void onNextTab() {
+        updateButtonsVisibility();
+    }
+
+    @Override
+    public void onPreviewTab() {
+        updateButtonsVisibility();
     }
 }

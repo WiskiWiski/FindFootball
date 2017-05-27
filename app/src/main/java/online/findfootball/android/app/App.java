@@ -2,6 +2,7 @@ package online.findfootball.android.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Vibrator;
 import android.support.multidex.MultiDex;
 
 import com.vk.sdk.VKAccessToken;
@@ -68,6 +69,11 @@ public class App extends Application implements LaunchCounter.OnFirstStartListen
     public static int getInstallVersion(Context context) {
         String INSTALL_VERSION_TAG = context.getString(R.string.install_version);
         return PreferencesStorage.getInt(context, INSTALL_VERSION_TAG, 1);
+    }
+
+    public static void vibrate(Context context, long ms) {
+        Vibrator v = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+        v.vibrate(ms);
     }
 
 }

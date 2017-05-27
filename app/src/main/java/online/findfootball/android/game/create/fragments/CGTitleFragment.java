@@ -11,17 +11,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Formatter;
+
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
-import online.findfootball.android.game.create.BaseCGFragment;
 import online.findfootball.android.game.GameObj;
-
-import java.util.Formatter;
+import online.findfootball.android.game.create.BaseCGFragment;
 
 
 public class CGTitleFragment extends BaseCGFragment {
 
-    private static final String TAG = App.G_TAG + ":CGNameFrg";
+    private static final String TAG = App.G_TAG + ":CGTitleFrg";
 
     private static final int MINIMAL_TITLE_LENGTH = 6;
 
@@ -53,46 +53,47 @@ public class CGTitleFragment extends BaseCGFragment {
         return rootView;
     }
 
-    private String getTitle(boolean checkForCorrect) {
+    private String getTitle() {
         String title = null;
         if (editText != null) {
             title = editText.getText().toString().trim();
-            if (checkForCorrect && !verifyTitle(title)) {
-                editText.requestFocus();
-                return null;
-            }
         }
         return title;
     }
 
-    private boolean verifyTitle(String title) {
-        if (title.isEmpty()) {
-            Toast.makeText(getContext(), getString(R.string.cg_game_title_frg_empty_title),
-                    Toast.LENGTH_LONG).show();
-        } else if (title.length() < MINIMAL_TITLE_LENGTH) {
-            Formatter formatter = new Formatter();
-            formatter.format(getString(R.string.cg_game_title_frg_too_short_title),
-                    MINIMAL_TITLE_LENGTH);
-            Toast.makeText(getContext(), formatter.toString(), Toast.LENGTH_LONG).show();
-        } else {
-            return true;
-        }
-        return false;
-    }
 
     @Override
-    public boolean saveResult(boolean checkForCorrect, GameObj game) {
-        String title = getTitle(checkForCorrect);
-        if (title != null) {
-            game.setTitle(title);
-            return true;
-        }
-        return !checkForCorrect;
+    public void saveResult(GameObj game) {
+        game.setTitle(getTitle());
     }
 
     @Override
     public void updateView(GameObj game) {
         this.thisGame = game;
+    }
+
+    @Override
+    public boolean verifyData(boolean showToast) {
+        String title = getTitle();
+        if (title == null || title.isEmpty()) {
+            if (showToast) {
+                Toast.makeText(getContext(), getString(R.string.cg_game_title_frg_empty_title),
+                        Toast.LENGTH_SHORT).show();
+                vibrate();
+            }
+        } else if (title.length() < MINIMAL_TITLE_LENGTH) {
+            if (showToast) {
+                Formatter formatter = new Formatter();
+                formatter.format(getString(R.string.cg_game_title_frg_too_short_title),
+                        MINIMAL_TITLE_LENGTH);
+                Toast.makeText(getContext(), formatter.toString(), Toast.LENGTH_SHORT).show();
+                vibrate();
+            }
+        } else {
+            return true;
+        }
+        editText.requestFocus();
+        return false;
     }
 
 }
