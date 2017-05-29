@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/custom_spinner_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:ellipsize="end"
+    android:maxLines="1"
+    android:padding="10dp"
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:textColor="@android:color/white"
+    tools:background="@color/cardview_dark_background"
+    tools:text="SAMPLE"/>

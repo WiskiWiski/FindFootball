@@ -2,6 +2,7 @@ package online.findfootball.android.time;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -28,11 +29,14 @@ public class TimeProvider {
         return utcMs + TimeZone.getDefault().getOffset(utcMs);
     }
 
-    public static String getStringDate(String format, long time){
+    public static String getStringDate(String format, long time) {
         long localDate = TimeProvider.convertToLocal(time);
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
         return dateFormat.format(localDate);
     }
 
+    public static Calendar getLocalCalendar() {
+        return Calendar.getInstance();
+    }
 
 }

@@ -1,0 +1,43 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/cg_game_time_frg_main_text"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white"
+        android:textSize="28sp"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <online.findfootball.android.game.create.fragments.time.view.CustomSpinner
+            android:id="@+id/day_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:entries="@array/cg_game_time_frg_day_spinner_list"/>
+
+
+        <online.findfootball.android.game.create.fragments.time.view.CustomSpinner
+            android:id="@+id/time_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:entries="@array/cg_game_time_frg_time_spinner_list"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -20,8 +20,8 @@ import online.findfootball.android.app.NavDrawerActivity;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.create.fragments.CGDescriptionFragment;
 import online.findfootball.android.game.create.fragments.CGLocationFragment;
-import online.findfootball.android.game.create.fragments.CGTempFragment;
 import online.findfootball.android.game.create.fragments.CGTitleFragment;
+import online.findfootball.android.game.create.fragments.time.CGGameTimeFragment;
 import online.findfootball.android.game.create.view.CreateGameViewPager;
 import online.findfootball.android.user.AppUser;
 
@@ -68,7 +68,7 @@ public class CreateGameActivity extends NavDrawerActivity implements
         adapter.addNext(new CGTitleFragment());
         adapter.addNext(new CGDescriptionFragment());
         adapter.addNext(new CGLocationFragment());
-        adapter.addNext(new CGTempFragment());
+        adapter.addNext(new CGGameTimeFragment());
         viewPager.setAdapter(adapter);
 
         Intent intent = getIntent();
@@ -79,12 +79,6 @@ public class CreateGameActivity extends NavDrawerActivity implements
             viewPager.setGameObj(new GameObj());
         }
         viewPager.setCreateGameListener(this);
-
-        adapter = new PagerAdapter(getSupportFragmentManager());
-        adapter.addNext(new CGTitleFragment());
-        adapter.addNext(new CGDescriptionFragment());
-        adapter.addNext(new CGLocationFragment());
-        adapter.addNext(new CGTempFragment());
 
 
         leftButton = (FrameLayout) findViewById(R.id.left_btn);
