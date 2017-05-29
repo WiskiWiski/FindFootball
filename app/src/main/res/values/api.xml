@@ -6,8 +6,6 @@
     <string name="facebook_login_protocol_scheme" translatable="false">fb1388668007862901</string>
     <string name="facebook_app_id">1388668007862901</string>
 
-    <string name="firebase_web_client_id">382058116065-eqomsej4jb20d8smcaramje3e14odij8.apps.googleusercontent.com</string>
-
     <integer name="com_vk_sdk_AppId">5918175</integer>
 
 </resources>

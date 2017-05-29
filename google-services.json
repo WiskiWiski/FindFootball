@@ -15,18 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "382058116065-eqomsej4jb20d8smcaramje3e14odij8.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "382058116065-4upufpiq0sjt4berb3j2679cdve9v9o5.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "online.findfootball.android",
-            "certificate_hash": "97c864aa7a43aabc25545acd4a1d7fce61480aa9"
-          }
-        },
-        {
           "client_id": "382058116065-fagdrmftb2454b7vj0d1gbhiqh88slcc.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -41,20 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "382058116065-7eslv1mc64l5ilcnp403pm97b1k7tark.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "online.findfootball.ios"
-              }
-            },
-            {
-              "client_id": "382058116065-eqomsej4jb20d8smcaramje3e14odij8.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

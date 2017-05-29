@@ -44,8 +44,7 @@ public class MyGoogleAuthProvider extends RootAuthProvider {
     public void signIn() {
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(activity.getString(R.string.firebase_web_client_id))
-                //.requestIdToken(activity.getString(R.string.default_web_client_id))
+                .requestIdToken(activity.getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
