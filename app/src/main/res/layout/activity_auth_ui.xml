@@ -84,8 +84,8 @@
 
         <ImageButton
             android:id="@+id/facebook_sign_in_btn"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
@@ -95,26 +95,26 @@
             android:gravity="center"
             android:padding="10dp"
             android:textColor="@android:color/white"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <ImageButton
             android:id="@+id/vk_sign_in_btn"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:background="@mipmap/ic_vk"
             android:enabled="false"
-            android:foreground="?attr/selectableItemBackground"/>
+            android:foreground="?attr/selectableItemBackground" />
 
 
         <ImageButton
             android:id="@+id/google_sign_in_btn"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:background="@mipmap/ic_google_plus"
             android:foreground="?attr/selectableItemBackground"
-            android:padding="@dimen/activity_horizontal_margin"/>
+            android:padding="@dimen/activity_horizontal_margin" />
 
     </RelativeLayout>
 
