@@ -21,6 +21,7 @@ import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.create.fragments.CGDescriptionFragment;
 import online.findfootball.android.game.create.fragments.CGLocationFragment;
 import online.findfootball.android.game.create.fragments.CGTitleFragment;
+import online.findfootball.android.game.create.fragments.team.size.CGTeamSizeFragment;
 import online.findfootball.android.game.create.fragments.time.CGGameTimeFragment;
 import online.findfootball.android.game.create.view.CreateGameViewPager;
 import online.findfootball.android.user.AppUser;
@@ -68,6 +69,7 @@ public class CreateGameActivity extends NavDrawerActivity implements
         adapter.addNext(new CGTitleFragment());
         adapter.addNext(new CGDescriptionFragment());
         adapter.addNext(new CGLocationFragment());
+        adapter.addNext(new CGTeamSizeFragment());
         adapter.addNext(new CGGameTimeFragment());
         viewPager.setAdapter(adapter);
 

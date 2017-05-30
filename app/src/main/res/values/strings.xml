@@ -56,6 +56,9 @@
 
     <string name="cg_game_location_frg_location_not_selected">Please, select game location!</string>
 
+    <!-- Game Team Size -->
+    <string name="cg_game_team_size_frg_main_text">Team Size</string>
+
     <!-- Game Time -->
     <string name="cg_game_time_frg_main_text">Game Time</string>
     <string name="cg_game_time_frg_time_offset_too_small" formatted="false">Minimal time offset: %d hours!</string>
