@@ -113,6 +113,7 @@ public class UpcomingGamesFragment extends Fragment implements
                     @Override
                     public void onFailed(int code, String msg) {
                         Log.w(TAG, "onFailed [" + code + "] : " + msg);
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
                 eventsProvider.getUpcomingGames();

@@ -30,6 +30,7 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
     public final static String PATH_PHOTO_URL = "photo_url/";
     public final static String PATH_REGISTER_TIME = "register_time/";
     public final static String PATH_LAST_ACTIVITY_TIME = "last_activity_time/";
+    public final static String PATH_AUTH_PROVIDER = "auth_provider/";
 
 
     private String uid;
@@ -38,6 +39,7 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
     private long lastActivityTime;
     private long registerTime;
     private Uri photoUrl;
+    private String authProvider;
     private PackableArrayList<GameObj> gameList;
 
 
@@ -106,6 +108,14 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
         }
     }
 
+    public String getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(String authProvider) {
+        this.authProvider = authProvider;
+    }
+
     public String getUid() {
         return uid;
     }
@@ -165,6 +175,7 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
         out.writeString(uid);
         out.writeString(displayName);
         out.writeString(email);
+        out.writeString(authProvider);
         out.writeLong(lastActivityTime);
         out.writeLong(registerTime);
         out.writeParcelable(photoUrl, flags);
@@ -187,6 +198,7 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
         uid = in.readString();
         displayName = in.readString();
         email = in.readString();
+        authProvider = in.readString();
         lastActivityTime = in.readLong();
         registerTime = in.readLong();
         photoUrl = in.readParcelable(Uri.class.getClassLoader());
@@ -221,23 +233,40 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
 
     @Override
     public DataInstanceResult unpack(DataSnapshot dataSnapshot) {
+        DataInstanceResult r = DataInstanceResult.onSuccess();
         try {
             setUid(dataSnapshot.getKey());
             setDisplayName((String) dataSnapshot.child(PATH_DISPLAY_NAME).getValue());
             String url = (String) dataSnapshot.child(PATH_PHOTO_URL).getValue();
             if (url != null) {
                 setPhotoUrl(Uri.parse(url));
+            } else {
+                DataInstanceResult.calculateResult(r, new DataInstanceResult(DataInstanceResult.CODE_NOT_COMPLETE));
             }
             setEmail((String) dataSnapshot.child(PATH_EMAIL).getValue());
-            setRegisterTime((Long) dataSnapshot.child(PATH_REGISTER_TIME).getValue());
-            setLastActivityTime((Long) dataSnapshot.child(PATH_LAST_ACTIVITY_TIME).getValue());
+            setAuthProvider((String) dataSnapshot.child(PATH_AUTH_PROVIDER).getValue());
+
+            Object regTimeObj;
+            regTimeObj = dataSnapshot.child(PATH_REGISTER_TIME).getValue();
+            if (regTimeObj != null) {
+                setRegisterTime((Long) regTimeObj);
+            } else {
+                DataInstanceResult.calculateResult(r, new DataInstanceResult(DataInstanceResult.CODE_NOT_COMPLETE));
+            }
+
+            Object lastActObj = dataSnapshot.child(PATH_LAST_ACTIVITY_TIME).getValue();
+            if (lastActObj != null) {
+                setLastActivityTime((Long) lastActObj);
+            } else {
+                DataInstanceResult.calculateResult(r, new DataInstanceResult(DataInstanceResult.CODE_NOT_COMPLETE));
+            }
 
             if (gameList == null) {
                 newGameList();
             }
             gameList.unpack(dataSnapshot.child(PATH_GAMES_FOOTBALL));
 
-            return DataInstanceResult.onSuccess();
+            return r;
         } catch (Exception ex) {
             return DataInstanceResult.onFailed(ex.getMessage(), ex);
         }

@@ -180,12 +180,9 @@ public class AppUser extends UserObj {
         databaseReference.child(PATH_EMAIL).setValue(getEmail());
         databaseReference.child(PATH_REGISTER_TIME).setValue(getRegisterTime());
         databaseReference.child(PATH_LAST_ACTIVITY_TIME).setValue(getLastActivityTime());
+        databaseReference.child(PATH_AUTH_PROVIDER).setValue(getAuthProvider());
 
-        if (getGameList() != null) {
-            for (GameObj game : getGameList()) {
-                databaseReference.child(PATH_GAMES_FOOTBALL).child(game.getEid()).setValue(game.getEid());
-            }
-        }
+        getGameList().pack(databaseReference.child(PATH_GAMES_FOOTBALL));
         return DataInstanceResult.onSuccess();
     }
 

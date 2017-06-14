@@ -20,6 +20,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.app.BaseActivity;
+import online.findfootball.android.firebase.database.DataInstanceResult;
+import online.findfootball.android.firebase.database.DatabaseLoader;
+import online.findfootball.android.firebase.database.DatabasePackableInterface;
 import online.findfootball.android.firebase.database.FBDatabase;
 import online.findfootball.android.time.TimeProvider;
 import online.findfootball.android.user.AppUser;
@@ -128,25 +131,35 @@ public class AuthUiActivity extends BaseActivity {
     private void initProviders() {
         ProviderCallback providerCallback = new ProviderCallback() {
             @Override
-            public void onResult(int code, FirebaseUser user) {
+            public void onResult(int code, final FirebaseUser user) {
                 Log.d(TAG, "Authentication success: " + user.getEmail());
                 Toast.makeText(getApplicationContext(), user.getEmail(), Toast.LENGTH_LONG).show();
-                if (code == ProviderCallback.CODE_SIGN_IN) {
-                    signInUser(user);  // обновляем данные пользователя в БД
-                } else {
-                    signUpUser(user);  // сохраняем данные пользователя в БД
-                }
-                setResult(AppUser.RESULT_SUCCESS);
-                finish();
 
-                // учедомления слушателя о входе пользователя
-                AppUser.UserStateListener userStateListener = AppUser.getUserStateListener();
-                if (userStateListener != null) {
-                    AppUser appUser = AppUser.getUser();
-                    if (appUser != null) {
-                        userStateListener.onLogin(AppUser.getUser());
+                // пытаемся подгрузить данные пользователя из firebase бд
+                new UserObj(user.getUid()).load(new DatabaseLoader.OnLoadListener() {
+                    @Override
+                    public void onComplete(DataInstanceResult result, DatabasePackableInterface packable) {
+                        Log.d(TAG, "onComplete: p: " + packable.hasLoaded());
+                        if (packable.hasLoaded()) {
+                            // Если пользователь уже есть в firebase бд
+                            signInUser(user); // обновляем данные пользователя в БД
+                        } else {
+                            // пользователь только зарегистрировался
+                            signUpUser(user); // сохраняем данные пользователя в БД
+                        }
+                        setResult(AppUser.RESULT_SUCCESS);
+                        finish();
+
+                        // учедомления слушателя о входе пользователя
+                        AppUser.UserStateListener userStateListener = AppUser.getUserStateListener();
+                        if (userStateListener != null) {
+                            AppUser appUser = AppUser.getUser();
+                            if (appUser != null) {
+                                userStateListener.onLogin(AppUser.getUser());
+                            }
+                        }
                     }
-                }
+                });
             }
 
             @Override
@@ -174,11 +187,18 @@ public class AuthUiActivity extends BaseActivity {
 
 
     public static void signUpUser(FirebaseUser user) {
+        Log.d(TAG, "signUpUser: ");
         // Записывает данные в бд после регистрации пользователя
         signInUser(user);
         final DatabaseReference thisUserReference = FirebaseDatabase.getInstance().getReference()
                 .child(FBDatabase.PATH_USERS).child(user.getUid());
         thisUserReference.child(UserObj.PATH_REGISTER_TIME).setValue(TimeProvider.getUtcTime());
+
+        if (user.getProviders() != null && user.getProviders().size() > 0) {
+            thisUserReference.child(UserObj.PATH_AUTH_PROVIDER).setValue(user.getProviders().get(0));
+        } else {
+            thisUserReference.child(UserObj.PATH_AUTH_PROVIDER).setValue("unknown");
+        }
     }
 
     public static void signInUser(FirebaseUser user) {
