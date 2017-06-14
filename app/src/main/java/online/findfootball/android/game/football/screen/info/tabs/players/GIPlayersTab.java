@@ -7,11 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 
@@ -129,6 +131,9 @@ public class GIPlayersTab extends Fragment {
                                 } else {
                                     mAdapter.addPlayer(player);
                                 }
+                                if (recyclerView != null){
+                                    recyclerView.smoothScrollToPosition(0);
+                                }
                             }
                             loadedCount++;
                             updatePlayerNumb();
@@ -199,8 +204,13 @@ public class GIPlayersTab extends Fragment {
             appUser.leaveGame(thisGameObj); // убираем игру у пользователя
         } else {
             // TODO : делить на команды тут
-            teams.getTeamA().enrollPlayer(player); // добавляем игрока в команду
-            appUser.joinGame(thisGameObj); // добавляем игру к польщователю
+            if ( teams.getTeamA().getPlayerCount() >=  teams.getTeamA().getMaxPlayerCount()){
+                Toast.makeText(getContext(), "Not space in the 'A' team !", Toast.LENGTH_SHORT).show();
+                setButtonEnable(true);
+            } else {
+                teams.getTeamA().enrollPlayer(player); // добавляем игрока в команду
+                appUser.joinGame(thisGameObj); // добавляем игру к польщователю
+            }
         }
     }
 
@@ -209,7 +219,7 @@ public class GIPlayersTab extends Fragment {
             thisAppUser = AppUser.getInstance(getContext());
         }
         if ((thisAppUser != null && thisAppUser.getUid().equals(player.getUid()))
-                || loadedCount >= thisGameObj.getTeams().getTeamsCapacity()) {
+                || loadedCount >= thisGameObj.getTeams().getTeamsOccupancy()) {
             // Если загрузили AppUser'a или все игроки были загружены
             setButtonEnable(true);
         }

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +25,7 @@ import java.util.List;
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.game.GameObj;
+import online.findfootball.android.game.football.screen.create.CreateGameActivity;
 import online.findfootball.android.game.football.screen.info.GameInfoActivity;
 import online.findfootball.android.game.football.screen.my.EventsProvider;
 import online.findfootball.android.game.football.screen.my.OnRecyclerViewItemClickListener;
@@ -47,6 +49,7 @@ public class UpcomingGamesFragment extends Fragment implements
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private UpcomingGamesAdapter mAdapter;
+    private FloatingActionButton addFab;
 
     private EventsProvider eventsProvider;
 
@@ -58,6 +61,14 @@ public class UpcomingGamesFragment extends Fragment implements
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+
+        addFab = (FloatingActionButton) rootView.findViewById(R.id.fab_add);
+        addFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), CreateGameActivity.class));
+            }
+        });
 
         if (mAdapter == null) {
             mAdapter = new UpcomingGamesAdapter();

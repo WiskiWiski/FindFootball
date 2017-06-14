@@ -3,6 +3,7 @@ package online.findfootball.android.game.football.screen.find;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,6 +24,7 @@ import online.findfootball.android.app.App;
 import online.findfootball.android.app.NavDrawerActivity;
 import online.findfootball.android.background.tasks.BgTaskMaker;
 import online.findfootball.android.game.GameObj;
+import online.findfootball.android.game.football.screen.create.CreateGameActivity;
 import online.findfootball.android.game.football.screen.find.dialogs.FGSelectLocationDialog;
 import online.findfootball.android.game.football.screen.find.recyclerview.EndlessRecyclerOnScrollListener;
 import online.findfootball.android.game.football.screen.find.recyclerview.FindGameAdapter;
@@ -39,6 +41,7 @@ public class FindGameActivity extends NavDrawerActivity {
     private ProgressBar progressBar;
     private FindGameAdapter mAdapter;
     private Button applyButton;
+    private FloatingActionButton addFab;
 
     private FindGameDataProvider findGameDataProvider;
 
@@ -81,6 +84,14 @@ public class FindGameActivity extends NavDrawerActivity {
             @Override
             public void onCancel() {
 
+            }
+        });
+
+        addFab = (FloatingActionButton) findViewById(R.id.fab_add);
+        addFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), CreateGameActivity.class));
             }
         });
 
