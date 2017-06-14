@@ -79,7 +79,8 @@ public class MyGoogleAuthProvider extends RootAuthProvider {
                 AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
                 FirebaseAuth.getInstance()
                         .signInWithCredential(credential)
-                        .addOnCompleteListener(activity, getOnCompleteListener(callback));
+                        .addOnCompleteListener(activity,
+                                getOnCompleteListener(ProviderCallback.CODE_SIGN_IN, callback));
             } else {
                 // Пользователь не дал согласия на вход через Google аккаунт
                 FailedResult result = new FailedResult(signInResult.getStatus().getStatusCode());

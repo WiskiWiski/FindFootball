@@ -54,7 +54,8 @@ public class MyFacebookAuthProvider extends RootAuthProvider {
                 AuthCredential credential = FacebookAuthProvider.getCredential(loginResult.getAccessToken().getToken());
                 FirebaseAuth.getInstance()
                         .signInWithCredential(credential)
-                        .addOnCompleteListener(activity, getOnCompleteListener(callback));
+                        .addOnCompleteListener(activity,
+                                getOnCompleteListener(ProviderCallback.CODE_SIGN_IN, callback));
             }
 
             @Override

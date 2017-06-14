@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <online.findfootball.android.game.create.view.CreateGameViewPager
+        <online.findfootball.android.game.football.screen.create.view.CreateGameViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -51,12 +51,12 @@
             android:label="ServiceActivity"
             android:theme="@style/VK.Transparent"/>
         <activity
-            android:name=".game.create.CreateGameActivity"
+            android:name=".game.football.screen.create.CreateGameActivity"
             android:label="@string/activity_title_create_game"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".game.my.MyGamesActivity"
+            android:name=".game.football.screen.my.MyGamesActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -65,12 +65,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".game.find.FindGameActivity"
+            android:name=".game.football.screen.find.FindGameActivity"
             android:label="@string/activity_title_find_game"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".game.info.GameInfoActivity"
+            android:name=".game.football.screen.info.GameInfoActivity"
             android:label="@string/activity_title_game_info"
             android:theme="@style/AppTheme.NoToolBar">
         </activity>

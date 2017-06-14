@@ -2,6 +2,7 @@ package online.findfootball.android.user.auth;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,12 +14,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.app.BaseActivity;
 import online.findfootball.android.firebase.database.FBDatabase;
+import online.findfootball.android.time.TimeProvider;
 import online.findfootball.android.user.AppUser;
+import online.findfootball.android.user.UserObj;
 import online.findfootball.android.user.auth.providers.MyEmailAuthAuthProvider;
 import online.findfootball.android.user.auth.providers.MyFacebookAuthProvider;
 import online.findfootball.android.user.auth.providers.MyGoogleAuthProvider;
@@ -123,12 +128,18 @@ public class AuthUiActivity extends BaseActivity {
     private void initProviders() {
         ProviderCallback providerCallback = new ProviderCallback() {
             @Override
-            public void onResult(FirebaseUser user) {
+            public void onResult(int code, FirebaseUser user) {
                 Log.d(TAG, "Authentication success: " + user.getEmail());
                 Toast.makeText(getApplicationContext(), user.getEmail(), Toast.LENGTH_LONG).show();
-                FBDatabase.signUpUser(user);
+                if (code == ProviderCallback.CODE_SIGN_IN) {
+                    signInUser(user);  // обновляем данные пользователя в БД
+                } else {
+                    signUpUser(user);  // сохраняем данные пользователя в БД
+                }
                 setResult(AppUser.RESULT_SUCCESS);
                 finish();
+
+                // учедомления слушателя о входе пользователя
                 AppUser.UserStateListener userStateListener = AppUser.getUserStateListener();
                 if (userStateListener != null) {
                     AppUser appUser = AppUser.getUser();
@@ -159,6 +170,35 @@ public class AuthUiActivity extends BaseActivity {
         googleAuthProvider.onActivityResult(requestCode, resultCode, data);
         fbAuthProvider.onActivityResult(requestCode, resultCode, data);
         vkAuthProvider.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    public static void signUpUser(FirebaseUser user) {
+        // Записывает данные в бд после регистрации пользователя
+        signInUser(user);
+        final DatabaseReference thisUserReference = FirebaseDatabase.getInstance().getReference()
+                .child(FBDatabase.PATH_USERS).child(user.getUid());
+        thisUserReference.child(UserObj.PATH_REGISTER_TIME).setValue(TimeProvider.getUtcTime());
+    }
+
+    public static void signInUser(FirebaseUser user) {
+        // Обновляет поля пользователя в бд по данным FirebaseUser после авторизации
+        final DatabaseReference thisUserReference = FirebaseDatabase.getInstance().getReference()
+                .child(FBDatabase.PATH_USERS).child(user.getUid());
+        if (user.getEmail() != null) {
+            thisUserReference.child(UserObj.PATH_EMAIL).setValue(user.getEmail());
+        }
+
+        if (user.getDisplayName() != null) {
+            thisUserReference.child(UserObj.PATH_DISPLAY_NAME).setValue(user.getDisplayName());
+        }
+
+        Uri photoUri = user.getPhotoUrl();
+        if (photoUri != null) {
+            thisUserReference.child(UserObj.PATH_PHOTO_URL).setValue(String.valueOf(photoUri));
+        }
+
+        thisUserReference.child(UserObj.PATH_LAST_ACTIVITY_TIME).setValue(TimeProvider.getUtcTime());
     }
 
     private void enableButtons() {

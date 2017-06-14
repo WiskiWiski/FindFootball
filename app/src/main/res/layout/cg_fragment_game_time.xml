@@ -23,7 +23,7 @@
         android:orientation="horizontal"
         android:padding="16dp">
 
-        <online.findfootball.android.game.create.fragments.time.view.CustomSpinner
+        <online.findfootball.android.game.football.screen.create.fragments.time.view.CustomSpinner
             android:id="@+id/day_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:entries="@array/cg_game_time_frg_day_spinner_list"/>
 
 
-        <online.findfootball.android.game.create.fragments.time.view.CustomSpinner
+        <online.findfootball.android.game.football.screen.create.fragments.time.view.CustomSpinner
             android:id="@+id/time_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

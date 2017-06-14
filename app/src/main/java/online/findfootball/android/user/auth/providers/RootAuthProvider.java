@@ -36,12 +36,12 @@ abstract class RootAuthProvider {
         return result;
     }
 
-    OnCompleteListener<AuthResult> getOnCompleteListener(final ProviderCallback callback) {
+    OnCompleteListener<AuthResult> getOnCompleteListener(final int code, final ProviderCallback callback) {
         return new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    callback.onResult(onCompleteSuccess(task));
+                    callback.onResult(code, onCompleteSuccess(task));
                 } else {
                     callback.onFailed(onCompleteFailed(task));
                 }
