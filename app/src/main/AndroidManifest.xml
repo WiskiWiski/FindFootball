@@ -53,7 +53,7 @@
         <activity
             android:name=".game.football.screen.create.CreateGameActivity"
             android:label="@string/activity_title_create_game"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoToolBar">
         </activity>
         <activity
             android:name=".game.football.screen.my.MyGamesActivity"

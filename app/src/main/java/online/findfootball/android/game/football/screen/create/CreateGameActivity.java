@@ -16,6 +16,7 @@ import java.util.Formatter;
 
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
+import online.findfootball.android.app.BaseActivity;
 import online.findfootball.android.app.NavDrawerActivity;
 import online.findfootball.android.background.tasks.BgTaskMaker;
 import online.findfootball.android.game.GameObj;
@@ -28,7 +29,7 @@ import online.findfootball.android.game.football.screen.create.fragments.time.CG
 import online.findfootball.android.game.football.screen.create.view.CreateGameViewPager;
 import online.findfootball.android.user.AppUser;
 
-public class CreateGameActivity extends NavDrawerActivity implements
+public class CreateGameActivity extends BaseActivity implements
         BaseCGFragment.CGTabEditListener,
         CreateGameViewPager.CreateGameListener {
 
