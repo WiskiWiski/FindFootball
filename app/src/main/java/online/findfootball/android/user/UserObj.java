@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,11 +32,15 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
     public final static String PATH_REGISTER_TIME = "register_time/";
     public final static String PATH_LAST_ACTIVITY_TIME = "last_activity_time/";
     public final static String PATH_AUTH_PROVIDER = "auth_provider/";
+    public final static String PATH_CLOUDE_MESSAGE_TOKEN = "cm_token/";
+
+    public final static UserObj EMPTY = new UserObj("empty_uid");
 
 
     private String uid;
     private String displayName;
     private String email;
+    private String cloudMessageToken;
     private long lastActivityTime;
     private long registerTime;
     private Uri photoUrl;
@@ -75,6 +80,14 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
             newGameList();
         }
         return gameList;
+    }
+
+    public String getCloudMessageToken() {
+        return this.cloudMessageToken;
+    }
+
+    public void setCloudMessageToken(String cloudMessageToken) {
+        this.cloudMessageToken = cloudMessageToken;
     }
 
     public void setGameList(ArrayList<GameObj> gameList) {
@@ -175,6 +188,7 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
         out.writeString(uid);
         out.writeString(displayName);
         out.writeString(email);
+        out.writeString(cloudMessageToken);
         out.writeString(authProvider);
         out.writeLong(lastActivityTime);
         out.writeLong(registerTime);
@@ -198,6 +212,7 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
         uid = in.readString();
         displayName = in.readString();
         email = in.readString();
+        cloudMessageToken = in.readString();
         authProvider = in.readString();
         lastActivityTime = in.readLong();
         registerTime = in.readLong();
@@ -244,6 +259,7 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
                 DataInstanceResult.calculateResult(r, new DataInstanceResult(DataInstanceResult.CODE_NOT_COMPLETE));
             }
             setEmail((String) dataSnapshot.child(PATH_EMAIL).getValue());
+            setCloudMessageToken((String) dataSnapshot.child(PATH_CLOUDE_MESSAGE_TOKEN).getValue());
             setAuthProvider((String) dataSnapshot.child(PATH_AUTH_PROVIDER).getValue());
 
             Object regTimeObj;

@@ -6,6 +6,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import online.findfootball.android.app.App;
 import online.findfootball.android.app.NavDrawerActivity;
 import online.findfootball.android.user.AppUser;
@@ -35,7 +37,11 @@ public class MainActivity extends NavDrawerActivity {
         findViewById(R.id.test_btn_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                AppUser appUser = AppUser.getInstance(getApplicationContext(), true);
+                if (appUser != null) {
+                    appUser.setCloudMessageToken(FirebaseInstanceId.getInstance().getToken());
+                    appUser.save();
+                }
             }
         });
 

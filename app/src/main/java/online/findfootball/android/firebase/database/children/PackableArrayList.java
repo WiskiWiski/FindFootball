@@ -46,8 +46,8 @@ public class PackableArrayList<T extends DatabasePackableInterface> extends Arra
 
     @Override
     public DataInstanceResult pack(DatabaseReference databaseReference) {
-        databaseReference.removeValue();
         if (size() > 0) {
+            databaseReference.removeValue();
             for (T p : this) {
                 packItem(databaseReference, p);
             }

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
@@ -139,7 +140,6 @@ public class AuthUiActivity extends BaseActivity {
                 new UserObj(user.getUid()).load(new DatabaseLoader.OnLoadListener() {
                     @Override
                     public void onComplete(DataInstanceResult result, DatabasePackableInterface packable) {
-                        Log.d(TAG, "onComplete: p: " + packable.hasLoaded());
                         if (packable.hasLoaded()) {
                             // Если пользователь уже есть в firebase бд
                             signInUser(user); // обновляем данные пользователя в БД
@@ -187,7 +187,6 @@ public class AuthUiActivity extends BaseActivity {
 
 
     public static void signUpUser(FirebaseUser user) {
-        Log.d(TAG, "signUpUser: ");
         // Записывает данные в бд после регистрации пользователя
         signInUser(user);
         final DatabaseReference thisUserReference = FirebaseDatabase.getInstance().getReference()
@@ -198,6 +197,11 @@ public class AuthUiActivity extends BaseActivity {
             thisUserReference.child(UserObj.PATH_AUTH_PROVIDER).setValue(user.getProviders().get(0));
         } else {
             thisUserReference.child(UserObj.PATH_AUTH_PROVIDER).setValue("unknown");
+        }
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+        if (token != null) {
+            thisUserReference.child(UserObj.PATH_CLOUDE_MESSAGE_TOKEN).setValue(token);
         }
     }
 

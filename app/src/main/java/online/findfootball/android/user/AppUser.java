@@ -178,6 +178,7 @@ public class AppUser extends UserObj {
         databaseReference.child(PATH_DISPLAY_NAME).setValue(getDisplayName());
         databaseReference.child(PATH_PHOTO_URL).setValue(getPhotoUrl().toString());
         databaseReference.child(PATH_EMAIL).setValue(getEmail());
+        databaseReference.child(PATH_CLOUDE_MESSAGE_TOKEN).setValue(getCloudMessageToken());
         databaseReference.child(PATH_REGISTER_TIME).setValue(getRegisterTime());
         databaseReference.child(PATH_LAST_ACTIVITY_TIME).setValue(getLastActivityTime());
         databaseReference.child(PATH_AUTH_PROVIDER).setValue(getAuthProvider());
