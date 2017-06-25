@@ -10,4 +10,6 @@
 
     <color name="teamAColor">#ffb5b6</color>
     <color name="teamBColor">#c4caff</color>
+
+    <color name="backgroundGray">#D9D9D9</color>
 </resources>

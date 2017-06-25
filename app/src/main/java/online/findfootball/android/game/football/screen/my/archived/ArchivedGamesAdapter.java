@@ -57,13 +57,13 @@ public class ArchivedGamesAdapter extends RecyclerView.Adapter<ArchivedGamesView
     }
 
     @Override
-    public void onBindViewHolder(ArchivedGamesViewHolder holder, int position) {
+    public void onBindViewHolder(ArchivedGamesViewHolder holderSelf, int position) {
         GameObj game = gameList.get(position);
-        holder.setItemClickListener(itemClickListener);
-        holder.setItemLongClickListener(itemLongClickListener);
-        holder.setRecreateBtnClickListener(itemRecreateBtnClickListener);
-        holder.setTitle(game.getTitle());
-        holder.setEventTime(game.getEventTime());
+        holderSelf.setItemClickListener(itemClickListener);
+        holderSelf.setItemLongClickListener(itemLongClickListener);
+        holderSelf.setRecreateBtnClickListener(itemRecreateBtnClickListener);
+        holderSelf.setTitle(game.getTitle());
+        holderSelf.setEventTime(game.getEventTime());
     }
 
     @Override

@@ -23,7 +23,10 @@ import online.findfootball.android.firebase.database.DatabasePackableInterface;
 public class PackableArrayList<T extends DatabasePackableInterface> extends ArrayList<T>
         implements DatabasePackableInterface, Parcelable, Serializable {
 
+    public static final PackableArrayList<DatabasePackableInterface> EMPTY =
+            new PackableArrayList<>();
     private String dirPath = "";
+
 
     public PackableArrayList() {
         super();

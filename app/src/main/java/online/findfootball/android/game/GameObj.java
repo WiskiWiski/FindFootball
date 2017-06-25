@@ -14,7 +14,9 @@ import java.util.UUID;
 import online.findfootball.android.app.App;
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.FBDatabase;
+import online.findfootball.android.firebase.database.children.PackableArrayList;
 import online.findfootball.android.firebase.database.children.PackableObject;
+import online.findfootball.android.game.chat.MessageObj;
 import online.findfootball.android.game.football.object.FootballTeams;
 import online.findfootball.android.location.LocationObj;
 import online.findfootball.android.time.TimeProvider;
@@ -34,6 +36,7 @@ public class GameObj extends PackableObject implements Parcelable, Serializable 
     public final static String PATH_TEAMS = "teams/";
     public final static String PATH_EVENT_TIME = "event_time/";
     public final static String PATH_LOCATION = "location/";
+    public final static String PATH_CHAT = "chat/";
 
 
     private String eid;
@@ -43,6 +46,7 @@ public class GameObj extends PackableObject implements Parcelable, Serializable 
     private String description;
     private long eventTime;
     private long createTime;
+    private PackableArrayList<MessageObj> chat;
 
     private FootballTeams teams;
 
@@ -57,6 +61,30 @@ public class GameObj extends PackableObject implements Parcelable, Serializable 
     public GameObj(String eid) {
         initObject();
         this.eid = eid;
+    }
+
+    private void newChat() {
+        this.chat = new PackableArrayList<MessageObj>() {
+            @Override
+            protected MessageObj unpackItem(DataSnapshot dataSnapshot) {
+                // используется только при вызове .load() на chat
+                MessageObj msg = new MessageObj();
+                msg.unpack(dataSnapshot);
+                return msg;
+            }
+        };
+        this.chat.setDirectoryPath(this.getDirectoryPath() + PATH_CHAT);
+    }
+
+    public PackableArrayList<MessageObj> getChat() {
+        if (this.chat == null){
+            newChat();
+        }
+        return this.chat;
+    }
+
+    public void setChat(PackableArrayList<MessageObj> chat) {
+        this.chat = chat;
     }
 
     public FootballTeams getTeams() {

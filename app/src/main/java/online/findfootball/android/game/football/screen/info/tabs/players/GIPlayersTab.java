@@ -97,7 +97,7 @@ public class GIPlayersTab extends Fragment {
     }
 
     private void updatePlayerNumb() {
-        if (teams != null) {
+        if (teams != null && playersCountTextView != null) {
             String str = teams.getTeamsOccupancy() + "/" + teams.getTeamsCapacity();
             playersCountTextView.setText(str);
         }

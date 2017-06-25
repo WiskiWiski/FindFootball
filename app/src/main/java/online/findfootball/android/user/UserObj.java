@@ -178,6 +178,11 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
     }
 
     @Override
+    public String toString() {
+        return "UserId:" + getUid();
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -233,7 +238,7 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
 
     @Override
     public int hashCode() {
-        return this.getUid().hashCode();
+        return 31 * this.getUid().hashCode();
     }
 
     @Override

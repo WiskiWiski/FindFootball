@@ -52,14 +52,14 @@ public class UpcomingGamesAdapter extends RecyclerView.Adapter<UpcomingGamesView
     }
 
     @Override
-    public void onBindViewHolder(UpcomingGamesViewHolder holder, int position) {
+    public void onBindViewHolder(UpcomingGamesViewHolder holderSelf, int position) {
         GameObj game = gameList.get(position);
-        holder.setItemClickListener(itemClickListener);
-        holder.setItemLongClickListener(itemLongClickListener);
-        holder.setTitle(game.getTitle());
-        holder.setEventTime(game.getEventTime());
-        holder.setLocation(game.getLocation());
-        holder.setTeamsSize(game.getTeams().getTeamsCapacity(),
+        holderSelf.setItemClickListener(itemClickListener);
+        holderSelf.setItemLongClickListener(itemLongClickListener);
+        holderSelf.setTitle(game.getTitle());
+        holderSelf.setEventTime(game.getEventTime());
+        holderSelf.setLocation(game.getLocation());
+        holderSelf.setTeamsSize(game.getTeams().getTeamsCapacity(),
                 game.getTeams().getTeamsOccupancy());
     }
 

@@ -72,10 +72,10 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(PlayerViewHolder holder, int position) {
+    public void onBindViewHolder(PlayerViewHolder holderSelf, int position) {
         UserObj userObj = team.get(position);
-        holder.setDisplayName(userObj.getDisplayName());
-        holder.setPhotoUrl(userObj.getPhotoUrl());
+        holderSelf.setDisplayName(userObj.getDisplayName());
+        holderSelf.setPhotoUrl(userObj.getPhotoUrl());
     }
 
 

@@ -48,14 +48,14 @@ public class FindGameAdapter extends RecyclerView.Adapter<FindGameViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(FindGameViewHolder holder, int position) {
+    public void onBindViewHolder(FindGameViewHolder holderSelf, int position) {
         GameObj game = gameList.get(position);
-        holder.setItemClickListener(itemClickListener);
-        holder.setItemLongClickListener(itemLongClickListener);
-        holder.setTitle(game.getTitle());
-        holder.setEventTime(game.getEventTime());
-        holder.setLocation(game.getLocation());
-        holder.setTeamsSize(game.getTeams().getTeamsCapacity(),
+        holderSelf.setItemClickListener(itemClickListener);
+        holderSelf.setItemLongClickListener(itemLongClickListener);
+        holderSelf.setTitle(game.getTitle());
+        holderSelf.setEventTime(game.getEventTime());
+        holderSelf.setLocation(game.getLocation());
+        holderSelf.setTeamsSize(game.getTeams().getTeamsCapacity(),
                 game.getTeams().getTeamsOccupancy());
     }
 

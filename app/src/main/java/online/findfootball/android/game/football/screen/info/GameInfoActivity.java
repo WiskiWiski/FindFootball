@@ -15,6 +15,7 @@ import online.findfootball.android.firebase.database.DatabaseLoader;
 import online.findfootball.android.firebase.database.DatabasePackableInterface;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.football.screen.info.tabs.about.GIAboutTab;
+import online.findfootball.android.game.football.screen.info.tabs.chat.GIChatTab;
 import online.findfootball.android.game.football.screen.info.tabs.players.GIPlayersTab;
 import online.findfootball.android.user.UserObj;
 
@@ -27,6 +28,7 @@ public class GameInfoActivity extends BaseActivity {
 
     private GIAboutTab aboutTab;
     private GIPlayersTab playersTab;
+    private GIChatTab chatTab;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -75,6 +77,9 @@ public class GameInfoActivity extends BaseActivity {
                         if (playersTab != null) {
                             playersTab.setData(thisGameObj);
                         }
+                        if (chatTab != null) {
+                            chatTab.setData(thisGameObj);
+                        }
                     } else {
                         Log.e(TAG, "onFailed [" + result.getCode() + "]: " + result.getMessage(), result.getCause());
                     }
@@ -94,9 +99,11 @@ public class GameInfoActivity extends BaseActivity {
     private void setupViewPager(ViewPager viewPager) {
         mAdapter = new TabsAdapter(getSupportFragmentManager());
         aboutTab = new GIAboutTab();
+        chatTab = new GIChatTab();
         playersTab = new GIPlayersTab();
 
         mAdapter.addFragment(aboutTab, getString(R.string.game_info_activity_tab_title_about));
+        mAdapter.addFragment(chatTab, getString(R.string.game_info_activity_tab_title_chat));
         mAdapter.addFragment(playersTab, getString(R.string.game_info_activity_tab_title_players));
         viewPager.setAdapter(mAdapter);
     }

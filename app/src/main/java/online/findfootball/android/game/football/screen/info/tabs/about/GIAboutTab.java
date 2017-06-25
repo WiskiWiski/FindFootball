@@ -80,7 +80,6 @@ public class GIAboutTab extends Fragment {
                 }
             }
         };
-        loader = DatabaseLoader.newLoader();
         return rootView;
     }
 
@@ -92,6 +91,9 @@ public class GIAboutTab extends Fragment {
     public void setData(GameObj game) {
         this.thisGameObj = game;
         thisGameOwnerUser = new UserObj(thisGameObj.getOwnerUid());
+        if (loader == null){
+            loader = DatabaseLoader.newLoader();
+        }
         loader.load(thisGameOwnerUser, loadListener);
     }
 

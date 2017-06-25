@@ -59,13 +59,6 @@ public class ProfileActivity extends BaseActivity
         emailView = (TextView) findViewById(R.id.user_email);
         photoView = (ImageView) findViewById(R.id.user_photo);
         signOutBtn = (Button) findViewById(R.id.sign_out_btn);
-        signOutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AppUser.signOut();
-                finish();
-            }
-        });
 
 
         Intent intent = getIntent();
@@ -122,6 +115,19 @@ public class ProfileActivity extends BaseActivity
                             photoView.setImageDrawable(circularBitmapDrawable);
                         }
                     });
+        }
+
+
+        if (thisUserObj == AppUser.getInstance(this, false)) {
+            signOutBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AppUser.signOut();
+                    finish();
+                }
+            });
+        } else {
+            signOutBtn.setEnabled(false);
         }
     }
 

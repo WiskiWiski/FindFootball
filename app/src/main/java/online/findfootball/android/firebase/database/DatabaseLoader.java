@@ -4,7 +4,10 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import online.findfootball.android.firebase.database.children.PackableArrayList;
 
 /**
  * Created by WiskiW on 06.06.2017.
@@ -31,25 +34,29 @@ public class DatabaseLoader {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot == null) {
-                    onLoadListener.onComplete(new DataInstanceResult(DataInstanceResult.CODE_NULL_SNAPSHOT,
-                            DataInstanceResult.MSG_NULL_SNAPSHOT), packable);
+                    if (onLoadListener != null)
+                        onLoadListener.onComplete(new DataInstanceResult(DataInstanceResult.CODE_NULL_SNAPSHOT,
+                                DataInstanceResult.MSG_NULL_SNAPSHOT), packable);
                     return;
                 }
                 if (!dataSnapshot.hasChildren()) {
-                    onLoadListener.onComplete(new DataInstanceResult(DataInstanceResult.CODE_HAS_REMOVED),
-                            packable);
+                    if (onLoadListener != null)
+                        onLoadListener.onComplete(new DataInstanceResult(DataInstanceResult.CODE_HAS_REMOVED),
+                                packable);
                     return;
 
                 }
-                onLoadListener.onComplete(packable.unpack(dataSnapshot), packable);
+                if (onLoadListener != null)
+                    onLoadListener.onComplete(packable.unpack(dataSnapshot), packable);
                 abortAllLoadings();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                onLoadListener.onComplete(new DataInstanceResult(DataInstanceResult.CODE_LOADING_FAILED,
-                        databaseError.getMessage(),
-                        databaseError.toException()), packable);
+                if (onLoadListener != null)
+                    onLoadListener.onComplete(new DataInstanceResult(DataInstanceResult.CODE_LOADING_FAILED,
+                            databaseError.getMessage(),
+                            databaseError.toException()), packable);
                 abortAllLoadings();
             }
         };
@@ -99,6 +106,14 @@ public class DatabaseLoader {
         this.packable = packable;
         singleValueListener = createSingleValueListener(onLoadListener);
         FBDatabase.getDatabaseReference(packable).addListenerForSingleValueEvent(singleValueListener);
+    }
+
+    public void loadLast(PackableArrayList packableList, int count, OnLoadListener onLoadListener) {
+        abortAllLoadings();
+        this.packable = packableList;
+        Query myTopPostsQuery = FBDatabase.getDatabaseReference(packable).limitToLast(count);
+        singleValueListener = createSingleValueListener(onLoadListener);
+        myTopPostsQuery.addListenerForSingleValueEvent(singleValueListener);
     }
 
     // Устанавливает слушателя обновлений на текуший экземпляр
