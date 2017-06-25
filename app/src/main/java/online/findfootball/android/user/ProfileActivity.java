@@ -20,10 +20,12 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.app.BaseActivity;
-import online.findfootball.android.firebase.database.DatabaseInstance;
+import online.findfootball.android.firebase.database.DataInstanceResult;
+import online.findfootball.android.firebase.database.DatabaseLoader;
+import online.findfootball.android.firebase.database.DatabasePackableInterface;
 
 public class ProfileActivity extends BaseActivity
-        implements DatabaseInstance.OnLoadListener {
+        implements DatabaseLoader.OnLoadListener {
 
     private static final String TAG = App.G_TAG + ":ProfileGameAct";
     public static final String INTENT_USER_KEY = "user_key_bla_bla";
@@ -57,13 +59,6 @@ public class ProfileActivity extends BaseActivity
         emailView = (TextView) findViewById(R.id.user_email);
         photoView = (ImageView) findViewById(R.id.user_photo);
         signOutBtn = (Button) findViewById(R.id.sign_out_btn);
-        signOutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AppUser.signOut();
-                finish();
-            }
-        });
 
 
         Intent intent = getIntent();
@@ -74,8 +69,12 @@ public class ProfileActivity extends BaseActivity
                 return;
             }
             showProgress(true);
-            thisUserObj.load(this);
-
+            if (thisUserObj.hasLoaded()) {
+                showProgress(false);
+                setupUserData();
+            } else {
+                thisUserObj.load(this);
+            }
 
         } else {
             intentDataNotFound();
@@ -94,16 +93,16 @@ public class ProfileActivity extends BaseActivity
         signOutBtn.setEnabled(!inProgress);
     }
 
-    @Override
-    public void onSuccess(DatabaseInstance instance) {
-        showProgress(false);
-        thisUserObj = (UserObj) instance;
+    private void setupUserData() {
+        if (thisUserObj == null) {
+            return;
+        }
         nameView.setText(thisUserObj.getDisplayName());
         emailView.setText(thisUserObj.getEmail());
 
         if (thisUserObj.getPhotoUrl() != null) {
             Glide
-                    .with(this)
+                    .with(getApplicationContext())
                     .load(thisUserObj.getPhotoUrl())
                     .asBitmap()
                     .centerCrop()
@@ -118,13 +117,31 @@ public class ProfileActivity extends BaseActivity
                     });
         }
 
+
+        if (thisUserObj == AppUser.getInstance(this, false)) {
+            signOutBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AppUser.signOut();
+                    finish();
+                }
+            });
+        } else {
+            signOutBtn.setEnabled(false);
+        }
     }
 
+
     @Override
-    public void onFailed(int code, String msg) {
+    public void onComplete(DataInstanceResult result, DatabasePackableInterface packable) {
         showProgress(false);
-        Log.w(TAG, "onFailed[" + code + "]: " + msg);
-        Toast.makeText(this, "onFailed[" + code + "]: " + msg, Toast.LENGTH_LONG).show();
-        finish();
+        if (result.getCode() == DataInstanceResult.CODE_SUCCESS) {
+            thisUserObj = (UserObj) packable;
+            setupUserData();
+        } else {
+            Log.w(TAG, "onFailed[" + result.getCode() + "]: " + result.getMessage());
+            Toast.makeText(this, "onFailed[" + result.getCode() + "]: " + result.getMessage(), Toast.LENGTH_LONG).show();
+            finish();
+        }
     }
 }

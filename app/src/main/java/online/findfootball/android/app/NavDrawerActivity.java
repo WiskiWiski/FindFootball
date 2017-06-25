@@ -21,6 +21,9 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import java.util.HashSet;
 
 import online.findfootball.android.R;
+import online.findfootball.android.firebase.database.DataInstanceResult;
+import online.findfootball.android.firebase.database.DatabaseLoader;
+import online.findfootball.android.firebase.database.DatabasePackableInterface;
 import online.findfootball.android.user.AppUser;
 import online.findfootball.android.user.ProfileActivity;
 
@@ -86,9 +89,11 @@ public class NavDrawerActivity extends BaseActivity implements
     }
 
     private boolean isRootChild(int id) {
-        for (int child : rootChildes) {
-            if (id == child) {
-                return true;
+        if (rootChildes != null) {
+            for (int child : rootChildes) {
+                if (id == child) {
+                    return true;
+                }
             }
         }
         return false;
@@ -126,26 +131,12 @@ public class NavDrawerActivity extends BaseActivity implements
         getMenuItemById(currentMenuItemId).setChecked(true);
     }
 
-
-    @Override
-    public void onLogin(final AppUser appUser) {
-        if (appUser == null) {
-            return;
-        }
-        navDrawHeaderLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeDrawer();
-                Intent intent = new Intent(NavDrawerActivity.this, ProfileActivity.class);
-                intent.putExtra(ProfileActivity.INTENT_USER_KEY, (Parcelable) appUser);
-                startActivity(intent);
-            }
-        });
+    private void updateAppUserData(AppUser appUser) {
         nameView.setText(appUser.getDisplayName());
         emailView.setText(appUser.getEmail());
         if (photoView != null && appUser.getPhotoUrl() != null) {
             Glide
-                    .with(this)
+                    .with(getApplicationContext())
                     .load(appUser.getPhotoUrl())
                     .asBitmap()
                     .centerCrop()
@@ -159,6 +150,34 @@ public class NavDrawerActivity extends BaseActivity implements
                         }
                     });
         }
+    }
+
+
+    @Override
+    public void onLogin(final AppUser appUser) {
+        if (appUser == null) {
+            return;
+        }
+        if (appUser.hasLoaded()) {
+            updateAppUserData(appUser);
+        } else {
+            appUser.load(new DatabaseLoader.OnLoadListener() {
+                @Override
+                public void onComplete(DataInstanceResult result, DatabasePackableInterface packable) {
+                    updateAppUserData((AppUser) packable);
+                }
+            });
+        }
+        navDrawHeaderLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeDrawer();
+                Intent intent = new Intent(NavDrawerActivity.this, ProfileActivity.class);
+                intent.putExtra(ProfileActivity.INTENT_USER_KEY, (Parcelable) appUser);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
@@ -185,6 +204,8 @@ public class NavDrawerActivity extends BaseActivity implements
         AppUser appUser = AppUser.getInstance(this, false);
         if (appUser == null) {
             onSignOut();
+        } else {
+            onLogin(appUser);
         }
     }
 

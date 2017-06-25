@@ -46,7 +46,8 @@ public class MyVkontakteAuthAuthProvider extends RootAuthProvider {
         requestFirebaseToken(vkAccessToken);
         FirebaseAuth.getInstance()
                 .signInWithCustomToken("generated token")
-                .addOnCompleteListener(activity, getOnCompleteListener(callback));
+                .addOnCompleteListener(activity,
+                        getOnCompleteListener(callback));
 
     }
 

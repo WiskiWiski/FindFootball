@@ -89,8 +89,9 @@
     <string name="find_game_activity_no_data">Games not found!</string>
 
 
-    <!-- === Find Game Activity === -->
+    <!-- === Game Info Activity === -->
     <string name="game_info_activity_tab_title_about">About</string>
+    <string name="game_info_activity_tab_title_chat">Chat</string>
     <string name="game_info_activity_tab_title_players">Players</string>
 
 

@@ -1,89 +1,132 @@
 package online.findfootball.android.user;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
-import online.findfootball.android.firebase.database.DatabaseInstance;
-import online.findfootball.android.firebase.database.FBDatabase;
+import online.findfootball.android.firebase.database.DataInstanceResult;
+import online.findfootball.android.firebase.database.children.PackableArrayList;
+import online.findfootball.android.firebase.database.children.PackableObject;
 import online.findfootball.android.game.GameObj;
 
 /**
  * Created by WiskiW on 17.04.2017.
  */
 
-public class UserObj implements Parcelable, Serializable, DatabaseInstance {
+public class UserObj extends PackableObject implements Parcelable, Serializable {
 
+    private final static String PATH_USERS = "users/";
     public final static String PATH_GAMES_FOOTBALL = "/events/football/";
 
-    public final static String PATH_DISPLAY_NAME = "display_name";
-    public final static String PATH_EMAIL = "email";
-    public final static String PATH_PHOTO_URL = "photo_url";
-    public final static String PATH_REGISTER_TIME = "register_time";
-    public final static String PATH_LAST_ACTIVITY_TIME = "last_activity_time";
+    public final static String PATH_DISPLAY_NAME = "display_name/";
+    public final static String PATH_EMAIL = "email/";
+    public final static String PATH_PHOTO_URL = "photo_url/";
+    public final static String PATH_REGISTER_TIME = "register_time/";
+    public final static String PATH_LAST_ACTIVITY_TIME = "last_activity_time/";
+    public final static String PATH_AUTH_PROVIDER = "auth_provider/";
+    public final static String PATH_CLOUDE_MESSAGE_TOKEN = "cm_token/";
+
+    public final static UserObj EMPTY = new UserObj("empty_uid");
 
 
     private String uid;
     private String displayName;
     private String email;
+    private String cloudMessageToken;
     private long lastActivityTime;
     private long registerTime;
     private Uri photoUrl;
-    private List<GameObj> gameList;
-
-    private ValueEventListener valueEventListener;
-    private OnLoadListener onLoadListener;
+    private String authProvider;
+    private PackableArrayList<GameObj> gameList;
 
 
     public UserObj(String uid) {
         this.uid = uid;
-        this.gameList = new ArrayList<>();
     }
 
     public UserObj(FirebaseUser firebaseUser) {
-        this.gameList = new ArrayList<>();
         setUid(firebaseUser.getUid());
         setDisplayName(firebaseUser.getDisplayName());
         setEmail(firebaseUser.getEmail());
         setPhotoUrl(firebaseUser.getPhotoUrl());
     }
 
-    public UserObj(DataSnapshot userSnapshot) {
-        this.gameList = new ArrayList<>();
-        setUid(userSnapshot.getKey());
-        setDisplayName((String) userSnapshot.child(PATH_DISPLAY_NAME).getValue());
-        setPhotoUrl(Uri.parse((String) userSnapshot.child(PATH_PHOTO_URL).getValue()));
-        setRegisterTime((Long) userSnapshot.child(PATH_REGISTER_TIME).getValue());
-        setLastActivityTime((Long) userSnapshot.child(PATH_LAST_ACTIVITY_TIME).getValue());
+    private void newGameList() {
+        gameList = new PackableArrayList<GameObj>() {
+            @Override
+            protected GameObj unpackItem(DataSnapshot dataSnapshot) {
+                return new GameObj(dataSnapshot.getKey());
+            }
+
+            @Override
+            protected void packItem(DatabaseReference databaseReference, GameObj item) {
+                String eid = item.getEid();
+                databaseReference.child(eid).setValue(eid);
+            }
+        };
+        gameList.setDirectoryPath(getDirectoryPath() + PATH_GAMES_FOOTBALL);
     }
 
-    public List<GameObj> getGameList() {
+    public PackableArrayList<GameObj> getGameList() {
+        if (gameList == null) {
+            newGameList();
+        }
         return gameList;
     }
 
-    public void setGameList(List<GameObj> gameList) {
+    public String getCloudMessageToken() {
+        return this.cloudMessageToken;
+    }
+
+    public void setCloudMessageToken(String cloudMessageToken) {
+        this.cloudMessageToken = cloudMessageToken;
+    }
+
+    public void setGameList(ArrayList<GameObj> gameList) {
+        if (gameList == null) {
+            return;
+        }
+        if (this.gameList == null) {
+            newGameList();
+        } else {
+            this.gameList.clear();
+        }
+        for (GameObj gameObj : gameList) {
+            this.gameList.add(gameObj);
+        }
+    }
+
+    public void setGameList(PackableArrayList<GameObj> gameList) {
         this.gameList = gameList;
     }
 
-    public void pushGameToSet(GameObj gameObj) {
+    public void addGame(GameObj gameObj) {
         if (gameList.contains(gameObj)) {
             gameList.remove(gameObj);
         }
         gameList.add(gameObj);
+    }
+
+    public void removeGame(GameObj gameObj) {
+        if (gameList != null) {
+            gameList.remove(gameObj);
+        }
+    }
+
+    public String getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(String authProvider) {
+        this.authProvider = authProvider;
     }
 
     public String getUid() {
@@ -134,8 +177,11 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
         this.photoUrl = photoUrl;
     }
 
+    @Override
+    public String toString() {
+        return "UserId:" + getUid();
+    }
 
-    // 99.9% of the time you can just ignore this
     @Override
     public int describeContents() {
         return 0;
@@ -147,11 +193,12 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
         out.writeString(uid);
         out.writeString(displayName);
         out.writeString(email);
+        out.writeString(cloudMessageToken);
+        out.writeString(authProvider);
         out.writeLong(lastActivityTime);
         out.writeLong(registerTime);
         out.writeParcelable(photoUrl, flags);
-        out.writeList(gameList);
-        //out.writeSerializable(gameList);
+        out.writeTypedList(gameList);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
@@ -166,15 +213,17 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
     };
 
     // example constructor that takes a Parcel and gives you an object populated with it's values
-    UserObj(Parcel in) {
+    public UserObj(Parcel in) {
         uid = in.readString();
         displayName = in.readString();
         email = in.readString();
+        cloudMessageToken = in.readString();
+        authProvider = in.readString();
         lastActivityTime = in.readLong();
         registerTime = in.readLong();
         photoUrl = in.readParcelable(Uri.class.getClassLoader());
-        gameList = in.readArrayList(GameObj.class.getClassLoader());
-        //gameList = (HashSet<GameObj>) in.readSerializable();
+        newGameList();
+        in.readTypedList(gameList, GameObj.CREATOR);
     }
 
 
@@ -189,9 +238,13 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
 
     @Override
     public int hashCode() {
-        return this.getUid().hashCode();
+        return 31 * this.getUid().hashCode();
     }
 
+    @Override
+    public String getDirectoryPath() {
+        return PATH_USERS + uid + "/";
+    }
 
     @Override
     public boolean hasLoaded() {
@@ -199,80 +252,49 @@ public class UserObj implements Parcelable, Serializable, DatabaseInstance {
     }
 
     @Override
-    public void load(OnLoadListener onLoadListener) {
-        this.onLoadListener = onLoadListener;
-        if (isLoading()) {
-            return;
-        }
-        DatabaseReference thisGameReference = FBDatabase.getDatabaseReference(this);
-        this.valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot userSnapshot) {
-                if (userSnapshot == null) {
-                    UserObj.this.onLoadListener.onFailed(OnLoadListener.FAILED_NULL_SNAPSHOT, null);
-                    return;
-                }
-                setUid(userSnapshot.getKey());
-                setDisplayName((String) userSnapshot.child(PATH_DISPLAY_NAME).getValue());
-                String url = (String) userSnapshot.child(PATH_PHOTO_URL).getValue();
-                if (url != null) {
-                    setPhotoUrl(Uri.parse(url));
-                }
-                setEmail((String) userSnapshot.child(PATH_EMAIL).getValue());
-                setRegisterTime((Long) userSnapshot.child(PATH_REGISTER_TIME).getValue());
-                setLastActivityTime((Long) userSnapshot.child(PATH_LAST_ACTIVITY_TIME).getValue());
+    public DataInstanceResult unpack(DataSnapshot dataSnapshot) {
+        DataInstanceResult r = DataInstanceResult.onSuccess();
+        try {
+            setUid(dataSnapshot.getKey());
+            setDisplayName((String) dataSnapshot.child(PATH_DISPLAY_NAME).getValue());
+            String url = (String) dataSnapshot.child(PATH_PHOTO_URL).getValue();
+            if (url != null) {
+                setPhotoUrl(Uri.parse(url));
+            } else {
+                DataInstanceResult.calculateResult(r, new DataInstanceResult(DataInstanceResult.CODE_NOT_COMPLETE));
+            }
+            setEmail((String) dataSnapshot.child(PATH_EMAIL).getValue());
+            setCloudMessageToken((String) dataSnapshot.child(PATH_CLOUDE_MESSAGE_TOKEN).getValue());
+            setAuthProvider((String) dataSnapshot.child(PATH_AUTH_PROVIDER).getValue());
 
-                HashMap<String, String> gameEids = (HashMap<String, String>) userSnapshot.child(PATH_GAMES_FOOTBALL).getValue();
-                if (gameEids != null) {
-                    Iterator it = gameEids.entrySet().iterator();
-                    while (it.hasNext()) {
-                        Map.Entry pair = (Map.Entry) it.next();
-                        pushGameToSet(new GameObj(pair.getKey().toString()));
-                        it.remove(); // avoids a ConcurrentModificationException
-                    }
-                }
-
-                if (isLoading()) {
-                    UserObj.this.onLoadListener.onSuccess(UserObj.this);
-                }
-                valueEventListener = null;
+            Object regTimeObj;
+            regTimeObj = dataSnapshot.child(PATH_REGISTER_TIME).getValue();
+            if (regTimeObj != null) {
+                setRegisterTime((Long) regTimeObj);
+            } else {
+                DataInstanceResult.calculateResult(r, new DataInstanceResult(DataInstanceResult.CODE_NOT_COMPLETE));
             }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                valueEventListener = null;
-                UserObj.this.onLoadListener.onFailed(databaseError.getCode(), databaseError.getMessage());
+            Object lastActObj = dataSnapshot.child(PATH_LAST_ACTIVITY_TIME).getValue();
+            if (lastActObj != null) {
+                setLastActivityTime((Long) lastActObj);
+            } else {
+                DataInstanceResult.calculateResult(r, new DataInstanceResult(DataInstanceResult.CODE_NOT_COMPLETE));
             }
-        };
-        thisGameReference.addListenerForSingleValueEvent(valueEventListener);
-    }
 
-    @Override
-    public boolean isLoading() {
-        return valueEventListener != null;
-    }
+            if (gameList == null) {
+                newGameList();
+            }
+            gameList.unpack(dataSnapshot.child(PATH_GAMES_FOOTBALL));
 
-    @Override
-    public void abortLoading() {
-        if (!isLoading()) {
-            return;
-        }
-        if (valueEventListener != null) {
-            FBDatabase.getDatabaseReference(this).removeEventListener(valueEventListener);
-            valueEventListener = null;
-        }
-        if (onLoadListener != null) {
-            onLoadListener.onFailed(OnLoadListener.FAILED_LOADING_ABORTED, OnLoadListener.MSG_LOADING_ABORTED);
+            return r;
+        } catch (Exception ex) {
+            return DataInstanceResult.onFailed(ex.getMessage(), ex);
         }
     }
 
     @Override
-    public int save(Context context) {
-        return RESULT_FAILED_NO_PERMISSIONS;
-    }
-
-    @Override
-    public String getDatabasePath() {
-        return FBDatabase.PATH_USERS + getUid() + "/";
+    public DataInstanceResult pack(DatabaseReference databaseReference) {
+        return new DataInstanceResult(DataInstanceResult.CODE_NO_PERMISSIONS);
     }
 }

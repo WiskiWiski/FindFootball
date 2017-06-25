@@ -28,11 +28,11 @@ abstract class RootAuthProvider {
 
     protected abstract int getProviderId();
 
-    protected FirebaseUser onCompleteSuccess(@NonNull Task<AuthResult> task){
+    protected FirebaseUser onCompleteSuccess(@NonNull Task<AuthResult> task) {
         return task.getResult().getUser();
     }
 
-    protected FailedResult onCompleteFailed(@NonNull Task<AuthResult> task){
+    protected FailedResult onCompleteFailed(@NonNull Task<AuthResult> task) {
         // TODO : Override this for all child's
         FailedResult result = new FailedResult(1);
         result.message(task.getException().getLocalizedMessage());

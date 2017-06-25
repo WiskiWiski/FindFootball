@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="online.findfootball.android.game.create.fragments.CGLocationFragment">
+    tools:context=".game.football.screen.create.fragments.CGLocationFragment">
 
     <fragment
         android:id="@+id/gmap_fragment"

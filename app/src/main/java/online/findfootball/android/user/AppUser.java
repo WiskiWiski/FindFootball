@@ -18,6 +18,7 @@ import com.vk.sdk.VKSdk;
 
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
+import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.FBDatabase;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.time.TimeProvider;
@@ -75,9 +76,9 @@ public class AppUser extends UserObj {
         }
         if (appUser != null)
             appUser.updateLastActivity();
-            if (userStateListener != null){
-                userStateListener.onLogin(appUser);
-            }
+        if (userStateListener != null) {
+            userStateListener.onLogin(appUser);
+        }
         return appUser;
 
     }
@@ -92,7 +93,7 @@ public class AppUser extends UserObj {
         FirebaseAuth.getInstance().signOut();
         LoginManager.getInstance().logOut(); // for Facebook
         VKSdk.logout(); // VK
-        if (userStateListener != null){
+        if (userStateListener != null) {
             userStateListener.onSignOut();
         }
         currentUser = null;
@@ -132,7 +133,7 @@ public class AppUser extends UserObj {
         }
     }
 
-    public static void requestUser(Context context){
+    public static void requestUser(Context context) {
         requestUser(context, null);
     }
 
@@ -149,65 +150,42 @@ public class AppUser extends UserObj {
         }
     }
 
+    public void joinGame(GameObj game) {
+        // Добавляем игру в список ивентов пользователя
+        addGame(game);
 
-
-
-
-    public GameObj joinToFootballGame(GameObj game, boolean isOwner) {
-        // Auto saving to Firebase!
-        // 1. Сохраняем в списки ивентов юзура
-        pushGameToSet(game);
-        FBDatabase.getDatabaseReference(this)
-                .child(PATH_GAMES_FOOTBALL).child(game.getEid()).setValue(String.valueOf(isOwner));
-
-        // 2. Добовляем юзера в список игроков ивента
-        game.getPlayerList().addPlayer(this);
-        FBDatabase.getDatabaseReference(game)
-                .child(GameObj.PATH_PLAYERS).child(getUid()).setValue(String.valueOf(isOwner));
-        return game;
+        // Сохраняем в бд
+        String eid = game.getEid();
+        FBDatabase.getDatabaseReference(getGameList()).child(eid).setValue(eid);
     }
 
-    public GameObj joinToFootballGame(GameObj game) {
-        return joinToFootballGame(game, false);
-    }
+    public void leaveGame(GameObj game) {
+        // Убираем игру из ивентов пользователя
+        removeGame(game);
 
-    public GameObj removeFootballGame(GameObj game) {
-        // Auto saving to Firebase!
-        getGameList().remove(game);
-        FBDatabase.getDatabaseReference(this)
-                .child(PATH_GAMES_FOOTBALL).child(game.getEid()).removeValue();
+        // Удаляем из бд
+        FBDatabase.getDatabaseReference(getGameList()).child(game.getEid()).removeValue();
+
         if (game.getOwnerUid().equals(getUid())) {
             // пользователь владелец ивента
-            game.delete();
-        } else {
-            game.getPlayerList().removePlayer(this);
-            FBDatabase.getDatabaseReference(game)
-                    .child(GameObj.PATH_PLAYERS).child(getUid()).removeValue();
+            // TODO : уведомление о удалении
+            //game.delete();
         }
-        return game;
-
     }
 
     @Override
-    public int save(Context context) {
-        DatabaseReference thisUserReference = FBDatabase.getDatabaseReference(this);
-        thisUserReference.removeValue();
-        thisUserReference.child(PATH_DISPLAY_NAME).setValue(getDisplayName());
-        thisUserReference.child(PATH_PHOTO_URL).setValue(getPhotoUrl().toString());
-        thisUserReference.child(PATH_EMAIL).setValue(getEmail());
-        thisUserReference.child(PATH_REGISTER_TIME).setValue(getRegisterTime());
-        thisUserReference.child(PATH_LAST_ACTIVITY_TIME).setValue(getLastActivityTime());
+    public DataInstanceResult pack(DatabaseReference databaseReference) {
+        databaseReference.child(PATH_DISPLAY_NAME).setValue(getDisplayName());
+        databaseReference.child(PATH_PHOTO_URL).setValue(getPhotoUrl().toString());
+        databaseReference.child(PATH_EMAIL).setValue(getEmail());
+        databaseReference.child(PATH_CLOUDE_MESSAGE_TOKEN).setValue(getCloudMessageToken());
+        databaseReference.child(PATH_REGISTER_TIME).setValue(getRegisterTime());
+        databaseReference.child(PATH_LAST_ACTIVITY_TIME).setValue(getLastActivityTime());
+        databaseReference.child(PATH_AUTH_PROVIDER).setValue(getAuthProvider());
 
-
-        for (GameObj game : getGameList()) {
-            thisUserReference.child(PATH_GAMES_FOOTBALL).child(game.getEid()).setValue(game.getEid());
-            game.save(context);
-        }
-
-        return RESULT_SUCCESS;
+        getGameList().pack(databaseReference.child(PATH_GAMES_FOOTBALL));
+        return DataInstanceResult.onSuccess();
     }
-
-
 
     public static UserStateListener getUserStateListener() {
         return userStateListener;
