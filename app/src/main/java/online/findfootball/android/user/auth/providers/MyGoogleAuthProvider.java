@@ -80,7 +80,7 @@ public class MyGoogleAuthProvider extends RootAuthProvider {
                 FirebaseAuth.getInstance()
                         .signInWithCredential(credential)
                         .addOnCompleteListener(activity,
-                                getOnCompleteListener(ProviderCallback.CODE_SIGN_IN, callback));
+                                getOnCompleteListener(callback));
             } else {
                 // Пользователь не дал согласия на вход через Google аккаунт
                 FailedResult result = new FailedResult(signInResult.getStatus().getStatusCode());

@@ -24,13 +24,13 @@ public class MyEmailAuthAuthProvider extends RootAuthProvider {
     public void signIn(String email, String password) {
         FirebaseAuth.getInstance()
                 .signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(getOnCompleteListener(ProviderCallback.CODE_SIGN_IN, callback));
+                .addOnCompleteListener(getOnCompleteListener(callback));
     }
 
     public void signUp(String email, String password) {
         FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(getOnCompleteListener(ProviderCallback.CODE_SIGN_UP, callback));
+                .addOnCompleteListener(getOnCompleteListener(callback));
 
     }
 

@@ -132,7 +132,7 @@ public class AuthUiActivity extends BaseActivity {
     private void initProviders() {
         ProviderCallback providerCallback = new ProviderCallback() {
             @Override
-            public void onResult(int code, final FirebaseUser user) {
+            public void onResult(final FirebaseUser user) {
                 Log.d(TAG, "Authentication success: " + user.getEmail());
                 Toast.makeText(getApplicationContext(), user.getEmail(), Toast.LENGTH_LONG).show();
 
