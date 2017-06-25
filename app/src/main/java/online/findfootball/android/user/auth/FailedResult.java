@@ -13,6 +13,8 @@ public class FailedResult {
             12501 - при зкарытии окна выбора аккаунта google
             102 - какая-то ошибка при входе через Facebook
             103 - отмена логина через Facebook
+            69 - Емэйл не верефицирован
+            25 - ожидание емэйла при регистрации
 
             VK errors: https://vk.com/dev/errors
 

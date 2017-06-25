@@ -125,7 +125,7 @@ public class AppUser extends UserObj {
 
     public static AppUser getUser() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if  (firebaseUser != null){
+        if  (firebaseUser != null && firebaseUser.isEmailVerified()){
             return new AppUser(firebaseUser);
         } else {
             return null;

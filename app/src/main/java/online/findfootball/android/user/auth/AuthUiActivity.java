@@ -80,6 +80,11 @@ public class AuthUiActivity extends BaseActivity {
                     emailAuthProvider.signIn(email, password);
                 }
             }
+
+            @Override
+            public boolean equals(Object obj) {
+                return super.equals(obj);
+            }
         });
 
         btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {

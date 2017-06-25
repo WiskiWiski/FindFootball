@@ -1,6 +1,8 @@
 package online.findfootball.android.user.auth.providers;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -8,8 +10,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
 import online.findfootball.android.app.App;
+import online.findfootball.android.user.auth.AuthUiActivity;
 import online.findfootball.android.user.auth.FailedResult;
 import online.findfootball.android.user.auth.ProviderCallback;
+import com.google.firebase.auth.FirebaseUser;
+import online.findfootball.android.R;
 
 /**
  * Created by WiskiW on 14.03.2017.
@@ -42,7 +47,7 @@ abstract class RootAuthProvider {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     callback.onResult(onCompleteSuccess(task));
-                } else {
+                    } else {
                     callback.onFailed(onCompleteFailed(task));
                 }
             }
