@@ -7,12 +7,12 @@ import android.os.Parcelable;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import online.findfootball.android.firebase.database.DataInstanceResult;
+import online.findfootball.android.firebase.database.DatabasePackableInterface;
 import online.findfootball.android.firebase.database.children.PackableArrayList;
 import online.findfootball.android.firebase.database.children.PackableObject;
 import online.findfootball.android.game.GameObj;
@@ -248,7 +248,8 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
 
     @Override
     public boolean hasLoaded() {
-        return photoUrl != null && email != null && displayName != null;
+        return photoUrl != null && email != null && displayName != null
+                && getGameList().hasLoaded();
     }
 
     @Override
@@ -291,6 +292,11 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
         } catch (Exception ex) {
             return DataInstanceResult.onFailed(ex.getMessage(), ex);
         }
+    }
+
+    @Override
+    public DatabasePackableInterface has(DatabasePackableInterface packable) {
+        return getGameList().has(packable);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.os.Parcelable
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import online.findfootball.android.firebase.database.DataInstanceResult
+import online.findfootball.android.firebase.database.DatabasePackableInterface
 import online.findfootball.android.firebase.database.children.PackableObject
 import online.findfootball.android.time.TimeProvider
 import online.findfootball.android.user.UserObj
@@ -66,6 +67,14 @@ open class MessageObj() : PackableObject(), Parcelable {
             return DataInstanceResult(DataInstanceResult.CODE_PARSING_FAILED, "User-from not found!")
 
         return DataInstanceResult.onSuccess()
+    }
+
+    override fun has(packable: DatabasePackableInterface?): DatabasePackableInterface? {
+        if (this == packable) {
+            return this
+        } else {
+            return null
+        }
     }
 
     override fun equals(other: Any?): Boolean {

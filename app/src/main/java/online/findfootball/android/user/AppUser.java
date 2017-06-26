@@ -126,7 +126,7 @@ public class AppUser extends UserObj {
 
     public static AppUser getUser() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if  (firebaseUser != null && firebaseUser.isEmailVerified()){
+        if (firebaseUser != null && firebaseUser.isEmailVerified()) {
             return new AppUser(firebaseUser);
         } else {
             return null;
@@ -166,11 +166,25 @@ public class AppUser extends UserObj {
         // Удаляем из бд
         FBDatabase.getDatabaseReference(getGameList()).child(game.getEid()).removeValue();
 
-        if (game.getOwnerUid().equals(getUid())) {
+        if (game.getOwnerUser().equals(getUid())) {
             // пользователь владелец ивента
             // TODO : уведомление о удалении
             //game.delete();
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof AppUser) {
+            return super.equals(obj);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode() * 3;
     }
 
     @Override

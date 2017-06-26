@@ -21,4 +21,9 @@ public interface DatabasePackableInterface {
     // Распаковывает данные в поля обекта через DataSnapshot
     DataInstanceResult unpack(DataSnapshot dataSnapshot);
 
+    // Функция проверки наличия DatabasePackable внутри текущего DatabasePackable объекта.
+    // При реализации обязана вернуть найденые дочерние DatabasePackable объекта;
+    // если дочерних DatabasePackable нету, то null
+    DatabasePackableInterface has(DatabasePackableInterface packable);
+
 }

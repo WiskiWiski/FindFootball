@@ -15,7 +15,7 @@ import online.findfootball.android.firebase.database.DatabasePackableInterface;
 
 /**
  * Created by WiskiW on 08.06.2017.
- *
+ * <p>
  * ArrayList реализующий DatabasePackableInterface с возможностью сохранения,
  * слушанья и удаления в Firebase Database
  */
@@ -44,7 +44,7 @@ public class PackableArrayList<T extends DatabasePackableInterface> extends Arra
 
     @Override
     public boolean hasLoaded() {
-        return false;
+        return this.size() > 0;
     }
 
     @Override
@@ -86,6 +86,19 @@ public class PackableArrayList<T extends DatabasePackableInterface> extends Arra
             return new DataInstanceResult(DataInstanceResult.CODE_NOT_COMPLETE);
         }
     }
+
+    @Override
+    public DatabasePackableInterface has(DatabasePackableInterface packable) {
+        DatabasePackableInterface result;
+        for (DatabasePackableInterface itemPackable : this) {
+            result = itemPackable.has(packable);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public int describeContents() {

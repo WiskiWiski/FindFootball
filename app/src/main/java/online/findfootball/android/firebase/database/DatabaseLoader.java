@@ -1,5 +1,7 @@
 package online.findfootball.android.firebase.database;
 
+import android.util.Log;
+
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -7,6 +9,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.LinkedHashSet;
+
+import online.findfootball.android.app.App;
 import online.findfootball.android.firebase.database.children.PackableArrayList;
 
 /**
@@ -15,6 +20,16 @@ import online.findfootball.android.firebase.database.children.PackableArrayList;
 
 public class DatabaseLoader {
 
+    // Сет, хранящий ссылки на загруженные DatabasePackable объекты.
+    // При повторной загрузки нового объекта с идентичным хэш-кодом,
+    // будет возвращен объект из сета.
+    private static final LinkedHashSet<DatabasePackableInterface> packableCache =
+            new LinkedHashSet<>();
+
+    // Максимальный размер кэша
+    private static final int MAX_PACKABLE_CACHE_SIZE = 25;
+
+    private static final String TAG = App.G_TAG + ":DBLoader";
 
     private ValueEventListener singleValueListener;
     private ChildEventListener childEventListener;
@@ -44,10 +59,12 @@ public class DatabaseLoader {
                         onLoadListener.onComplete(new DataInstanceResult(DataInstanceResult.CODE_HAS_REMOVED),
                                 packable);
                     return;
-
                 }
-                if (onLoadListener != null)
-                    onLoadListener.onComplete(packable.unpack(dataSnapshot), packable);
+                updateInCache(packable);
+                if (onLoadListener != null) {
+                    DataInstanceResult result = packable.unpack(dataSnapshot);
+                    onLoadListener.onComplete(result, packable);
+                }
                 abortAllLoadings();
             }
 
@@ -97,15 +114,58 @@ public class DatabaseLoader {
 
     public DataInstanceResult save(DatabasePackableInterface packable) {
         this.packable = packable;
+        updateInCache(packable);
         return packable.pack(FBDatabase.getDatabaseReference(packable));
+    }
+
+    //Удаляет старый хэш
+    private void releasePackableCache() {
+        packableCache.remove(packableCache.iterator().next());
+    }
+
+    // Обновляет/записывает DatabasePackable в кэш
+    private void updateInCache(DatabasePackableInterface packable) {
+        if (packableCache.size() >= MAX_PACKABLE_CACHE_SIZE) {
+            releasePackableCache();
+        }
+        //Log.d(TAG, "updateInCache: " + packable);
+        packableCache.add(packable);
+    }
+
+    // Ищет DatabasePackable в кэше; возвращает null, если не был найден
+    private DatabasePackableInterface readFromCache(DatabasePackableInterface packable) {
+        DatabasePackableInterface tempPackable;
+        for (DatabasePackableInterface cacheItem : packableCache) {
+            if (packable.equals(cacheItem)) {
+                return cacheItem;
+            } else {
+                tempPackable = cacheItem.has(packable);
+                if (tempPackable != null) {
+                    //Log.d(TAG, "readFromCache: " + tempPackable);
+                    return tempPackable;
+                }
+            }
+        }
+        return null;
     }
 
     // Устанавливает одноразового слушателя обновлений на текуший экземпляр
     public void load(DatabasePackableInterface packable, OnLoadListener onLoadListener) {
         abortAllLoadings();
-        this.packable = packable;
-        singleValueListener = createSingleValueListener(onLoadListener);
-        FBDatabase.getDatabaseReference(packable).addListenerForSingleValueEvent(singleValueListener);
+        this.packable = readFromCache(packable);
+        if (this.packable == null) {
+            this.packable = packable;
+        }
+        if (this.packable.hasLoaded()) {
+            Log.d(TAG, "load: return from cache: " + this.packable);
+            if (onLoadListener != null) {
+                onLoadListener.onComplete(DataInstanceResult.onSuccess(), this.packable);
+            }
+        } else {
+            Log.d(TAG, "load: loading: " + this.packable);
+            singleValueListener = createSingleValueListener(onLoadListener);
+            FBDatabase.getDatabaseReference(packable).addListenerForSingleValueEvent(singleValueListener);
+        }
     }
 
     public void loadLast(PackableArrayList packableList, int count, OnLoadListener onLoadListener) {

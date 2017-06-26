@@ -17,4 +17,15 @@ class OutComingMessage(msg: MessageObj) : MessageObj() {
         time = msg.time
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other is OutComingMessage) {
+            return super.equals(other)
+        } else {
+            return false
+        }
+    }
+
+    override fun hashCode(): Int {
+        return super.hashCode() * 3
+    }
 }

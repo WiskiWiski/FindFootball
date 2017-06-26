@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import online.findfootball.android.background.tasks.BgTask;
 import online.findfootball.android.firebase.database.DataInstanceResult;
+import online.findfootball.android.firebase.database.DatabasePackableInterface;
 import online.findfootball.android.firebase.database.children.PackableObject;
 
 /**
@@ -94,6 +95,11 @@ public class LocationObj extends PackableObject implements Parcelable, Serializa
         return closesCites;
     }
 
+    @Override
+    public String toString() {
+        return "LocationObj:[lng:" + longitude + ", lat:" + latitude + "]";
+    }
+
     // example constructor that takes a Parcel and gives you an object populated with it's values
     private LocationObj(Parcel in) {
         latitude = in.readDouble();
@@ -153,6 +159,15 @@ public class LocationObj extends PackableObject implements Parcelable, Serializa
             return DataInstanceResult.onSuccess();
         } catch (Exception ex) {
             return new DataInstanceResult(DataInstanceResult.CODE_NOT_COMPLETE);
+        }
+    }
+
+    @Override
+    public DatabasePackableInterface has(DatabasePackableInterface packable) {
+        if (this.equals(packable)) {
+            return this;
+        } else {
+            return null;
         }
     }
 

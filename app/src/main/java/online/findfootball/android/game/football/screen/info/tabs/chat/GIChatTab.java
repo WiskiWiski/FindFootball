@@ -159,7 +159,7 @@ public class GIChatTab extends Fragment implements Mailbox {
 
     @Override
     public void onMessageReceived(int pos, @NotNull MessageObj msg) {
-        Log.d(TAG, "onComplete: " + "[" + pos + "]: " + msg);
+        //Log.d(TAG, "onComplete: " + "[" + pos + "]: " + msg);
         if (chatAdapter != null) {
             if (appUser != null) {
                 if (msg.getUserFrom().equals(appUser)) {

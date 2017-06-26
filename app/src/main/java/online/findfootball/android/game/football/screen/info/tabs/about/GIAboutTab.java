@@ -69,13 +69,17 @@ public class GIAboutTab extends Fragment {
         userProgressBar = (ProgressBar) rootView.findViewById(R.id.user_progressbar);
         userContainerView = rootView.findViewById(R.id.user_container);
 
-        showUserLoading(true);
+        if (thisGameOwnerUser == null || !thisGameOwnerUser.hasLoaded()) {
+            showUserLoading(true);
+        }
         loadListener = new DatabaseLoader.OnLoadListener() {
             @Override
             public void onComplete(DataInstanceResult result, DatabasePackableInterface packable) {
                 if (result.getCode() == DataInstanceResult.CODE_SUCCESS) {
                     thisGameOwnerUser = (UserObj) packable;
-                    updateOwnerView();
+                    if (thisGameOwnerUser.hasLoaded()) {
+                        updateOwnerView();
+                    }
                     showUserLoading(false);
                 }
             }
@@ -90,11 +94,16 @@ public class GIAboutTab extends Fragment {
 
     public void setData(GameObj game) {
         this.thisGameObj = game;
-        thisGameOwnerUser = new UserObj(thisGameObj.getOwnerUid());
-        if (loader == null){
-            loader = DatabaseLoader.newLoader();
+        thisGameOwnerUser = thisGameObj.getOwnerUser();
+        if (thisGameOwnerUser.hasLoaded()) {
+            updateOwnerView();
+            showUserLoading(false);
+        } else {
+            if (loader == null) {
+                loader = DatabaseLoader.newLoader();
+            }
+            loader.load(thisGameOwnerUser, loadListener);
         }
-        loader.load(thisGameOwnerUser, loadListener);
     }
 
 
@@ -135,7 +144,6 @@ public class GIAboutTab extends Fragment {
 
         if (gameLocationView != null) {
             LocationObj location = thisGameObj.getLocation();
-            Log.d(TAG, "updateOwnerView: location: " + location);
             if (location != null) {
                 String addressCity = location.getCityName();
                 String addressCountry = location.getCountryName();
@@ -158,10 +166,6 @@ public class GIAboutTab extends Fragment {
     }
 
     private void updateOwnerView() {
-        if (thisGameOwnerUser == null || !thisGameOwnerUser.hasLoaded()) {
-            return;
-        }
-
         if (userNameView != null) {
             userNameView.setText(thisGameOwnerUser.getDisplayName());
         }

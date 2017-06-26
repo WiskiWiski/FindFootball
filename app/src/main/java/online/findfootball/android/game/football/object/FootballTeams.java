@@ -7,6 +7,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
 import online.findfootball.android.firebase.database.DataInstanceResult;
+import online.findfootball.android.firebase.database.DatabasePackableInterface;
 import online.findfootball.android.firebase.database.children.PackableObject;
 import online.findfootball.android.game.GameTeam;
 import online.findfootball.android.user.UserObj;
@@ -99,6 +100,16 @@ public class FootballTeams extends PackableObject implements Parcelable {
         DataInstanceResult.calculateResult(r, getTeamA().unpack(dataSnapshot.child(DIR_NAME_TEAM_A)));
         DataInstanceResult.calculateResult(r, getTeamB().unpack(dataSnapshot.child(DIR_NAME_TEAM_B)));
         return r;
+    }
+
+    @Override
+    public DatabasePackableInterface has(DatabasePackableInterface packable) {
+        DatabasePackableInterface tempPackable = getTeamA().has(packable);
+        if (tempPackable != null) {
+            return tempPackable;
+        } else {
+            return getTeamB().has(packable);
+        }
     }
 
     private FootballTeams(Parcel in) {

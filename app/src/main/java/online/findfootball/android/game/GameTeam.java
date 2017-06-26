@@ -7,6 +7,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
 import online.findfootball.android.firebase.database.DataInstanceResult;
+import online.findfootball.android.firebase.database.DatabasePackableInterface;
 import online.findfootball.android.firebase.database.FBDatabase;
 import online.findfootball.android.firebase.database.children.PackableArrayList;
 import online.findfootball.android.firebase.database.children.PackableObject;
@@ -45,6 +46,9 @@ public class GameTeam<Player extends UserObj> extends PackableObject implements 
     }
 
     public PackableArrayList<Player> getPlayerList() {
+        if (playerList == null) {
+            newPlayerList();
+        }
         return playerList;
     }
 
@@ -176,13 +180,18 @@ public class GameTeam<Player extends UserObj> extends PackableObject implements 
     }
 
     @Override
+    public DatabasePackableInterface has(DatabasePackableInterface packable) {
+        return getPlayerList().has(packable);
+    }
+
+    @Override
     public boolean hasLoaded() {
-        return playerList != null;
+        return playerList != null && playerList.hasLoaded();
     }
 
     private GameTeam(Parcel in) {
         maxPlayerCount = in.readInt();
-        playerList = (PackableArrayList<Player>) in.readSerializable();
+        playerList = in.readParcelable(PackableArrayList.class.getClassLoader());
     }
 
     @Override
@@ -193,7 +202,7 @@ public class GameTeam<Player extends UserObj> extends PackableObject implements 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(maxPlayerCount);
-        dest.writeSerializable(playerList);
+        dest.writeParcelable(playerList, flags);
     }
 
     public static final Parcelable.Creator<GameTeam> CREATOR = new Parcelable.Creator<GameTeam>() {

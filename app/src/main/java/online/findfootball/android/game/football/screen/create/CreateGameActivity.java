@@ -17,7 +17,6 @@ import java.util.Formatter;
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.app.BaseActivity;
-import online.findfootball.android.app.NavDrawerActivity;
 import online.findfootball.android.background.tasks.BgTaskMaker;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.football.object.FootballPlayer;
@@ -204,7 +203,7 @@ public class CreateGameActivity extends BaseActivity implements
             Context context = getApplicationContext();
             Toast.makeText(context, formatter.toString(), Toast.LENGTH_LONG).show();
 
-            game.setOwnerUid(appUser.getUid());
+            game.setOwnerUser(appUser);
 
 
             FootballPlayer player = new FootballPlayer(appUser.getUid());
