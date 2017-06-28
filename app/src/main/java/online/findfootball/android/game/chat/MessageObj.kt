@@ -1,5 +1,7 @@
 package online.findfootball.android.game.chat
 
+import android.content.Context
+import android.content.Intent
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.firebase.database.DataSnapshot
@@ -7,6 +9,10 @@ import com.google.firebase.database.DatabaseReference
 import online.findfootball.android.firebase.database.DataInstanceResult
 import online.findfootball.android.firebase.database.DatabasePackableInterface
 import online.findfootball.android.firebase.database.children.PackableObject
+import online.findfootball.android.firebase.messaging.RemoteMessageContent
+import online.findfootball.android.game.football.screen.my.MyGamesActivity
+import online.findfootball.android.notification.Notificatable
+import online.findfootball.android.notification.NotificationObj
 import online.findfootball.android.time.TimeProvider
 import online.findfootball.android.user.UserObj
 import java.util.*
@@ -15,7 +21,7 @@ import java.util.*
 /**
  * Created by WiskiW on 22.06.2017.
  */
-open class MessageObj() : PackableObject(), Parcelable {
+open class MessageObj() : PackableObject(), RemoteMessageContent, Notificatable, Parcelable {
 
     val PATH_MESSAGE = "text"
     val PATH_USER_FROM = "from"
@@ -69,12 +75,12 @@ open class MessageObj() : PackableObject(), Parcelable {
         return DataInstanceResult.onSuccess()
     }
 
+    override fun hasLoaded(): Boolean {
+        return userFrom.hasLoaded() && !text.isEmpty()
+    }
+
     override fun has(packable: DatabasePackableInterface?): DatabasePackableInterface? {
-        if (this == packable) {
-            return this
-        } else {
-            return null
-        }
+        return null
     }
 
     override fun equals(other: Any?): Boolean {
@@ -99,19 +105,6 @@ open class MessageObj() : PackableObject(), Parcelable {
         dest.writeParcelable(userFrom, flags)
     }
 
-    companion object {
-        @JvmField final val CREATOR: Parcelable.Creator<MessageObj> = object : Parcelable.Creator<MessageObj> {
-            override fun createFromParcel(incoming: Parcel): MessageObj {
-                return MessageObj(incoming)
-            }
-
-            override fun newArray(size: Int): Array<MessageObj?> {
-                return arrayOfNulls(size)
-            }
-        }
-
-    }
-
     constructor(incoming: Parcel) : this() {
         text = incoming.readString()
         time = incoming.readLong()
@@ -119,5 +112,46 @@ open class MessageObj() : PackableObject(), Parcelable {
     }
 
     override fun describeContents(): Int = 0
+
+    override fun rebuildByMessageData(contentMap: Map<String, String>): Boolean {
+        var result: Boolean = true
+
+        val uidFrom: String? = contentMap["from"]
+        if (uidFrom != null) {
+            this.userFrom = UserObj(uidFrom)
+        } else {
+            result = false
+        }
+
+        val timeString: String? = contentMap["time"]
+        if (timeString != null) {
+            this.time = timeString.toLong()
+        } else {
+            result = false
+        }
+
+        val text: String? = contentMap["text"]
+        if (text != null) {
+            this.text = text
+        } else {
+            result = false
+        }
+
+        return result
+    }
+
+    override fun generateNotificationData(context: Context): NotificationObj {
+        val nObject = NotificationObj()
+        userFrom.load { result, packable ->
+            {
+
+            }
+        }
+        nObject.nId = 2
+        nObject.nTitle = "New Message from ${userFrom.email}"
+        nObject.nText = "Text: $text"
+        nObject.clickAction = Intent(context, MyGamesActivity::class.java)
+        return nObject
+    }
 
 }
