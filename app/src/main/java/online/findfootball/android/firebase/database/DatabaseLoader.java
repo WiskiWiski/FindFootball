@@ -157,12 +157,12 @@ public class DatabaseLoader {
             this.packable = packable;
         }
         if (this.packable.hasLoaded()) {
-            Log.d(TAG, "load: return from cache: " + this.packable);
+            // Возвращяем объект из кэша
             if (onLoadListener != null) {
                 onLoadListener.onComplete(DataInstanceResult.onSuccess(), this.packable);
             }
         } else {
-            Log.d(TAG, "load: loading: " + this.packable);
+            // Загружаем объект
             singleValueListener = createSingleValueListener(onLoadListener);
             FBDatabase.getDatabaseReference(packable).addListenerForSingleValueEvent(singleValueListener);
         }
