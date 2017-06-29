@@ -2,9 +2,11 @@ package online.findfootball.android.game.football.object;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
+
+import java.util.HashMap;
 
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.user.UserObj;
@@ -15,7 +17,7 @@ import online.findfootball.android.user.UserObj;
 
 public class FootballPlayer extends UserObj {
 
-    private final static String PATH_POSITION = "position/";
+    private final static String PATH_POSITION = "position";
 
     public enum FootballPosition {
         UNSET, FORWARD, MIDFIELDER, DEFENDER, GOALKEEPER;
@@ -51,17 +53,20 @@ public class FootballPlayer extends UserObj {
         return this;
     }
 
+    @NonNull
     @Override
     public String getDirectoryPath() {
         return getUid() + "/";
     }
 
+    @NonNull
     @Override
-    public DataInstanceResult pack(DatabaseReference databaseReference) {
-        databaseReference.child(PATH_POSITION).setValue(position.name().toLowerCase());
+    public DataInstanceResult pack(@NonNull HashMap<String, Object> databaseMap) {
+        databaseMap.put(PATH_POSITION, position.name().toLowerCase());
         return DataInstanceResult.onSuccess();
     }
 
+    @NonNull
     @Override
     public DataInstanceResult unpack(DataSnapshot dataSnapshot) {
         //super.unpack(dataSnapshot);

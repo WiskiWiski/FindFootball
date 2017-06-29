@@ -30,7 +30,7 @@ class IncomingMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
         set(value) {
             setMsgText(value.text)
 
-            if (value.userFrom.hasLoaded()) {
+            if (value.userFrom.hasUnpacked()) {
                 setUserPhoto(value.userFrom)
             } else {
                 value.userFrom.load { result, packable ->

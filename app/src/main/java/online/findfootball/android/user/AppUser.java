@@ -13,8 +13,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
-import com.google.firebase.database.DatabaseReference;
 import com.vk.sdk.VKSdk;
+
+import java.util.HashMap;
 
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
@@ -187,17 +188,20 @@ public class AppUser extends UserObj {
         return super.hashCode() * 3;
     }
 
+    @NonNull
     @Override
-    public DataInstanceResult pack(DatabaseReference databaseReference) {
-        databaseReference.child(PATH_DISPLAY_NAME).setValue(getDisplayName());
-        databaseReference.child(PATH_PHOTO_URL).setValue(getPhotoUrl().toString());
-        databaseReference.child(PATH_EMAIL).setValue(getEmail());
-        databaseReference.child(PATH_CLOUDE_MESSAGE_TOKEN).setValue(getCloudMessageToken());
-        databaseReference.child(PATH_REGISTER_TIME).setValue(getRegisterTime());
-        databaseReference.child(PATH_LAST_ACTIVITY_TIME).setValue(getLastActivityTime());
-        databaseReference.child(PATH_AUTH_PROVIDER).setValue(getAuthProvider());
+    public DataInstanceResult pack(@NonNull HashMap<String, Object> databaseMap) {
+        databaseMap.put(PATH_DISPLAY_NAME, getDisplayName());
+        databaseMap.put(PATH_PHOTO_URL, getPhotoUrl().toString());
+        databaseMap.put(PATH_EMAIL, getEmail());
+        databaseMap.put(PATH_CLOUDE_MESSAGE_TOKEN, getCloudMessageToken());
+        databaseMap.put(PATH_REGISTER_TIME, getRegisterTime());
+        databaseMap.put(PATH_LAST_ACTIVITY_TIME, getLastActivityTime());
+        databaseMap.put(PATH_AUTH_PROVIDER, getAuthProvider());
 
-        getGameList().pack(databaseReference.child(PATH_GAMES_FOOTBALL));
+        HashMap<String, Object> gameListMap = new HashMap<>();
+        getGameList().pack(gameListMap);
+        databaseMap.put(PATH_GAMES_FOOTBALL, gameListMap);
         return DataInstanceResult.onSuccess();
     }
 

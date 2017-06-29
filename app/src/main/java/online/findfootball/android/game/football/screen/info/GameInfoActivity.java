@@ -12,7 +12,7 @@ import online.findfootball.android.app.App;
 import online.findfootball.android.app.BaseActivity;
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.DatabaseLoader;
-import online.findfootball.android.firebase.database.DatabasePackableInterface;
+import online.findfootball.android.firebase.database.DatabaseSelfPackable;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.football.screen.info.tabs.about.GIAboutTab;
 import online.findfootball.android.game.football.screen.info.tabs.chat.GIChatTab;
@@ -66,7 +66,7 @@ public class GameInfoActivity extends BaseActivity {
 
             thisGameObj.load(new DatabaseLoader.OnLoadListener() {
                 @Override
-                public void onComplete(DataInstanceResult result, DatabasePackableInterface packable) {
+                public void onComplete(DataInstanceResult result, DatabaseSelfPackable packable) {
                     if (result.getCode() == DataInstanceResult.CODE_SUCCESS) {
                         thisGameObj = (GameObj) packable;
                         setupViewPager(viewPager);

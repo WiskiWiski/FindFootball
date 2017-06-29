@@ -23,7 +23,7 @@ import java.util.HashSet;
 import online.findfootball.android.R;
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.DatabaseLoader;
-import online.findfootball.android.firebase.database.DatabasePackableInterface;
+import online.findfootball.android.firebase.database.DatabaseSelfPackable;
 import online.findfootball.android.user.AppUser;
 import online.findfootball.android.user.ProfileActivity;
 
@@ -158,12 +158,12 @@ public class NavDrawerActivity extends BaseActivity implements
         if (appUser == null) {
             return;
         }
-        if (appUser.hasLoaded()) {
+        if (appUser.hasUnpacked()) {
             updateAppUserData(appUser);
         } else {
             appUser.load(new DatabaseLoader.OnLoadListener() {
                 @Override
-                public void onComplete(DataInstanceResult result, DatabasePackableInterface packable) {
+                public void onComplete(DataInstanceResult result, DatabaseSelfPackable packable) {
                     updateAppUserData((AppUser) packable);
                 }
             });

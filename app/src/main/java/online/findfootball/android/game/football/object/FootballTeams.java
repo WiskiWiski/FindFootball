@@ -2,13 +2,16 @@ package online.findfootball.android.game.football.object;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.HashMap;
+
 import online.findfootball.android.firebase.database.DataInstanceResult;
-import online.findfootball.android.firebase.database.DatabasePackableInterface;
-import online.findfootball.android.firebase.database.children.PackableObject;
+import online.findfootball.android.firebase.database.DatabaseSelfPackable;
+import online.findfootball.android.firebase.database.children.SelfPackableObject;
 import online.findfootball.android.game.GameTeam;
 import online.findfootball.android.user.UserObj;
 
@@ -16,7 +19,7 @@ import online.findfootball.android.user.UserObj;
  * Created by WiskiW on 30.05.2017.
  */
 
-public class FootballTeams extends PackableObject implements Parcelable {
+public class FootballTeams extends SelfPackableObject implements Parcelable {
 
     public final static String DIR_NAME_TEAM_A = "team_a";
     public final static String DIR_NAME_TEAM_B = "team_b";
@@ -81,21 +84,31 @@ public class FootballTeams extends PackableObject implements Parcelable {
     }
 
     @Override
-    public boolean hasLoaded() {
-        return teamA.hasLoaded() && teamB.hasLoaded();
+    public boolean hasUnpacked() {
+        return teamA.hasUnpacked() && teamB.hasUnpacked();
     }
 
+    @NonNull
     @Override
-    public DataInstanceResult pack(DatabaseReference databaseReference) {
+    public DataInstanceResult pack(@NonNull HashMap<String, Object> databaseMap) {
         DataInstanceResult r = DataInstanceResult.onSuccess();
-        DataInstanceResult.calculateResult(r, getTeamA().pack(databaseReference.child(DIR_NAME_TEAM_A)));
-        DataInstanceResult.calculateResult(r, getTeamB().pack(databaseReference.child(DIR_NAME_TEAM_B)));
+        HashMap<String, Object> tempTeamMap = new HashMap<>();
+
+        DataInstanceResult.calculateResult(r, getTeamA().pack(tempTeamMap));
+        databaseMap.put(DIR_NAME_TEAM_A, tempTeamMap);
+        tempTeamMap.clear();
+
+        DataInstanceResult.calculateResult(r, getTeamB().pack(tempTeamMap));
+        databaseMap.put(DIR_NAME_TEAM_B, tempTeamMap);
+        tempTeamMap.clear();
+
         return r;
     }
 
     //@SuppressWarnings("unchecked")
+    @NonNull
     @Override
-    public DataInstanceResult unpack(DataSnapshot dataSnapshot) {
+    public DataInstanceResult unpack(@NonNull DataSnapshot dataSnapshot) {
         DataInstanceResult r = DataInstanceResult.onSuccess();
         DataInstanceResult.calculateResult(r, getTeamA().unpack(dataSnapshot.child(DIR_NAME_TEAM_A)));
         DataInstanceResult.calculateResult(r, getTeamB().unpack(dataSnapshot.child(DIR_NAME_TEAM_B)));
@@ -103,8 +116,8 @@ public class FootballTeams extends PackableObject implements Parcelable {
     }
 
     @Override
-    public DatabasePackableInterface has(DatabasePackableInterface packable) {
-        DatabasePackableInterface tempPackable = getTeamA().has(packable);
+    public DatabaseSelfPackable has(@NonNull DatabaseSelfPackable packable) {
+        DatabaseSelfPackable tempPackable = getTeamA().has(packable);
         if (tempPackable != null) {
             return tempPackable;
         } else {

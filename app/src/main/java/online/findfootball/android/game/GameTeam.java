@@ -2,28 +2,30 @@ package online.findfootball.android.game;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
+
+import java.util.HashMap;
 
 import online.findfootball.android.firebase.database.DataInstanceResult;
-import online.findfootball.android.firebase.database.DatabasePackableInterface;
+import online.findfootball.android.firebase.database.DatabaseSelfPackable;
 import online.findfootball.android.firebase.database.FBDatabase;
-import online.findfootball.android.firebase.database.children.PackableArrayList;
-import online.findfootball.android.firebase.database.children.PackableObject;
+import online.findfootball.android.firebase.database.children.SelfPackableArrayList;
+import online.findfootball.android.firebase.database.children.SelfPackableObject;
 import online.findfootball.android.user.UserObj;
 
 /**
  * Created by WiskiW on 04.06.2017.
  */
 
-public class GameTeam<Player extends UserObj> extends PackableObject implements Parcelable {
+public class GameTeam<Player extends UserObj> extends SelfPackableObject implements Parcelable {
 
-    private final static String PATH_MAX_PLAYER_COUNT = "max_player_count/";
-    public final static String PATH_PLAYERS = "players/";
+    private final static String PATH_MAX_PLAYER_COUNT = "max_player_count";
+    public final static String PATH_PLAYERS = "players";
 
     private int maxPlayerCount;
-    private PackableArrayList<Player> playerList;
+    private SelfPackableArrayList<Player> playerList;
 
     public GameTeam() {
 
@@ -45,19 +47,19 @@ public class GameTeam<Player extends UserObj> extends PackableObject implements 
         this.maxPlayerCount = maxPlayerCount;
     }
 
-    public PackableArrayList<Player> getPlayerList() {
+    public SelfPackableArrayList<Player> getPlayerList() {
         if (playerList == null) {
             newPlayerList();
         }
         return playerList;
     }
 
-    public void setPlayerList(PackableArrayList<Player> playerList) {
+    public void setPlayerList(SelfPackableArrayList<Player> playerList) {
         this.playerList = playerList;
     }
 
     private void newPlayerList() {
-        playerList = new PackableArrayList<Player>() {
+        playerList = new SelfPackableArrayList<Player>() {
             @Override
             protected Player unpackItem(DataSnapshot dataSnapshot) {
                 Player p = (Player) new UserObj(dataSnapshot.getKey());
@@ -97,7 +99,9 @@ public class GameTeam<Player extends UserObj> extends PackableObject implements 
         addPlayer(p);
 
         // добавляем игрока в список в бд
-        p.pack(FBDatabase.getDatabaseReference(getPlayerList()).child(p.getUid()));
+        HashMap<String, Object> playerMap = new HashMap<>();
+        p.pack(playerMap);
+        FBDatabase.getDatabaseReference(getPlayerList()).child(p.getUid()).setValue(playerMap);
     }
 
     public void unrollPlayer(Player p) {
@@ -147,18 +151,23 @@ public class GameTeam<Player extends UserObj> extends PackableObject implements 
         }
     }
 
+    @NonNull
     @Override
-    public DataInstanceResult pack(DatabaseReference databaseReference) {
-        databaseReference.child(PATH_MAX_PLAYER_COUNT).setValue(maxPlayerCount);
+    public DataInstanceResult pack(@NonNull HashMap<String, Object> databaseMap) {
+        databaseMap.put(PATH_MAX_PLAYER_COUNT, maxPlayerCount);
         if (playerList == null) {
             newPlayerList();
         }
-        playerList.pack(databaseReference.child(PATH_PLAYERS));
+
+        HashMap<String, Object> playerListMap = new HashMap<>();
+        playerList.pack(playerListMap);
+        databaseMap.put(PATH_PLAYERS, playerListMap);
         return DataInstanceResult.onSuccess();
     }
 
+    @NonNull
     @Override
-    public DataInstanceResult unpack(DataSnapshot dataSnapshot) {
+    public DataInstanceResult unpack(@NonNull DataSnapshot dataSnapshot) {
         try {
             Long l = (Long) dataSnapshot.child(PATH_MAX_PLAYER_COUNT).getValue();
             if (l != null) {
@@ -180,18 +189,18 @@ public class GameTeam<Player extends UserObj> extends PackableObject implements 
     }
 
     @Override
-    public DatabasePackableInterface has(DatabasePackableInterface packable) {
+    public DatabaseSelfPackable has(@NonNull DatabaseSelfPackable packable) {
         return getPlayerList().has(packable);
     }
 
     @Override
-    public boolean hasLoaded() {
-        return playerList != null && playerList.hasLoaded();
+    public boolean hasUnpacked() {
+        return playerList != null && playerList.hasUnpacked();
     }
 
     private GameTeam(Parcel in) {
         maxPlayerCount = in.readInt();
-        playerList = in.readParcelable(PackableArrayList.class.getClassLoader());
+        playerList = in.readParcelable(SelfPackableArrayList.class.getClassLoader());
     }
 
     @Override

@@ -1,8 +1,11 @@
 package online.findfootball.android.firebase.database.children;
 
+import android.support.annotation.NonNull;
+
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.DatabaseLoader;
-import online.findfootball.android.firebase.database.DatabasePackableInterface;
+import online.findfootball.android.firebase.database.DatabasePackable;
+import online.findfootball.android.firebase.database.DatabaseSelfPackable;
 import online.findfootball.android.firebase.database.FBDatabase;
 
 /**
@@ -13,22 +16,23 @@ import online.findfootball.android.firebase.database.FBDatabase;
  * путем наличия методов save(), load(..) и listen(..)
  */
 
-public abstract class PackableObject extends DatabaseLoader implements DatabasePackableInterface {
+public abstract class SelfPackableObject extends DatabaseLoader implements DatabaseSelfPackable {
 
-    private String dirPath;
+    private String dirPath = "";
 
     @Override
-    public void setDirectoryPath(String directoryPath) {
+    public void setDirectoryPath(@NonNull String directoryPath) {
         dirPath = directoryPath;
     }
 
+    @NonNull
     @Override
     public String getDirectoryPath() {
         return dirPath;
     }
 
     @Override
-    public boolean hasLoaded() {
+    public boolean hasUnpacked() {
         return false;
     }
 

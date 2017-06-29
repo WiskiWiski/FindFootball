@@ -6,12 +6,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -21,7 +22,7 @@ import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.DatabaseLoader;
-import online.findfootball.android.firebase.database.DatabasePackableInterface;
+import online.findfootball.android.firebase.database.DatabaseSelfPackable;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.location.LocationObj;
 import online.findfootball.android.time.TimeProvider;
@@ -48,6 +49,8 @@ public class GIAboutTab extends Fragment {
     private TextView gameLocationView;
     private ImageView userImageView;
 
+    private Switch notificationSwitch;
+
     private DatabaseLoader loader;
     private DatabaseLoader.OnLoadListener loadListener;
 
@@ -65,19 +68,40 @@ public class GIAboutTab extends Fragment {
         userImageView = (ImageView) rootView.findViewById(R.id.user_photo);
         userDescriptionView = (TextView) rootView.findViewById(R.id.user_description);
         gameLocationView = (TextView) rootView.findViewById(R.id.game_location);
+        notificationSwitch = (Switch) rootView.findViewById(R.id.notification_switch);
+
+        notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (thisGameOwnerUser != null && thisGameObj != null) {
+                  /*
+                    if (thisGameObj.getTeams().getTeamA().getPlayerList().indexOf(thisGameOwnerUser) != -1){
+                        FBDatabase.getDatabaseReference()
+                    }
+                    ArrayList<FootballPlayer> playerList = thisGameObj.getTeams().getTeamA().getPlayerList();
+                    int ownerPlayerIndex = playerList.indexOf(new FootballPlayer(thisGameOwnerUser.getUid()));
+                    if (ownerPlayerIndex != -1) {
+                        FootballPlayer thisPlayer = playerList.get(ownerPlayerIndex);
+                        thisPlayer.setChatNotificationsEnable(isChecked);
+                        thisPlayer.save();
+                    }
+                    */
+                }
+            }
+        });
 
         userProgressBar = (ProgressBar) rootView.findViewById(R.id.user_progressbar);
         userContainerView = rootView.findViewById(R.id.user_container);
 
-        if (thisGameOwnerUser == null || !thisGameOwnerUser.hasLoaded()) {
+        if (thisGameOwnerUser == null || !thisGameOwnerUser.hasUnpacked()) {
             showUserLoading(true);
         }
         loadListener = new DatabaseLoader.OnLoadListener() {
             @Override
-            public void onComplete(DataInstanceResult result, DatabasePackableInterface packable) {
+            public void onComplete(DataInstanceResult result, DatabaseSelfPackable packable) {
                 if (result.getCode() == DataInstanceResult.CODE_SUCCESS) {
                     thisGameOwnerUser = (UserObj) packable;
-                    if (thisGameOwnerUser.hasLoaded()) {
+                    if (thisGameOwnerUser.hasUnpacked()) {
                         updateOwnerView();
                     }
                     showUserLoading(false);
@@ -90,12 +114,13 @@ public class GIAboutTab extends Fragment {
     private void showUserLoading(boolean load) {
         userProgressBar.setVisibility(load ? View.VISIBLE : View.GONE);
         userContainerView.setVisibility(load ? View.GONE : View.VISIBLE);
+        notificationSwitch.setEnabled(!load);
     }
 
     public void setData(GameObj game) {
         this.thisGameObj = game;
         thisGameOwnerUser = thisGameObj.getOwnerUser();
-        if (thisGameOwnerUser.hasLoaded()) {
+        if (thisGameOwnerUser.hasUnpacked()) {
             updateOwnerView();
             showUserLoading(false);
         } else {
@@ -110,12 +135,12 @@ public class GIAboutTab extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (thisGameObj != null && thisGameObj.hasLoaded()) {
+        if (thisGameObj != null && thisGameObj.hasUnpacked()) {
             updateGameView();
         }
 
         if (thisGameOwnerUser != null) {
-            if (thisGameOwnerUser.hasLoaded()) {
+            if (thisGameOwnerUser.hasUnpacked()) {
                 updateOwnerView();
             } else if (!loader.isLoading()) {
                 showUserLoading(true);

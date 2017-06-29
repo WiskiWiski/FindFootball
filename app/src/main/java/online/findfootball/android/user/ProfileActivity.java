@@ -22,7 +22,7 @@ import online.findfootball.android.app.App;
 import online.findfootball.android.app.BaseActivity;
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.DatabaseLoader;
-import online.findfootball.android.firebase.database.DatabasePackableInterface;
+import online.findfootball.android.firebase.database.DatabaseSelfPackable;
 
 public class ProfileActivity extends BaseActivity
         implements DatabaseLoader.OnLoadListener {
@@ -69,7 +69,7 @@ public class ProfileActivity extends BaseActivity
                 return;
             }
             showProgress(true);
-            if (thisUserObj.hasLoaded()) {
+            if (thisUserObj.hasUnpacked()) {
                 showProgress(false);
                 setupUserData();
             } else {
@@ -133,7 +133,7 @@ public class ProfileActivity extends BaseActivity
 
 
     @Override
-    public void onComplete(DataInstanceResult result, DatabasePackableInterface packable) {
+    public void onComplete(DataInstanceResult result, DatabaseSelfPackable packable) {
         showProgress(false);
         if (result.getCode() == DataInstanceResult.CODE_SUCCESS) {
             thisUserObj = (UserObj) packable;

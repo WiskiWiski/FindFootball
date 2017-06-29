@@ -1,17 +1,16 @@
 package online.findfootball.android.game.chat
 
-import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import online.findfootball.android.app.App
 import online.findfootball.android.firebase.database.DatabaseLoader
-import online.findfootball.android.firebase.database.children.PackableArrayList
+import online.findfootball.android.firebase.database.children.SelfPackableArrayList
 
 /**
  * Created by WiskiW on 22.06.2017.
  */
 
 
-class PostBot(val chat: PackableArrayList<MessageObj>) {
+class PostBot(val chat: SelfPackableArrayList<MessageObj>) {
 
     // TODO : Finish this piece of shi.. code
     // 1. загрузка последних N сообщений

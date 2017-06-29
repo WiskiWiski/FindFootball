@@ -1,7 +1,5 @@
 package online.findfootball.android.firebase.database;
 
-import android.util.Log;
-
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -9,10 +7,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 import online.findfootball.android.app.App;
-import online.findfootball.android.firebase.database.children.PackableArrayList;
+import online.findfootball.android.firebase.database.children.SelfPackableArrayList;
 
 /**
  * Created by WiskiW on 06.06.2017.
@@ -23,7 +23,7 @@ public class DatabaseLoader {
     // Сет, хранящий ссылки на загруженные DatabasePackable объекты.
     // При повторной загрузки нового объекта с идентичным хэш-кодом,
     // будет возвращен объект из сета.
-    private static final LinkedHashSet<DatabasePackableInterface> packableCache =
+    private static final LinkedHashSet<DatabaseSelfPackable> packableCache =
             new LinkedHashSet<>();
 
     // Максимальный размер кэша
@@ -34,7 +34,7 @@ public class DatabaseLoader {
     private ValueEventListener singleValueListener;
     private ChildEventListener childEventListener;
     private boolean inLoading;
-    private DatabasePackableInterface packable;
+    private DatabaseSelfPackable packable;
 
     public DatabaseLoader() {
 
@@ -112,10 +112,13 @@ public class DatabaseLoader {
         };
     }
 
-    public DataInstanceResult save(DatabasePackableInterface packable) {
+    public DataInstanceResult save(DatabaseSelfPackable packable) {
         this.packable = packable;
         updateInCache(packable);
-        return packable.pack(FBDatabase.getDatabaseReference(packable));
+        HashMap<String, Object> dbMap = new HashMap<>();
+        DataInstanceResult result = packable.pack(dbMap);
+        FBDatabase.getDatabaseReference(packable).setValue(dbMap);
+        return result;
     }
 
     //Удаляет старый хэш
@@ -124,7 +127,7 @@ public class DatabaseLoader {
     }
 
     // Обновляет/записывает DatabasePackable в кэш
-    private void updateInCache(DatabasePackableInterface packable) {
+    private void updateInCache(DatabaseSelfPackable packable) {
         if (packableCache.size() >= MAX_PACKABLE_CACHE_SIZE) {
             releasePackableCache();
         }
@@ -133,9 +136,9 @@ public class DatabaseLoader {
     }
 
     // Ищет DatabasePackable в кэше; возвращает null, если не был найден
-    private DatabasePackableInterface readFromCache(DatabasePackableInterface packable) {
-        DatabasePackableInterface tempPackable;
-        for (DatabasePackableInterface cacheItem : packableCache) {
+    private DatabaseSelfPackable readFromCache(DatabaseSelfPackable packable) {
+        DatabaseSelfPackable tempPackable;
+        for (DatabaseSelfPackable cacheItem : packableCache) {
             if (packable.equals(cacheItem)) {
                 return cacheItem;
             } else {
@@ -150,13 +153,13 @@ public class DatabaseLoader {
     }
 
     // Устанавливает одноразового слушателя обновлений на текуший экземпляр
-    public void load(DatabasePackableInterface packable, OnLoadListener onLoadListener) {
+    public void load(DatabaseSelfPackable packable, OnLoadListener onLoadListener) {
         abortAllLoadings();
         this.packable = readFromCache(packable);
         if (this.packable == null) {
             this.packable = packable;
         }
-        if (this.packable.hasLoaded()) {
+        if (this.packable.hasUnpacked()) {
             // Возвращяем объект из кэша
             if (onLoadListener != null) {
                 onLoadListener.onComplete(DataInstanceResult.onSuccess(), this.packable);
@@ -168,7 +171,7 @@ public class DatabaseLoader {
         }
     }
 
-    public void loadLast(PackableArrayList packableList, int count, OnLoadListener onLoadListener) {
+    public void loadLast(SelfPackableArrayList packableList, int count, OnLoadListener onLoadListener) {
         abortAllLoadings();
         this.packable = packableList;
         Query myTopPostsQuery = FBDatabase.getDatabaseReference(packable).limitToLast(count);
@@ -177,7 +180,7 @@ public class DatabaseLoader {
     }
 
     // Устанавливает слушателя обновлений на текуший экземпляр
-    public void listen(DatabasePackableInterface packable, final OnListenListener onListenListener) {
+    public void listen(DatabaseSelfPackable packable, final OnListenListener onListenListener) {
         abortAllLoadings();
         this.packable = packable;
         childEventListener = createChildEventListener(onListenListener);
@@ -206,7 +209,7 @@ public class DatabaseLoader {
 
     public interface OnLoadListener {
 
-        void onComplete(DataInstanceResult result, DatabasePackableInterface packable);
+        void onComplete(DataInstanceResult result, DatabaseSelfPackable packable);
 
     }
 

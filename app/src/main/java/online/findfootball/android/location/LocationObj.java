@@ -5,6 +5,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -13,24 +14,25 @@ import com.google.firebase.database.DatabaseReference;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import online.findfootball.android.background.tasks.BgTask;
 import online.findfootball.android.firebase.database.DataInstanceResult;
-import online.findfootball.android.firebase.database.DatabasePackableInterface;
-import online.findfootball.android.firebase.database.children.PackableObject;
+import online.findfootball.android.firebase.database.DatabaseSelfPackable;
+import online.findfootball.android.firebase.database.children.SelfPackableObject;
 
 /**
  * Created by WiskiW on 16.04.2017.
  */
 
-public class LocationObj extends PackableObject implements Parcelable, Serializable, BgTask {
+public class LocationObj extends SelfPackableObject implements Parcelable, Serializable, BgTask {
 
-    private final static String PATH_LATITUDE = "latitude/";
-    private final static String PATH_LONGITUDE = "longitude/";
-    public final static String PATH_CITY_NAME = "city_name/";
-    public final static String PATH_COUNTRY_NAME = "country_name/";
+    private final static String PATH_LATITUDE = "latitude";
+    private final static String PATH_LONGITUDE = "longitude";
+    public final static String PATH_CITY_NAME = "city_name";
+    public final static String PATH_COUNTRY_NAME = "country_name";
 
     private double latitude;
     private double longitude;
@@ -136,21 +138,23 @@ public class LocationObj extends PackableObject implements Parcelable, Serializa
     };
 
     @Override
-    public boolean hasLoaded() {
+    public boolean hasUnpacked() {
         return latitude != 0 && cityName != null;
     }
 
+    @NonNull
     @Override
-    public DataInstanceResult pack(DatabaseReference databaseReference) {
-        databaseReference.child(PATH_LATITUDE).setValue(latitude);
-        databaseReference.child(PATH_LONGITUDE).setValue(longitude);
-        databaseReference.child(PATH_CITY_NAME).setValue(cityName);
-        databaseReference.child(PATH_COUNTRY_NAME).setValue(countryName);
+    public DataInstanceResult pack(@NonNull HashMap<String, Object> databaseMap) {
+        databaseMap.put(PATH_LATITUDE, latitude);
+        databaseMap.put(PATH_LONGITUDE, longitude);
+        databaseMap.put(PATH_CITY_NAME, cityName);
+        databaseMap.put(PATH_COUNTRY_NAME, countryName);
         return DataInstanceResult.onSuccess();
     }
 
+    @NonNull
     @Override
-    public DataInstanceResult unpack(DataSnapshot dataSnapshot) {
+    public DataInstanceResult unpack(@NonNull DataSnapshot dataSnapshot) {
         try {
             setCountryName((String) dataSnapshot.child(PATH_COUNTRY_NAME).getValue());
             setLatitude((Double) dataSnapshot.child(PATH_LATITUDE).getValue());
@@ -163,12 +167,8 @@ public class LocationObj extends PackableObject implements Parcelable, Serializa
     }
 
     @Override
-    public DatabasePackableInterface has(DatabasePackableInterface packable) {
-        if (this.equals(packable)) {
-            return this;
-        } else {
+    public DatabaseSelfPackable has(@NonNull DatabaseSelfPackable packable) {
             return null;
-        }
     }
 
     @Override

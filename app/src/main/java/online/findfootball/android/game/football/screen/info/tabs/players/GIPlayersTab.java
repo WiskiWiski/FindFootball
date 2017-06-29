@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,7 @@ import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.DatabaseLoader;
-import online.findfootball.android.firebase.database.DatabasePackableInterface;
+import online.findfootball.android.firebase.database.DatabaseSelfPackable;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.GameTeam;
 import online.findfootball.android.game.football.object.FootballPlayer;
@@ -117,7 +116,7 @@ public class GIPlayersTab extends Fragment {
                 UserObj u = new UserObj(uid);
                 u.load(new DatabaseLoader.OnLoadListener() {
                     @Override
-                    public void onComplete(DataInstanceResult result, DatabasePackableInterface packable) {
+                    public void onComplete(DataInstanceResult result, DatabaseSelfPackable packable) {
                         if (result.getCode() == DataInstanceResult.CODE_SUCCESS) {
                             FootballPlayer player = new FootballPlayer((UserObj) packable);
                             player.unpack(dataSnapshot);

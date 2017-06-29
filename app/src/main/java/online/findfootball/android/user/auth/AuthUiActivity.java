@@ -23,7 +23,7 @@ import online.findfootball.android.app.App;
 import online.findfootball.android.app.BaseActivity;
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.DatabaseLoader;
-import online.findfootball.android.firebase.database.DatabasePackableInterface;
+import online.findfootball.android.firebase.database.DatabaseSelfPackable;
 import online.findfootball.android.firebase.database.FBDatabase;
 import online.findfootball.android.time.TimeProvider;
 import online.findfootball.android.user.AppUser;
@@ -144,8 +144,8 @@ public class AuthUiActivity extends BaseActivity {
                 // пытаемся подгрузить данные пользователя из firebase бд
                 new UserObj(user.getUid()).load(new DatabaseLoader.OnLoadListener() {
                     @Override
-                    public void onComplete(DataInstanceResult result, DatabasePackableInterface packable) {
-                        if (packable.hasLoaded()) {
+                    public void onComplete(DataInstanceResult result, DatabaseSelfPackable packable) {
+                        if (packable.hasUnpacked()) {
                             // Если пользователь уже есть в firebase бд
                             signInUser(user); // обновляем данные пользователя в БД
                         } else {

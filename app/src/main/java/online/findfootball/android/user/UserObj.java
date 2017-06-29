@@ -3,36 +3,37 @@ package online.findfootball.android.user;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import online.findfootball.android.firebase.database.DataInstanceResult;
-import online.findfootball.android.firebase.database.DatabasePackableInterface;
-import online.findfootball.android.firebase.database.children.PackableArrayList;
-import online.findfootball.android.firebase.database.children.PackableObject;
+import online.findfootball.android.firebase.database.DatabaseSelfPackable;
+import online.findfootball.android.firebase.database.children.SelfPackableArrayList;
+import online.findfootball.android.firebase.database.children.SelfPackableObject;
 import online.findfootball.android.game.GameObj;
 
 /**
  * Created by WiskiW on 17.04.2017.
  */
 
-public class UserObj extends PackableObject implements Parcelable, Serializable {
+public class UserObj extends SelfPackableObject implements Parcelable, Serializable {
 
     private final static String PATH_USERS = "users/";
     public final static String PATH_GAMES_FOOTBALL = "/events/football/";
 
-    public final static String PATH_DISPLAY_NAME = "display_name/";
-    public final static String PATH_EMAIL = "email/";
-    public final static String PATH_PHOTO_URL = "photo_url/";
-    public final static String PATH_REGISTER_TIME = "register_time/";
-    public final static String PATH_LAST_ACTIVITY_TIME = "last_activity_time/";
-    public final static String PATH_AUTH_PROVIDER = "auth_provider/";
-    public final static String PATH_CLOUDE_MESSAGE_TOKEN = "cm_token/";
+    public final static String PATH_DISPLAY_NAME = "display_name";
+    public final static String PATH_EMAIL = "email";
+    public final static String PATH_PHOTO_URL = "photo_url";
+    public final static String PATH_REGISTER_TIME = "register_time";
+    public final static String PATH_LAST_ACTIVITY_TIME = "last_activity_time";
+    public final static String PATH_AUTH_PROVIDER = "auth_provider";
+    public final static String PATH_CLOUDE_MESSAGE_TOKEN = "cm_token";
 
     public final static UserObj EMPTY = new UserObj("empty_uid");
 
@@ -45,7 +46,7 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
     private long registerTime;
     private Uri photoUrl;
     private String authProvider;
-    private PackableArrayList<GameObj> gameList;
+    private SelfPackableArrayList<GameObj> gameList;
 
 
     public UserObj(String uid) {
@@ -60,22 +61,22 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
     }
 
     private void newGameList() {
-        gameList = new PackableArrayList<GameObj>() {
+        gameList = new SelfPackableArrayList<GameObj>() {
             @Override
             protected GameObj unpackItem(DataSnapshot dataSnapshot) {
                 return new GameObj(dataSnapshot.getKey());
             }
 
             @Override
-            protected void packItem(DatabaseReference databaseReference, GameObj item) {
+            protected void packItem(@NonNull HashMap<String, Object> databaseMap, GameObj item) {
                 String eid = item.getEid();
-                databaseReference.child(eid).setValue(eid);
+                databaseMap.put(eid, eid);
             }
         };
         gameList.setDirectoryPath(getDirectoryPath() + PATH_GAMES_FOOTBALL);
     }
 
-    public PackableArrayList<GameObj> getGameList() {
+    public SelfPackableArrayList<GameObj> getGameList() {
         if (gameList == null) {
             newGameList();
         }
@@ -104,7 +105,7 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
         }
     }
 
-    public void setGameList(PackableArrayList<GameObj> gameList) {
+    public void setGameList(SelfPackableArrayList<GameObj> gameList) {
         this.gameList = gameList;
     }
 
@@ -241,17 +242,19 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
         return 31 * this.getUid().hashCode();
     }
 
+    @NonNull
     @Override
     public String getDirectoryPath() {
         return PATH_USERS + uid + "/";
     }
 
     @Override
-    public boolean hasLoaded() {
+    public boolean hasUnpacked() {
         return photoUrl != null && email != null && displayName != null
-                && getGameList().hasLoaded();
+                && getGameList().hasUnpacked();
     }
 
+    @NonNull
     @Override
     public DataInstanceResult unpack(DataSnapshot dataSnapshot) {
         DataInstanceResult r = DataInstanceResult.onSuccess();
@@ -295,12 +298,13 @@ public class UserObj extends PackableObject implements Parcelable, Serializable 
     }
 
     @Override
-    public DatabasePackableInterface has(DatabasePackableInterface packable) {
+    public DatabaseSelfPackable has(@NonNull DatabaseSelfPackable packable) {
         return getGameList().has(packable);
     }
 
+    @NonNull
     @Override
-    public DataInstanceResult pack(DatabaseReference databaseReference) {
+    public DataInstanceResult pack(@NonNull HashMap<String, Object> databaseMap) {
         return new DataInstanceResult(DataInstanceResult.CODE_NO_PERMISSIONS);
     }
 }

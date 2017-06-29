@@ -9,7 +9,7 @@ import java.util.List;
 import online.findfootball.android.app.App;
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.DatabaseLoader;
-import online.findfootball.android.firebase.database.DatabasePackableInterface;
+import online.findfootball.android.firebase.database.DatabaseSelfPackable;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.time.TimeProvider;
 import online.findfootball.android.user.AppUser;
@@ -57,7 +57,7 @@ public class EventsProvider {
                 gameLoader = DatabaseLoader.newLoader();
                 gameLoader.load(game, new DatabaseLoader.OnLoadListener() {
                     @Override
-                    public void onComplete(DataInstanceResult result, DatabasePackableInterface packable) {
+                    public void onComplete(DataInstanceResult result, DatabaseSelfPackable packable) {
                         if (loadingStatus != LOADING_STATUS.IN_PROGRESS) {
                             return;
                         }
@@ -104,7 +104,7 @@ public class EventsProvider {
         userLoader = DatabaseLoader.newLoader();
         userLoader.load(appUser, new DatabaseLoader.OnLoadListener() {
             @Override
-            public void onComplete(DataInstanceResult result, DatabasePackableInterface packable) {
+            public void onComplete(DataInstanceResult result, DatabaseSelfPackable packable) {
                 if (result.getCode() == DataInstanceResult.CODE_SUCCESS) {
                     AppUser appUser = (AppUser) packable;
                     AppUser.updateInstance(appUser);

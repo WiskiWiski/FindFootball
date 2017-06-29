@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +17,12 @@ import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.firebase.database.FBDatabase;
-import online.findfootball.android.firebase.database.children.PackableArrayList;
+import online.findfootball.android.firebase.database.children.SelfPackableArrayList;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.chat.Mailbox;
 import online.findfootball.android.game.chat.MessageObj;
@@ -108,14 +109,17 @@ public class GIChatTab extends Fragment implements Mailbox {
                 if (chatAdapter != null) {
                     chatAdapter.addMessage(new OutComingMessage(msg));
                 }
-                PackableArrayList<MessageObj> packableArrayList = thisGameObj.getChat();
-                packableArrayList.add(msg); // добавляем игру к ивенту
+                SelfPackableArrayList<MessageObj> thisGameChat = thisGameObj.getChat();
+                thisGameChat.add(msg); // добавляем игру к ивенту
 
                 // отправляем сообщение в базу данных
-                // save() на PackableArrayList не вызываем для ускоренного сохранения
+                // save() на SelfPackableArrayList не вызываем для ускоренного сохранения
                 // во избежании очистки и перезаписи ArrayList'a
-                msg.pack(FBDatabase.getDatabaseReference(packableArrayList)
-                        .child(String.valueOf(msg.getTime())));
+                HashMap<String, Object> msgMap = new HashMap<>();
+                msg.pack(msgMap);
+                FBDatabase.getDatabaseReference(thisGameChat)
+                        .child(String.valueOf(msg.getTime())).setValue(msgMap);
+
                 recyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
                 msgEditText.setText("");
             }
@@ -177,9 +181,9 @@ public class GIChatTab extends Fragment implements Mailbox {
                     // получено входящее сообщение
                     // добавляем в RecyclerView
                     chatAdapter.addMessage(msg);
-                    if (recyclerView != null) {
-                        recyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
-                    }
+                }
+                if (recyclerView != null) {
+                    recyclerView.scrollToPosition(chatAdapter.getItemCount() - 1);
                 }
             }
         }
