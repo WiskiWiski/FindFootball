@@ -12,6 +12,7 @@ import java.util.HashMap;
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.DatabasePackable;
 import online.findfootball.android.firebase.database.children.PackableObject;
+import online.findfootball.android.user.UserObj;
 
 /**
  * Created by WiskiW on 02.07.2017.
@@ -141,6 +142,22 @@ public class FootballTeamsObj extends PackableObject {
     public void setPackableKey(String key) {
         getTeamA().setPackableKey(key);
         getTeamB().setPackableKey(key);
+    }
+
+    public FootballPlayer getPlayer(UserObj user) {
+        FootballPlayer player = new FootballPlayer(user);
+        if (!hasPlayer(player)) {
+            return null;
+        }
+        int index = getTeamA().indexOf(player);
+        if (index != -1) {
+            return getTeamA().get(index);
+        }
+        index = getTeamB().indexOf(player);
+        if (index != -1) {
+            return getTeamB().get(index);
+        }
+        return null;
     }
 
     @NonNull

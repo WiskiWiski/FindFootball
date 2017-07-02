@@ -24,6 +24,7 @@ import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.DatabaseLoader;
 import online.findfootball.android.firebase.database.DatabasePackable;
 import online.findfootball.android.game.GameObj;
+import online.findfootball.android.game.football.object.FootballPlayer;
 import online.findfootball.android.location.LocationObj;
 import online.findfootball.android.time.TimeProvider;
 import online.findfootball.android.user.UserObj;
@@ -74,18 +75,11 @@ public class GIAboutTab extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (thisGameOwnerUser != null && thisGameObj != null) {
-                  /*
-                    if (thisGameObj.getTeams().getTeamA().getPlayerList().indexOf(thisGameOwnerUser) != -1){
-                        FBDatabase.getDatabaseReference()
+                    FootballPlayer thisFootballPlayer = thisGameObj.getTeams().getPlayer(thisGameOwnerUser);
+                    if (thisFootballPlayer != null) {
+                        thisFootballPlayer.setChatNotifications(isChecked);
+                        thisFootballPlayer.save();
                     }
-                    ArrayList<FootballPlayer> playerList = thisGameObj.getTeams().getTeamA().getPlayerList();
-                    int ownerPlayerIndex = playerList.indexOf(new FootballPlayer(thisGameOwnerUser.getUid()));
-                    if (ownerPlayerIndex != -1) {
-                        FootballPlayer thisPlayer = playerList.get(ownerPlayerIndex);
-                        thisPlayer.setChatNotificationsEnable(isChecked);
-                        thisPlayer.save();
-                    }
-                    */
                 }
             }
         });
@@ -120,6 +114,13 @@ public class GIAboutTab extends Fragment {
     public void setData(GameObj game) {
         this.thisGameObj = game;
         thisGameOwnerUser = thisGameObj.getOwnerUser();
+
+        if (notificationSwitch != null) {
+            FootballPlayer thisFootballPlayer = thisGameObj.getTeams().getPlayer(thisGameOwnerUser);
+            if (thisFootballPlayer != null) {
+                notificationSwitch.setChecked(thisFootballPlayer.getChatNotifications());
+            }
+        }
         if (thisGameOwnerUser.hasUnpacked()) {
             updateOwnerView();
             showUserLoading(false);
