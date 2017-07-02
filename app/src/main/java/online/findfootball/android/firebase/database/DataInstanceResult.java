@@ -2,7 +2,7 @@ package online.findfootball.android.firebase.database;
 
 /**
  * Created by WiskiW on 02.06.2017.
- *
+ * <p>
  * Хранит информацию о ошибках при загрузке или слушанье DatabasePackable объекта
  */
 
@@ -120,4 +120,8 @@ public class DataInstanceResult {
         }
     }
 
+    @Override
+    public String toString() {
+        return "DIR[" + getCode() + "]:" + getMessage();
+    }
 }

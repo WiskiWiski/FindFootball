@@ -8,24 +8,23 @@ import android.support.annotation.NonNull;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import online.findfootball.android.firebase.database.DataInstanceResult;
-import online.findfootball.android.firebase.database.DatabaseSelfPackable;
-import online.findfootball.android.firebase.database.children.SelfPackableArrayList;
-import online.findfootball.android.firebase.database.children.SelfPackableObject;
+import online.findfootball.android.firebase.database.DatabasePackable;
+import online.findfootball.android.firebase.database.children.PackableObject;
 import online.findfootball.android.game.GameObj;
+import online.findfootball.android.game.football.object.FootballGameList;
 
 /**
  * Created by WiskiW on 17.04.2017.
  */
 
-public class UserObj extends SelfPackableObject implements Parcelable, Serializable {
+@SuppressWarnings("NullableProblems")
+public class UserObj extends PackableObject {
 
     private final static String PATH_USERS = "users/";
-    public final static String PATH_GAMES_FOOTBALL = "/events/football/";
+    final static String PATH_GAMES_FOOTBALL = "/events/football/";
 
     public final static String PATH_DISPLAY_NAME = "display_name";
     public final static String PATH_EMAIL = "email";
@@ -37,7 +36,6 @@ public class UserObj extends SelfPackableObject implements Parcelable, Serializa
 
     public final static UserObj EMPTY = new UserObj("empty_uid");
 
-
     private String uid;
     private String displayName;
     private String email;
@@ -46,7 +44,7 @@ public class UserObj extends SelfPackableObject implements Parcelable, Serializa
     private long registerTime;
     private Uri photoUrl;
     private String authProvider;
-    private SelfPackableArrayList<GameObj> gameList;
+    private FootballGameList gameList;
 
 
     public UserObj(String uid) {
@@ -60,25 +58,14 @@ public class UserObj extends SelfPackableObject implements Parcelable, Serializa
         setPhotoUrl(firebaseUser.getPhotoUrl());
     }
 
-    private void newGameList() {
-        gameList = new SelfPackableArrayList<GameObj>() {
-            @Override
-            protected GameObj unpackItem(DataSnapshot dataSnapshot) {
-                return new GameObj(dataSnapshot.getKey());
-            }
-
-            @Override
-            protected void packItem(@NonNull HashMap<String, Object> databaseMap, GameObj item) {
-                String eid = item.getEid();
-                databaseMap.put(eid, eid);
-            }
-        };
-        gameList.setDirectoryPath(getDirectoryPath() + PATH_GAMES_FOOTBALL);
+    private void initGameList(FootballGameList list) {
+        list.setPackablePath(this.getPackablePath() + "/" + this.getPackableKey());
     }
 
-    public SelfPackableArrayList<GameObj> getGameList() {
+    public FootballGameList getGameList() {
         if (gameList == null) {
-            newGameList();
+            gameList = new FootballGameList();
+            initGameList(gameList);
         }
         return gameList;
     }
@@ -91,21 +78,8 @@ public class UserObj extends SelfPackableObject implements Parcelable, Serializa
         this.cloudMessageToken = cloudMessageToken;
     }
 
-    public void setGameList(ArrayList<GameObj> gameList) {
-        if (gameList == null) {
-            return;
-        }
-        if (this.gameList == null) {
-            newGameList();
-        } else {
-            this.gameList.clear();
-        }
-        for (GameObj gameObj : gameList) {
-            this.gameList.add(gameObj);
-        }
-    }
-
-    public void setGameList(SelfPackableArrayList<GameObj> gameList) {
+    public void setGameList(FootballGameList gameList) {
+        initGameList(gameList);
         this.gameList = gameList;
     }
 
@@ -183,14 +157,10 @@ public class UserObj extends SelfPackableObject implements Parcelable, Serializa
         return "UserId:" + getUid();
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     // write your object's data to the passed-in Parcel
     @Override
     public void writeToParcel(Parcel out, int flags) {
+        super.writeToParcel(out, flags);
         out.writeString(uid);
         out.writeString(displayName);
         out.writeString(email);
@@ -199,7 +169,7 @@ public class UserObj extends SelfPackableObject implements Parcelable, Serializa
         out.writeLong(lastActivityTime);
         out.writeLong(registerTime);
         out.writeParcelable(photoUrl, flags);
-        out.writeTypedList(gameList);
+        out.writeParcelable(gameList, flags);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
@@ -215,6 +185,7 @@ public class UserObj extends SelfPackableObject implements Parcelable, Serializa
 
     // example constructor that takes a Parcel and gives you an object populated with it's values
     public UserObj(Parcel in) {
+        super(in);
         uid = in.readString();
         displayName = in.readString();
         email = in.readString();
@@ -223,18 +194,24 @@ public class UserObj extends SelfPackableObject implements Parcelable, Serializa
         lastActivityTime = in.readLong();
         registerTime = in.readLong();
         photoUrl = in.readParcelable(Uri.class.getClassLoader());
-        newGameList();
-        in.readTypedList(gameList, GameObj.CREATOR);
+        in.readParcelable(GameObj.class.getClassLoader());
     }
 
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof UserObj) {
-            return (((UserObj) obj).getUid()).equals(this.getUid());
-        } else {
-            return super.equals(obj);
+        if (obj == this) {
+            return true;
         }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        UserObj tmp = (UserObj) obj;
+        return tmp.getUid().equals(this.getUid());
     }
 
     @Override
@@ -242,10 +219,20 @@ public class UserObj extends SelfPackableObject implements Parcelable, Serializa
         return 31 * this.getUid().hashCode();
     }
 
-    @NonNull
     @Override
-    public String getDirectoryPath() {
-        return PATH_USERS + uid + "/";
+    public String getPackablePath() {
+        return PATH_USERS;
+    }
+
+    @Override
+    public void setPackableKey(String key) {
+        super.setPackableKey(key);
+        uid = key;
+    }
+
+    @Override
+    public String getPackableKey() {
+        return uid;
     }
 
     @Override
@@ -287,7 +274,8 @@ public class UserObj extends SelfPackableObject implements Parcelable, Serializa
             }
 
             if (gameList == null) {
-                newGameList();
+                gameList = new FootballGameList();
+                initGameList(gameList);
             }
             gameList.unpack(dataSnapshot.child(PATH_GAMES_FOOTBALL));
 
@@ -298,7 +286,7 @@ public class UserObj extends SelfPackableObject implements Parcelable, Serializa
     }
 
     @Override
-    public DatabaseSelfPackable has(@NonNull DatabaseSelfPackable packable) {
+    public DatabasePackable has(@NonNull DatabasePackable packable) {
         return getGameList().has(packable);
     }
 
@@ -307,4 +295,5 @@ public class UserObj extends SelfPackableObject implements Parcelable, Serializa
     public DataInstanceResult pack(@NonNull HashMap<String, Object> databaseMap) {
         return new DataInstanceResult(DataInstanceResult.CODE_NO_PERMISSIONS);
     }
+
 }

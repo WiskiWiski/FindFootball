@@ -1,6 +1,7 @@
 package online.findfootball.android.game.football.screen.info.tabs.players.recyclerview;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +74,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerViewHolder> {
 
     @Override
     public void onBindViewHolder(PlayerViewHolder holderSelf, int position) {
-        UserObj userObj = team.get(position);
+        UserObj userObj = team.get(position).getUser();
         holderSelf.setDisplayName(userObj.getDisplayName());
         holderSelf.setPhotoUrl(userObj.getPhotoUrl());
     }

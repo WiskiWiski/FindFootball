@@ -7,18 +7,16 @@ import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.UUID;
 
 import online.findfootball.android.app.App;
 import online.findfootball.android.firebase.database.DataInstanceResult;
-import online.findfootball.android.firebase.database.DatabaseSelfPackable;
+import online.findfootball.android.firebase.database.DatabasePackable;
 import online.findfootball.android.firebase.database.FBDatabase;
-import online.findfootball.android.firebase.database.children.SelfPackableArrayList;
-import online.findfootball.android.firebase.database.children.SelfPackableObject;
-import online.findfootball.android.game.chat.MessageObj;
-import online.findfootball.android.game.football.object.FootballTeams;
+import online.findfootball.android.firebase.database.children.PackableObject;
+import online.findfootball.android.game.chat.GameChatObj;
+import online.findfootball.android.game.football.object.FootballTeamsObj;
 import online.findfootball.android.location.LocationObj;
 import online.findfootball.android.time.TimeProvider;
 import online.findfootball.android.user.UserObj;
@@ -27,18 +25,16 @@ import online.findfootball.android.user.UserObj;
  * Created by WiskiW on 02.04.2017.
  */
 
-public class GameObj extends SelfPackableObject implements Parcelable, Serializable {
+public class GameObj extends PackableObject {
 
     private static final String TAG = App.G_TAG + ":GameObj";
 
-    public final static String PATH_TEAMS = "teams";
+    public final static String PATH_TEAM_SIZE = "team_size";
     public final static String PATH_TITLE = "title";
     public final static String PATH_OWNER = "owner";
     public final static String PATH_DESCRIPTION = "description";
     public final static String PATH_CREATE_TIME = "create_time";
     public final static String PATH_EVENT_TIME = "event_time";
-    public final static String PATH_LOCATION = "location";
-    public final static String PATH_CHAT = "chat";
 
 
     private String eid;
@@ -48,8 +44,8 @@ public class GameObj extends SelfPackableObject implements Parcelable, Serializa
     private String description;
     private long eventTime;
     private long createTime;
-    private SelfPackableArrayList<MessageObj> chat;
-    private FootballTeams teams;
+    private GameChatObj chat;
+    private FootballTeamsObj teams;
 
     private void initObject() {
         createTime = TimeProvider.getUtcTime();
@@ -65,39 +61,33 @@ public class GameObj extends SelfPackableObject implements Parcelable, Serializa
     }
 
     private void newChat() {
-        this.chat = new SelfPackableArrayList<MessageObj>() {
-            @Override
-            protected MessageObj unpackItem(DataSnapshot dataSnapshot) {
-                // используется только при вызове .load() на chat
-                MessageObj msg = new MessageObj();
-                msg.unpack(dataSnapshot);
-                return msg;
-            }
-        };
-        this.chat.setDirectoryPath(this.getDirectoryPath() + PATH_CHAT);
+        this.chat = new GameChatObj();
+        this.chat.setPackablePath(this.getPackablePath() + "/" + this.getPackableKey());
     }
 
-    public SelfPackableArrayList<MessageObj> getChat() {
+    public GameChatObj getChat() {
         if (this.chat == null) {
             newChat();
         }
         return this.chat;
     }
 
-    public void setChat(SelfPackableArrayList<MessageObj> chat) {
+    public void setChat(GameChatObj chat) {
         this.chat = chat;
+        this.chat.setPackablePath(this.getPackablePath() + "/" + this.getPackableKey());
     }
 
-    public FootballTeams getTeams() {
+    public FootballTeamsObj getTeams() {
         if (teams == null) {
-            teams = new FootballTeams();
-            teams.setDirectoryPath(getDirectoryPath() + PATH_TEAMS + "/");
+            teams = new FootballTeamsObj();
+            teams.setPackablePath(this.getPackablePath() + "/" + this.getPackableKey());
         }
         return teams;
     }
 
-    public void setTeams(FootballTeams teams) {
+    public void setTeams(FootballTeamsObj teams) {
         this.teams = teams;
+        this.teams.setPackablePath(this.getPackablePath() + "/" + this.getPackableKey());
     }
 
     public UserObj getOwnerUser() {
@@ -114,13 +104,14 @@ public class GameObj extends SelfPackableObject implements Parcelable, Serializa
     public LocationObj getLocation() {
         if (location == null) {
             location = new LocationObj();
-            location.setDirectoryPath(getDirectoryPath() + PATH_LOCATION);
+            location.setPackablePath(this.getPackablePath() + "/" + this.getPackableKey());
         }
         return location;
     }
 
     public void setLocation(LocationObj location) {
         this.location = location;
+        this.location.setPackablePath(this.getPackablePath() + "/" + this.getPackableKey());
     }
 
     public String getTitle() {
@@ -169,6 +160,7 @@ public class GameObj extends SelfPackableObject implements Parcelable, Serializa
     // write your object's data to the passed-in Parcel
     @Override
     public void writeToParcel(Parcel out, int flags) {
+        super.writeToParcel(out, flags);
         out.writeString(eid);
         out.writeParcelable(ownerUser, flags);
         out.writeParcelable(location, flags);
@@ -178,11 +170,6 @@ public class GameObj extends SelfPackableObject implements Parcelable, Serializa
         out.writeString(description);
         out.writeLong(eventTime);
         out.writeLong(createTime);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
@@ -198,11 +185,12 @@ public class GameObj extends SelfPackableObject implements Parcelable, Serializa
 
     // example constructor that takes a Parcel and gives you an object populated with it's values
     private GameObj(Parcel in) {
+        super(in);
         eid = in.readString();
         ownerUser = in.readParcelable(UserObj.class.getClassLoader());
         location = in.readParcelable(LocationObj.class.getClassLoader());
-        teams = in.readParcelable(FootballTeams.class.getClassLoader());
-        chat = in.readParcelable(SelfPackableArrayList.class.getClassLoader());
+        teams = in.readParcelable(FootballTeamsObj.class.getClassLoader());
+        chat = in.readParcelable(GameChatObj.class.getClassLoader());
         title = in.readString();
         description = in.readString();
         eventTime = in.readLong();
@@ -211,11 +199,18 @@ public class GameObj extends SelfPackableObject implements Parcelable, Serializa
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof GameObj) {
-            return (((GameObj) obj).getEid()).equals(this.getEid());
-        } else {
-            return super.equals(obj);
+        if (obj == this) {
+            return true;
         }
+        if (obj == null) {
+            return false;
+        }
+        if (!(getClass() == obj.getClass())) {
+            return false;
+        }
+
+        GameObj tmp = (GameObj) obj;
+        return tmp.getEid().equals(this.getEid());
     }
 
     @Override
@@ -237,24 +232,26 @@ public class GameObj extends SelfPackableObject implements Parcelable, Serializa
     @NonNull
     @Override
     public DataInstanceResult pack(@NonNull HashMap<String, Object> databaseMap) {
-        if (getOwnerUser() == null) {
+        if (getOwnerUser() == null || getOwnerUser() == UserObj.EMPTY) {
+            Log.e(TAG, "Cannot save the game: owner uid is null");
             return new DataInstanceResult(DataInstanceResult.CODE_NOT_ENOUGH_DATA, "Owner uid is null");
         }
-        HashMap<String, Object> tempMap = new HashMap<>();
 
-        getTeams().pack(tempMap);
-        databaseMap.put(PATH_TEAMS, tempMap);
-        tempMap.clear();
+        HashMap<String, Object> teamsMap = new HashMap<>();
+        getTeams().pack(teamsMap);
+        databaseMap.put(getTeams().getPackableKey(), teamsMap);
 
-        getLocation().pack(tempMap);
-        databaseMap.put(PATH_LOCATION, tempMap);
-        tempMap.clear();
 
-        databaseMap.put(PATH_OWNER, getOwnerUser());
+        HashMap<String, Object> locationMap = new HashMap<>();
+        getLocation().pack(locationMap);
+        databaseMap.put(getLocation().getPackableKey(), locationMap);
+
+        databaseMap.put(PATH_OWNER, getOwnerUser().getUid());
         databaseMap.put(PATH_TITLE, getTitle());
         databaseMap.put(PATH_DESCRIPTION, getDescription());
         databaseMap.put(PATH_CREATE_TIME, getCreateTime());
         databaseMap.put(PATH_EVENT_TIME, getEventTime());
+        databaseMap.put(PATH_TEAM_SIZE, getTeams().getTeamsCapacity());
 
         return DataInstanceResult.onSuccess();
     }
@@ -268,19 +265,25 @@ public class GameObj extends SelfPackableObject implements Parcelable, Serializa
             setTitle((String) dataSnapshot.child(PATH_TITLE).getValue());
             setDescription((String) dataSnapshot.child(PATH_DESCRIPTION).getValue());
             setOwnerUser(new UserObj((String) dataSnapshot.child(PATH_OWNER).getValue()));
+            getLocation().unpack(dataSnapshot.child(getLocation().getPackableKey()));
 
-            Object uncheckedLongValue = dataSnapshot.child(PATH_EVENT_TIME).getValue();
-            if (uncheckedLongValue != null) {
-                setEventTime((Long) uncheckedLongValue);
+            Object uncheckedValue = dataSnapshot.child(PATH_EVENT_TIME).getValue();
+            if (uncheckedValue != null) {
+                setEventTime((Long) uncheckedValue);
             }
 
-            uncheckedLongValue = dataSnapshot.child(PATH_CREATE_TIME).getValue();
-            if (uncheckedLongValue != null) {
-                setCreateTime((Long) uncheckedLongValue);
+            uncheckedValue = dataSnapshot.child(PATH_CREATE_TIME).getValue();
+            if (uncheckedValue != null) {
+                setCreateTime((Long) uncheckedValue);
             }
 
-            getLocation().unpack(dataSnapshot.child(PATH_LOCATION));
-            getTeams().unpack(dataSnapshot.child(PATH_TEAMS));
+            getTeams().unpack(dataSnapshot.child(getTeams().getPackableKey()));
+
+            uncheckedValue = dataSnapshot.child(PATH_TEAM_SIZE).getValue();
+            if (uncheckedValue != null) {
+                getTeams().setTeamsCapacity(((Long) uncheckedValue).intValue());
+            }
+
 
             return r;
         } catch (Exception ex) {
@@ -290,8 +293,8 @@ public class GameObj extends SelfPackableObject implements Parcelable, Serializa
     }
 
     @Override
-    public DatabaseSelfPackable has(@NonNull DatabaseSelfPackable packable) {
-        DatabaseSelfPackable tempPackable = null;
+    public DatabasePackable has(@NonNull DatabasePackable packable) {
+        DatabasePackable tempPackable = null;
         for (int i = 0; i < 3; i++) {
             switch (i) {
                 case 0:
@@ -313,7 +316,19 @@ public class GameObj extends SelfPackableObject implements Parcelable, Serializa
 
     @NonNull
     @Override
-    public String getDirectoryPath() {
-        return FBDatabase.PATH_FOOTBALL_GAMES + getEid() + "/";
+    public String getPackablePath() {
+        return FBDatabase.PATH_FOOTBALL_GAMES;
     }
+
+    @NonNull
+    @Override
+    public String getPackableKey() {
+        return this.getEid();
+    }
+
+    @Override
+    public void setPackableKey(String key) {
+        this.setEid(key);
+    }
+
 }

@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -20,14 +19,15 @@ import java.util.Locale;
 
 import online.findfootball.android.background.tasks.BgTask;
 import online.findfootball.android.firebase.database.DataInstanceResult;
-import online.findfootball.android.firebase.database.DatabaseSelfPackable;
-import online.findfootball.android.firebase.database.children.SelfPackableObject;
+import online.findfootball.android.firebase.database.children.PackableObject;
 
 /**
  * Created by WiskiW on 16.04.2017.
  */
 
-public class LocationObj extends SelfPackableObject implements Parcelable, Serializable, BgTask {
+public class LocationObj extends PackableObject implements Parcelable, Serializable, BgTask {
+
+    public final static String LOCATION_KEY = "location";
 
     private final static String PATH_LATITUDE = "latitude";
     private final static String PATH_LONGITUDE = "longitude";
@@ -51,6 +51,12 @@ public class LocationObj extends SelfPackableObject implements Parcelable, Seria
     public LocationObj(double lat, double lng) {
         this.latitude = lat;
         this.longitude = lng;
+    }
+
+    @NonNull
+    @Override
+    public String getPackableKey() {
+        return LOCATION_KEY;
     }
 
     public LatLng getCoordinates() {
@@ -164,11 +170,6 @@ public class LocationObj extends SelfPackableObject implements Parcelable, Seria
         } catch (Exception ex) {
             return new DataInstanceResult(DataInstanceResult.CODE_NOT_COMPLETE);
         }
-    }
-
-    @Override
-    public DatabaseSelfPackable has(@NonNull DatabaseSelfPackable packable) {
-            return null;
     }
 
     @Override

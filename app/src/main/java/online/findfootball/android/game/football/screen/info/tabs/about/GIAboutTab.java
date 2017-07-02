@@ -22,7 +22,7 @@ import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.DatabaseLoader;
-import online.findfootball.android.firebase.database.DatabaseSelfPackable;
+import online.findfootball.android.firebase.database.DatabasePackable;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.location.LocationObj;
 import online.findfootball.android.time.TimeProvider;
@@ -98,7 +98,7 @@ public class GIAboutTab extends Fragment {
         }
         loadListener = new DatabaseLoader.OnLoadListener() {
             @Override
-            public void onComplete(DataInstanceResult result, DatabaseSelfPackable packable) {
+            public void onComplete(DataInstanceResult result, DatabasePackable packable) {
                 if (result.getCode() == DataInstanceResult.CODE_SUCCESS) {
                     thisGameOwnerUser = (UserObj) packable;
                     if (thisGameOwnerUser.hasUnpacked()) {
@@ -127,7 +127,7 @@ public class GIAboutTab extends Fragment {
             if (loader == null) {
                 loader = DatabaseLoader.newLoader();
             }
-            loader.load(thisGameOwnerUser, loadListener);
+            loader.load(thisGameOwnerUser, false, loadListener);
         }
     }
 
@@ -144,7 +144,7 @@ public class GIAboutTab extends Fragment {
                 updateOwnerView();
             } else if (!loader.isLoading()) {
                 showUserLoading(true);
-                loader.load(thisGameOwnerUser, loadListener);
+                loader.load(thisGameOwnerUser, false, loadListener);
             }
         }
 

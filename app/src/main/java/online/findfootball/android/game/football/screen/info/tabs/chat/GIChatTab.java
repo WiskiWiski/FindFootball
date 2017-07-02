@@ -22,7 +22,7 @@ import java.util.HashMap;
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.firebase.database.FBDatabase;
-import online.findfootball.android.firebase.database.children.SelfPackableArrayList;
+import online.findfootball.android.firebase.database.children.PackableArrayList;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.chat.Mailbox;
 import online.findfootball.android.game.chat.MessageObj;
@@ -109,11 +109,11 @@ public class GIChatTab extends Fragment implements Mailbox {
                 if (chatAdapter != null) {
                     chatAdapter.addMessage(new OutComingMessage(msg));
                 }
-                SelfPackableArrayList<MessageObj> thisGameChat = thisGameObj.getChat();
+                PackableArrayList<MessageObj> thisGameChat = thisGameObj.getChat();
                 thisGameChat.add(msg); // добавляем игру к ивенту
 
                 // отправляем сообщение в базу данных
-                // save() на SelfPackableArrayList не вызываем для ускоренного сохранения
+                // save() на PackableArrayList не вызываем для ускоренного сохранения
                 // во избежании очистки и перезаписи ArrayList'a
                 HashMap<String, Object> msgMap = new HashMap<>();
                 msg.pack(msgMap);
@@ -166,7 +166,7 @@ public class GIChatTab extends Fragment implements Mailbox {
         //Log.d(TAG, "onComplete: " + "[" + pos + "]: " + msg);
         if (chatAdapter != null) {
             if (appUser != null) {
-                if (msg.getUserFrom().equals(appUser)) {
+                if (appUser.getUid().equals(msg.getUserFrom().getUid())) {
                     // Если полученое сообщение отправленно данным пользователем
                     int opos = chatAdapter.indexOf(msg);
                     if (opos != -1) {

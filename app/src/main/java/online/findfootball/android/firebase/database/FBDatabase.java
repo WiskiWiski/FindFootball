@@ -21,14 +21,18 @@ public class FBDatabase {
     public final static String PATH_USERS = "users/";
 
     // Возвращает пусть на струкрутру Firebase Database
-    public static DatabaseReference getDatabaseReference(DatabaseSelfPackable packable) {
-        String dirPath = packable.getDirectoryPath();
+    public static DatabaseReference getDatabaseReference(DatabasePackable packable) {
+        String path = packable.getPackablePath();
+        String key = packable.getPackableKey();
         DatabaseReference reference = getDatabaseReference();
-        if (dirPath == null || dirPath.isEmpty()) {
-            Log.w(TAG, "Packable dir path is null! Fix it.", new IOException("null dir path"));
-            return reference.child("null_dir_path");
+        if (path == null || path.isEmpty()) {
+            Log.w(TAG, "Packable path is null! Fix it.", new IOException("null packable path"));
+            return reference.child("null_packable_path");
+        } else if (key == null || key.isEmpty()) {
+            Log.w(TAG, "Packable key is null! Fix it.", new IOException("null packable key"));
+            return reference.child("null_packable_key");
         } else {
-            return reference.child(dirPath);
+            return reference.child(path).child(key);
         }
     }
 
