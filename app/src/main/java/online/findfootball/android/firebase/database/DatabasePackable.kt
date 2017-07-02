@@ -16,4 +16,13 @@ interface DatabasePackable {
 
     fun hasUnpacked(): Boolean
 
+    fun getPackablePath(): String?
+
+    fun getPackableKey(): String?
+
+    // Функция проверки наличия DatabasePackable внутри текущего DatabasePackable объекта.
+    // При реализации обязана вернуть найденый дочерний DatabasePackable объекта;
+    // если дочерних DatabasePackable нету, то null
+    fun has(packable: DatabasePackable): DatabasePackable?
+
 }

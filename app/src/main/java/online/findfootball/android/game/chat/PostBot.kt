@@ -3,14 +3,13 @@ package online.findfootball.android.game.chat
 import com.google.firebase.database.DataSnapshot
 import online.findfootball.android.app.App
 import online.findfootball.android.firebase.database.DatabaseLoader
-import online.findfootball.android.firebase.database.children.SelfPackableArrayList
+import online.findfootball.android.firebase.database.children.PackableArrayList
 
 /**
  * Created by WiskiW on 22.06.2017.
  */
 
-
-class PostBot(val chat: SelfPackableArrayList<MessageObj>) {
+class PostBot(val chat: PackableArrayList<MessageObj>) {
 
     // TODO : Finish this piece of shi.. code
     // 1. загрузка последних N сообщений
@@ -31,10 +30,10 @@ class PostBot(val chat: SelfPackableArrayList<MessageObj>) {
                 //Log.d("FFB:onChildAdded", "dataSnapshot: " + dataSnapshot)
                 val msg = MessageObj()
                 msg.unpack(dataSnapshot)
-                if (!chat.contains(msg)){
+                if (!chat.contains(msg)) {
                     chat.add(msg)
                 }
-                mailbox?.onMessageReceived(chat.size-1, msg) // mailbox != null
+                mailbox?.onMessageReceived(chat.size - 1, msg) // mailbox != null
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot) {
@@ -51,7 +50,7 @@ class PostBot(val chat: SelfPackableArrayList<MessageObj>) {
         loader.abortAllLoadings()
     }
 
-    fun isLoading() : Boolean = loader.isLoading
+    fun isLoading(): Boolean = loader.isLoading
 
     fun loadMoreOnTop() {
 

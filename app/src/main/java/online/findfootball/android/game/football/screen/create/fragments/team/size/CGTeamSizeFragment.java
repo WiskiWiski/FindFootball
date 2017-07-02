@@ -11,8 +11,6 @@ import android.widget.NumberPicker;
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.game.GameObj;
-import online.findfootball.android.game.GameTeam;
-import online.findfootball.android.game.football.object.FootballTeams;
 import online.findfootball.android.game.football.screen.create.BaseCGFragment;
 import online.findfootball.android.game.football.screen.create.fragments.team.size.view.CustomNumberPicker;
 
@@ -52,8 +50,7 @@ public class CGTeamSizeFragment extends BaseCGFragment {
 
     @Override
     public void saveResult(GameObj game) {
-        game.getTeams().getTeamA().setMaxPlayerCount(numberPicker.getValue());
-        game.getTeams().getTeamB().setMaxPlayerCount(numberPicker.getValue());
+        game.getTeams().setTeamsCapacity(numberPicker.getValue());
     }
 
     @Override

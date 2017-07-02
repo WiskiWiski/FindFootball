@@ -23,7 +23,7 @@ import online.findfootball.android.app.App;
 import online.findfootball.android.app.BaseActivity;
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.DatabaseLoader;
-import online.findfootball.android.firebase.database.DatabaseSelfPackable;
+import online.findfootball.android.firebase.database.DatabasePackable;
 import online.findfootball.android.firebase.database.FBDatabase;
 import online.findfootball.android.time.TimeProvider;
 import online.findfootball.android.user.AppUser;
@@ -125,7 +125,6 @@ public class AuthUiActivity extends BaseActivity {
             public void onClick(View v) {
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
-                // TODO: Fix multiple clicks
                 if (validation(email, password)) {
                     disableButtons();
                     emailAuthProvider.signUp(email, password);
@@ -144,7 +143,7 @@ public class AuthUiActivity extends BaseActivity {
                 // пытаемся подгрузить данные пользователя из firebase бд
                 new UserObj(user.getUid()).load(new DatabaseLoader.OnLoadListener() {
                     @Override
-                    public void onComplete(DataInstanceResult result, DatabaseSelfPackable packable) {
+                    public void onComplete(DataInstanceResult result, DatabasePackable packable) {
                         if (packable.hasUnpacked()) {
                             // Если пользователь уже есть в firebase бд
                             signInUser(user); // обновляем данные пользователя в БД

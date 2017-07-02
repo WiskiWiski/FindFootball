@@ -177,7 +177,7 @@ class FindGameDataProvider {
             @Override
             public boolean onSnapshotReceived(DataSnapshot gameSnapshot) {
                 String eventDataString = (String)
-                        gameSnapshot.child(GameObj.PATH_LOCATION).child(LocationObj.PATH_CITY_NAME).getValue();
+                        gameSnapshot.child(LocationObj.LOCATION_KEY).child(LocationObj.PATH_CITY_NAME).getValue();
                 return eventDataString != null && eventDataString.equals(requiredCity);
             }
         });
@@ -189,7 +189,7 @@ class FindGameDataProvider {
             @Override
             public boolean onSnapshotReceived(DataSnapshot gameSnapshot) {
                 String eventDataString = (String)
-                        gameSnapshot.child(GameObj.PATH_LOCATION).child(LocationObj.PATH_COUNTRY_NAME).getValue();
+                        gameSnapshot.child(LocationObj.LOCATION_KEY).child(LocationObj.PATH_COUNTRY_NAME).getValue();
                 return eventDataString != null && eventDataString.equals(requiredCountry);
             }
         });

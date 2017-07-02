@@ -20,11 +20,10 @@ import online.findfootball.android.R;
 import online.findfootball.android.app.App;
 import online.findfootball.android.firebase.database.DataInstanceResult;
 import online.findfootball.android.firebase.database.DatabaseLoader;
-import online.findfootball.android.firebase.database.DatabaseSelfPackable;
+import online.findfootball.android.firebase.database.DatabasePackable;
 import online.findfootball.android.game.GameObj;
-import online.findfootball.android.game.GameTeam;
 import online.findfootball.android.game.football.object.FootballPlayer;
-import online.findfootball.android.game.football.object.FootballTeams;
+import online.findfootball.android.game.football.object.FootballTeamsObj;
 import online.findfootball.android.game.football.screen.info.tabs.players.recyclerview.PlayerListAdapter;
 import online.findfootball.android.user.AppUser;
 import online.findfootball.android.user.UserObj;
@@ -36,14 +35,11 @@ public class GIPlayersTab extends Fragment {
 
     private static final String TAG = App.G_TAG + ":GIPlayersTab";
 
-
-    private FootballTeams teams;
+    private FootballTeamsObj teams;
     private GameObj thisGameObj;
     private AppUser thisAppUser;
 
-    private DatabaseLoader.OnListenListener aListener;
-    private DatabaseLoader aLoader;
-
+    private DatabaseLoader.OnListenListener teamsListener;
     private Button joinLeaveBtn;
     private TextView playersCountTextView;
 
@@ -108,29 +104,31 @@ public class GIPlayersTab extends Fragment {
         startListeningTeams();
     }
 
-    private DatabaseLoader.OnListenListener getListener(final GameTeam<FootballPlayer> team) {
+    private DatabaseLoader.OnListenListener getTeamsListener() {
         return new DatabaseLoader.OnListenListener() {
             @Override
             public void onChildAdded(final DataSnapshot dataSnapshot) {
-                final String uid = dataSnapshot.getKey();
-                UserObj u = new UserObj(uid);
-                u.load(new DatabaseLoader.OnLoadListener() {
+                final FootballPlayer player = new FootballPlayer(new UserObj(dataSnapshot.getKey()));
+                player.unpack(dataSnapshot);
+                player.getUser().load(new DatabaseLoader.OnLoadListener() {
                     @Override
-                    public void onComplete(DataInstanceResult result, DatabaseSelfPackable packable) {
+                    public void onComplete(DataInstanceResult result, DatabasePackable packable) {
+                        if (teams == null) {
+                            return;
+                        }
                         if (result.getCode() == DataInstanceResult.CODE_SUCCESS) {
-                            FootballPlayer player = new FootballPlayer((UserObj) packable);
-                            player.unpack(dataSnapshot);
-                            team.addPlayer(player);
+                            player.setUser((UserObj) packable);
+                            teams.add(player);
                             if (mAdapter != null) {
                                 if (thisAppUser == null) {
                                     thisAppUser = AppUser.getInstance(getContext());
                                 }
-                                if (thisAppUser != null && thisAppUser.getUid().equals(player.getUid())) {
+                                if (thisAppUser != null && player.getUser().equals(thisAppUser)) {
                                     mAdapter.addAppUserPlayer(player);
                                 } else {
                                     mAdapter.addPlayer(player);
                                 }
-                                if (recyclerView != null){
+                                if (recyclerView != null) {
                                     recyclerView.smoothScrollToPosition(0);
                                 }
                             }
@@ -148,13 +146,16 @@ public class GIPlayersTab extends Fragment {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                FootballPlayer player = new FootballPlayer(dataSnapshot.getKey());
-                team.removePlayer(player);
+                if (teams == null) {
+                    return;
+                }
+                final FootballPlayer player = new FootballPlayer(new UserObj(dataSnapshot.getKey()));
+                teams.remove(player);
                 if (mAdapter != null) {
                     if (thisAppUser == null) {
                         thisAppUser = AppUser.getInstance(getContext());
                     }
-                    if (thisAppUser != null && thisAppUser.getUid().equals(player.getUid())) {
+                    if (thisAppUser != null && player.getUser().equals(thisAppUser)) {
                         mAdapter.removeAppUserPayer(player);
                     } else {
                         mAdapter.removePlayer(player);
@@ -163,6 +164,7 @@ public class GIPlayersTab extends Fragment {
                 loadedCount--;
                 updatePlayerNumb();
                 tryEnableButton(player);
+
             }
         };
     }
@@ -175,39 +177,37 @@ public class GIPlayersTab extends Fragment {
         updatePlayerNumb();
         loadedCount = 0;
 
-        if (thisGameObj.getTeams().getTeamsOccupancy() > 0) {
+        if (teams.getTeamsOccupancy() > 0) {
             // выключаем кнопку Join/Leave и ждем загрузки пользователя
             setButtonEnable(false);
         }
-        if (aListener == null) {
-            aListener = getListener(teams.getTeamA());
+        if (teamsListener == null) {
+            teamsListener = getTeamsListener();
         }
-
-        if (aLoader == null) {
-            aLoader = new DatabaseLoader();
-        }
-        aLoader.listen(teams.getTeamA().getPlayerList(), aListener);
+        teams.listen(teamsListener);
     }
 
     private void stopListeningTeams() {
-        if (aLoader == null) {
+        if (teams == null) {
             return;
         }
-        aLoader.abortAllLoadings();
+        teams.abortAllLoadings();
     }
 
     private void afterUserAuth(AppUser appUser) {
-        FootballPlayer player = new FootballPlayer(appUser.getUid());
+        FootballPlayer player = new FootballPlayer(appUser);
+        player.setTeamName(FootballTeamsObj.TEAM_NAME_A);
         if (teams.hasPlayer(player)) {
-            teams.getTeamA().unrollPlayer(player); // убираем игрока из команды
+            // убираем игрока из команды
+            teams.unrollPlayer(player);
             appUser.leaveGame(thisGameObj); // убираем игру у пользователя
         } else {
             // TODO : делить на команды тут
-            if ( teams.getTeamA().getPlayerCount() >=  teams.getTeamA().getMaxPlayerCount()){
-                Toast.makeText(getContext(), "Not space in the 'A' team !", Toast.LENGTH_SHORT).show();
+            if (teams.getTeamA().getTeamOccupancy() >= teams.getTeamsCapacity()) {
+                Toast.makeText(getContext(), "Not space in the 'A' teamName !", Toast.LENGTH_SHORT).show();
                 setButtonEnable(true);
             } else {
-                teams.getTeamA().enrollPlayer(player); // добавляем игрока в команду
+                teams.enrollPlayer(player); // добавляем игрока в команду
                 appUser.joinGame(thisGameObj); // добавляем игру к польщователю
             }
         }
@@ -217,7 +217,7 @@ public class GIPlayersTab extends Fragment {
         if (thisAppUser == null) {
             thisAppUser = AppUser.getInstance(getContext());
         }
-        if ((thisAppUser != null && thisAppUser.getUid().equals(player.getUid()))
+        if ((thisAppUser != null && player.getUser().equals(thisAppUser))
                 || loadedCount >= thisGameObj.getTeams().getTeamsOccupancy()) {
             // Если загрузили AppUser'a или все игроки были загружены
             setButtonEnable(true);

@@ -176,17 +176,25 @@ public class AppUser extends UserObj {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof AppUser) {
-            return super.equals(obj);
-        } else {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
+        if (!(getClass() == obj.getClass())) {
+            return false;
+        }
+
+        AppUser tmp = (AppUser) obj;
+        return tmp.getUid().equals(this.getUid());
     }
 
     @Override
     public int hashCode() {
         return super.hashCode() * 3;
     }
+
 
     @NonNull
     @Override

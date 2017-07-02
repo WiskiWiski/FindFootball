@@ -24,6 +24,9 @@ import java.util.List;
 
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
+import online.findfootball.android.firebase.database.DataInstanceResult;
+import online.findfootball.android.firebase.database.DatabaseLoader;
+import online.findfootball.android.firebase.database.DatabasePackable;
 import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.football.screen.create.CreateGameActivity;
 import online.findfootball.android.game.football.screen.info.GameInfoActivity;
@@ -87,37 +90,44 @@ public class UpcomingGamesFragment extends Fragment implements
     private void fillAdapter() {
         if (mAdapter.getItemCount() == 0) {
             Context context = getContext();
-            AppUser appUser = AppUser.getInstance(context);
-            if (appUser != null) {
-                swipeRefreshLayout.setRefreshing(true);
-                eventsProvider = new EventsProvider(
-                        appUser, new EventsProvider.EventsProviderListener() {
-                    @Override
-                    public void onProgress(GameObj gameObj) {
-                        mAdapter.addGame(gameObj);
-                    }
-
-                    @Override
-                    public void onSuccess(List<GameObj> gameList) {
-                        if (gameList.size() == 0) {
-                            Toast.makeText(getContext(), getString(R.string.upcoming_games_fragment_no_data),
-                                    Toast.LENGTH_LONG).show();
-                        } else {
-                            if (mAdapter.getItemCount() != gameList.size()) {
-                                mAdapter.setGameList(gameList);
-                            }
-                        }
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-
-                    @Override
-                    public void onFailed(int code, String msg) {
-                        Log.w(TAG, "onFailed [" + code + "] : " + msg);
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
-                eventsProvider.getUpcomingGames();
+            final AppUser appUser = AppUser.getInstance(context);
+            if (appUser == null) {
+                return;
             }
+            swipeRefreshLayout.setRefreshing(true);
+            appUser.load(true, new DatabaseLoader.OnLoadListener() {
+                @Override
+                public void onComplete(DataInstanceResult result, DatabasePackable packable) {
+                    appUser.setGameList(((AppUser) packable).getGameList());
+                    eventsProvider = new EventsProvider(
+                            (AppUser) packable, new EventsProvider.EventsProviderListener() {
+                        @Override
+                        public void onProgress(GameObj gameObj) {
+                            mAdapter.addGame(gameObj);
+                        }
+
+                        @Override
+                        public void onSuccess(List<GameObj> gameList) {
+                            if (gameList.size() == 0) {
+                                Toast.makeText(getContext(), getString(R.string.upcoming_games_fragment_no_data),
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                if (mAdapter.getItemCount() != gameList.size()) {
+                                    mAdapter.setGameList(gameList);
+                                }
+                            }
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+
+                        @Override
+                        public void onFailed(int code, String msg) {
+                            Log.w(TAG, "onFailed [" + code + "] : " + msg);
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                    eventsProvider.getUpcomingGames();
+                }
+            });
         }
     }
 

@@ -47,7 +47,6 @@ public class CGLocationFragment extends BaseCGFragment {
     @Override
     public void saveResult(GameObj game) {
         LocationObj l = getLocation();
-        l.setDirectoryPath(game.getDirectoryPath() + GameObj.PATH_LOCATION);
         game.setLocation(l);
     }
 

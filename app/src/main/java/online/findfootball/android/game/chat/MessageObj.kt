@@ -5,9 +5,8 @@ import android.content.Intent
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseReference
 import online.findfootball.android.firebase.database.DataInstanceResult
-import online.findfootball.android.firebase.database.DatabasePackable
+import online.findfootball.android.firebase.database.children.PackableObject
 import online.findfootball.android.firebase.messaging.RemoteMessageContent
 import online.findfootball.android.game.football.screen.my.MyGamesActivity
 import online.findfootball.android.notification.Notificatable
@@ -20,14 +19,47 @@ import java.util.*
 /**
  * Created by WiskiW on 22.06.2017.
  */
-open class MessageObj() : DatabasePackable, RemoteMessageContent, Notificatable {
+open class MessageObj : PackableObject, RemoteMessageContent, Notificatable {
 
-    val PATH_MESSAGE = "text"
-    val PATH_USER_FROM = "from"
+
+    companion object {
+        private val PATH_MESSAGE = "text"
+        private val PATH_USER_FROM = "from"
+        @JvmField val CREATOR: Parcelable.Creator<MessageObj> =
+                object : Parcelable.Creator<MessageObj> {
+                    override fun createFromParcel(source: Parcel): MessageObj {
+                        return MessageObj(source)
+                    }
+
+                    override fun newArray(size: Int): Array<MessageObj?> {
+                        return arrayOfNulls(size)
+                    }
+                }
+    }
 
     var time: Long = TimeProvider.getUtcTime()
     var userFrom: UserObj = UserObj.EMPTY
     var text: String = ""
+
+    constructor()
+
+    constructor(source: Parcel) : super(source) {
+        text = source.readString()
+        time = source.readLong()
+        userFrom = source.readParcelable(UserObj::class.java.classLoader)
+    }
+
+    override fun setPackableKey(key: String?) {
+        if (key != null) {
+            this.time = key.toLong()
+        } else {
+            super.setPackableKey(key)
+        }
+    }
+
+    override fun getPackableKey(): String? {
+        return time.toString()
+    }
 
     override fun pack(databaseMap: HashMap<String, Any>): DataInstanceResult {
         val result = DataInstanceResult.onSuccess()
@@ -76,7 +108,21 @@ open class MessageObj() : DatabasePackable, RemoteMessageContent, Notificatable 
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is MessageObj && other.time == this.time && other.text == this.text
+        if (other === this) {
+            return true
+        }
+        if (other == null) {
+            return false
+        }
+        if (javaClass != other.javaClass) {
+            return false
+        }
+
+        if (other is MessageObj) {
+            return other.time == this.time && other.text == this.text
+        } else {
+            return false
+        }
     }
 
     override fun hashCode(): Int {
@@ -91,34 +137,12 @@ open class MessageObj() : DatabasePackable, RemoteMessageContent, Notificatable 
         return "MessageObj: $userFrom in ${time}ms say '$text'"
     }
 
-    //override
-    fun writeToParcel(dest: Parcel, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        super.writeToParcel(dest, flags)
         dest.writeString(text)
         dest.writeLong(time)
         dest.writeParcelable(userFrom, flags)
     }
-
-    constructor(incoming: Parcel) : this() {
-        text = incoming.readString()
-        time = incoming.readLong()
-        userFrom = incoming.readParcelable(UserObj::class.java.classLoader)
-    }
-
-    companion object {
-        @JvmField final val CREATOR: Parcelable.Creator<MessageObj> =
-                object : Parcelable.Creator<MessageObj> {
-            override fun createFromParcel(source: Parcel): MessageObj{
-                return MessageObj(source)
-            }
-
-            override fun newArray(size: Int): Array<MessageObj?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
-
-    //override
-    fun describeContents(): Int = 0
 
     override fun rebuildByMessageData(contentMap: Map<String, String>): Boolean {
         var result: Boolean = true

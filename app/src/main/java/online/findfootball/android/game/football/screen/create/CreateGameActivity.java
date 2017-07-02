@@ -206,9 +206,9 @@ public class CreateGameActivity extends BaseActivity implements
             game.setOwnerUser(appUser);
 
 
-            FootballPlayer player = new FootballPlayer(appUser.getUid());
+            FootballPlayer player = new FootballPlayer(appUser);
             // TODO: выбор позиции для владельца
-            game.getTeams().getTeamA().enrollPlayer(player); // добавляем игрока в команду
+            game.getTeams().getTeamA().add(player); // добавляем игрока в команду
             appUser.joinGame(game); // добавляем игру к пользователю
             BgTaskMaker.newMaker(getApplicationContext())
                     .setCompleteListener(new BgTaskMaker.OnBgCompleteListener() {
