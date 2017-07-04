@@ -251,7 +251,7 @@ public class GameObj extends PackableObject {
         databaseMap.put(PATH_DESCRIPTION, getDescription());
         databaseMap.put(PATH_CREATE_TIME, getCreateTime());
         databaseMap.put(PATH_EVENT_TIME, getEventTime());
-        databaseMap.put(PATH_TEAM_SIZE, getTeams().getTeamsCapacity());
+        databaseMap.put(PATH_TEAM_SIZE, getTeams().getTeamsCapacity() / 2);
 
         return DataInstanceResult.onSuccess();
     }

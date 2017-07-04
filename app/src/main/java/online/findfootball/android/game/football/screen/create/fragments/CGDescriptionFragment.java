@@ -3,6 +3,8 @@ package online.findfootball.android.game.football.screen.create.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +53,23 @@ public class CGDescriptionFragment extends BaseCGFragment {
                 return false;
             }
         });
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                notifyDataStateChange();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         return rootView;
     }
 
@@ -71,9 +90,10 @@ public class CGDescriptionFragment extends BaseCGFragment {
     @Override
     public void updateView(GameObj game) {
         String desc = game.getDescription();
-        if (desc != null && editText != null){
+        if (desc != null && editText != null) {
             editText.setText(desc);
             editText.setSelection(desc.length());
+            editText.requestFocus();
         }
     }
 
@@ -97,7 +117,9 @@ public class CGDescriptionFragment extends BaseCGFragment {
         } else {
             return true;
         }
-        editText.requestFocus();
+        if (editText != null){
+            editText.requestFocus();
+        }
         return false;
     }
 }

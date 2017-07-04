@@ -21,8 +21,8 @@ public class CGTeamSizeFragment extends BaseCGFragment {
 
     private static final String TAG = App.G_TAG + ":CGTeamSizeFrg";
 
-    private static final int MIN_TEAM_SIZE = 2;
-    private static final int MAX_TEAM_SIZE = 6;
+    private static final int MIN_TEAM_SIZE = 4;
+    private static final int MAX_TEAM_SIZE = 11;
 
     private CustomNumberPicker numberPicker;
 
@@ -41,10 +41,7 @@ public class CGTeamSizeFragment extends BaseCGFragment {
         numberPicker.setMinValue(MIN_TEAM_SIZE);
         numberPicker.setMaxValue(MAX_TEAM_SIZE);
 
-        //noinspection ConstantConditions
-        if ((MIN_TEAM_SIZE + 1) < MAX_TEAM_SIZE) {
-            numberPicker.setValue(MIN_TEAM_SIZE + 1);
-        }
+        numberPicker.setValue((MAX_TEAM_SIZE + MIN_TEAM_SIZE) / 2);
         return rootView;
     }
 
@@ -55,7 +52,7 @@ public class CGTeamSizeFragment extends BaseCGFragment {
 
     @Override
     public void updateView(GameObj game) {
-
+        hideSoftKeyboard(); // прячем клавиатуру, если она есть
     }
 
     @Override

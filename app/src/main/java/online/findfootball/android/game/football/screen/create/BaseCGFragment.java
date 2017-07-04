@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import online.findfootball.android.app.App;
@@ -41,10 +42,17 @@ public abstract class BaseCGFragment extends Fragment {
 
     interface CGTabEditListener {
         void onDoneEdit();
+
+        void onDataStateChange(boolean correct);
+    }
+
+    protected void notifyDataStateChange() {
+        if (callback != null) {
+            callback.onDataStateChange(this.verifyData(false));
+        }
     }
 
     protected void doneEdit() {
-        hideSoftKeyboard();
         if (callback != null) {
             callback.onDoneEdit();
         }
@@ -55,7 +63,7 @@ public abstract class BaseCGFragment extends Fragment {
             InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
         } catch (NullPointerException e) {
-            Log.w(TAG, "HideSoftKeyboard: couldn't hide the keyboard!", e);
+            Log.w(TAG, "HideSoftKeyboard: couldn't hide the keyboard!");
         }
     }
 

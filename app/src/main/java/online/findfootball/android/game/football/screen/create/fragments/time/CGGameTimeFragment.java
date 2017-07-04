@@ -4,6 +4,7 @@ package online.findfootball.android.game.football.screen.create.fragments.time;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ public class CGGameTimeFragment extends BaseCGFragment
 
     private static final String TAG = App.G_TAG + ":CGTimeFrg";
 
-    private static final long MINIMAL_TIME_OFFSET = 12 * 60 * 60 * 1000; // 12h
+    private static final long MINIMAL_TIME_OFFSET = 3 * 60 * 60 * 1000; // 3h
 
     private SpinnerArrayAdapter daySpinnerAdapter;
     private SpinnerArrayAdapter timeSpinnerAdapter;
@@ -160,6 +161,7 @@ public class CGGameTimeFragment extends BaseCGFragment
 
         daySpinnerAdapter.setTitle(f.toString());
         daySpinnerAdapter.notifyDataSetChanged();
+        notifyDataStateChange();
     }
 
     private void updateTimeSpinner(int hourOfDay, int minute) {
@@ -167,6 +169,7 @@ public class CGGameTimeFragment extends BaseCGFragment
         f.format("%d:%02d", hourOfDay, minute);
         timeSpinnerAdapter.setTitle(f.toString());
         timeSpinnerAdapter.notifyDataSetChanged();
+        notifyDataStateChange();
     }
 
     @Override
@@ -178,6 +181,7 @@ public class CGGameTimeFragment extends BaseCGFragment
 
     @Override
     public void updateView(GameObj game) {
+        hideSoftKeyboard(); // прячем клавиатуру, если она есть
         if (game != null && calendar != null) {
             calendar.setTimeInMillis(game.getCreateTime());
             updateDaySpinner(

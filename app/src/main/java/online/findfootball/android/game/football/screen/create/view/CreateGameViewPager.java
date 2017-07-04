@@ -111,7 +111,6 @@ public class CreateGameViewPager extends ViewPager {
                             pressState++;
                             BaseCGFragment cgFragment = getCurrentFragment();
                             if (cgFragment.verifyData(pressState < 2)) {
-                                cgFragment.hideSoftKeyboard();
                                 cgFragment.saveResult(getGameObj());
                                 return true;
                             } else {

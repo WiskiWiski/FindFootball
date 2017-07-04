@@ -35,7 +35,8 @@ public class CreateGameActivity extends BaseActivity implements
     private static final String TAG = App.G_TAG + ":CreateGameAct";
 
     public static final String INTENT_GAME_KEY = "game_in_intent";
-
+    private static final float ENABLE_BUTTON_VIEW_ALPHA = 1f;
+    private static final float DISABLE_BUTTON_VIEW_ALPHA = 0.2f;
 
     private FrameLayout leftButton;
     private FrameLayout rightButton;
@@ -130,10 +131,20 @@ public class CreateGameActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        updateButtonsVisibility();
+        updateButtonViews();
     }
 
-    private void updateButtonsVisibility() {
+    private LinearLayout getNextButtonView() {
+        if (!viewPager.hasNext()) {
+            // последний таб
+            return finishBtn;
+        } else {
+            // другой таб
+            return nextTabBtn;
+        }
+    }
+
+    private void updateButtonViews() {
         if (!viewPager.hasNext()) {
             // последний таб
             showPreviewBtn(true);
@@ -160,14 +171,20 @@ public class CreateGameActivity extends BaseActivity implements
 
     private void showPreviewBtn(boolean bool) {
         backTabBtn.setEnabled(bool);
-        //backTabBtn.setVisibility(bool ? View.VISIBLE : View.INVISIBLE);
-        backTabBtn.setAlpha(bool ? 1f : 0.2f);
+        backTabBtn.setAlpha(bool ? ENABLE_BUTTON_VIEW_ALPHA : DISABLE_BUTTON_VIEW_ALPHA);
         leftButton.setEnabled(bool);
     }
 
     private void showNextBtn(boolean bool) {
         nextTabBtn.setEnabled(bool);
         nextTabBtn.setVisibility(bool ? View.VISIBLE : View.INVISIBLE);
+
+        if (viewPager != null) {
+            // проверяем состояние данных в табе
+            // в завистимости от корректности включаем/выключаем кнопку
+            nextTabBtn.setAlpha(viewPager.getCurrentFragment().verifyData(false) ?
+                    ENABLE_BUTTON_VIEW_ALPHA : DISABLE_BUTTON_VIEW_ALPHA);
+        }
 
         if (bool) {
             finishBtn.setEnabled(false);
@@ -178,6 +195,13 @@ public class CreateGameActivity extends BaseActivity implements
     private void showFinishBtn(boolean bool) {
         finishBtn.setEnabled(bool);
         finishBtn.setVisibility(bool ? View.VISIBLE : View.INVISIBLE);
+
+        if (viewPager != null) {
+            // проверяем состояние данных в табе
+            // в завистимости от корректности включаем/выключаем кнопку
+            finishBtn.setAlpha(viewPager.getCurrentFragment().verifyData(false) ?
+                    ENABLE_BUTTON_VIEW_ALPHA : DISABLE_BUTTON_VIEW_ALPHA);
+        }
 
         if (bool) {
             nextTabBtn.setEnabled(false);
@@ -191,6 +215,10 @@ public class CreateGameActivity extends BaseActivity implements
         viewPager.tryGoNext();
     }
 
+    public void onDataStateChange(boolean correct) {
+        getNextButtonView().setAlpha(correct ? ENABLE_BUTTON_VIEW_ALPHA : DISABLE_BUTTON_VIEW_ALPHA);
+    }
+
     @Override
     public void onGameCreated(final GameObj game) {
         final AppUser appUser = AppUser.getInstance(this, true);
@@ -199,7 +227,6 @@ public class CreateGameActivity extends BaseActivity implements
             formatter.format(getString(R.string.cg_game_created_msg), viewPager.getGameObj().getTitle());
 
             Log.d(TAG, "onGameCreated: " + formatter);
-
             Context context = getApplicationContext();
             Toast.makeText(context, formatter.toString(), Toast.LENGTH_LONG).show();
 
@@ -223,11 +250,11 @@ public class CreateGameActivity extends BaseActivity implements
 
     @Override
     public void onNextTab() {
-        updateButtonsVisibility();
+        updateButtonViews();
     }
 
     @Override
     public void onPreviewTab() {
-        updateButtonsVisibility();
+        updateButtonViews();
     }
 }
