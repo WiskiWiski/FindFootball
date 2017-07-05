@@ -19,7 +19,8 @@
             android:id="@+id/apply_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Location"/>
+            android:text="@string/find_game_activity_select_location"
+            tools:text="@string/find_game_activity_select_location" />
 
 
         <RelativeLayout

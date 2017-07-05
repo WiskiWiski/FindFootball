@@ -1,5 +1,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
@@ -11,11 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Game Description"
+        android:text="@string/cg_game_description"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
         android:textSize="28dp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        tools:text="@string/cg_game_description" />
 
 
     <TextView
@@ -24,18 +26,18 @@
         android:alpha="0.5"
         android:gravity="center"
         android:text="@string/cg_game_description_frg_hint"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        tools:text="@string/cg_game_description_frg_hint" />
 
     <EditText
         android:id="@+id/edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Game Description"
         android:inputType="textCapSentences|textAutoCorrect"
         android:padding="16dp"
         android:textColor="@android:color/white"
         android:textColorHint="#62ffffff"
-        android:theme="@style/AppTheme.Widget.EditText"/>
+        android:theme="@style/AppTheme.Widget.EditText" />
 
 </LinearLayout>

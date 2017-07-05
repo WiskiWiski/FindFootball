@@ -41,6 +41,7 @@
     <string name="auth_activity_msg_other_networks" translatable="false">or use social network</string>
     <string name="cg_fragment_email">Your email</string>
     <string name="cg_fragment_password">Tape your password</string>
+    <string name="cg_fragment_email_letter">You will get verification letter</string>
 
 
     <!--- === Profile Activity === -->
@@ -50,7 +51,11 @@
     <!-- === Create Game === -->
     <string name="cg_game_created_msg" formatted="false">%s has been created!</string>
 
-    <string name="cg_game_title_frg_hint">All users can see</string>
+    <string name="cg_game_title">Game title</string>
+    <string name="cg_game_description">Game description</string>
+
+
+
     <string name="cg_game_title_frg_empty_title">Title cannot be empty!</string>
     <string name="cg_game_title_frg_too_short_title">The minimal title length %d!</string>
 
@@ -91,6 +96,7 @@
     <!-- === Find Game Activity === -->
     <string name="find_game_activity_no_more_data">No more data!</string>
     <string name="find_game_activity_no_data">Games not found!</string>
+    <string name="find_game_activity_select_location">Select Location</string>
 
 
     <!-- === Game Info Activity === -->
@@ -108,6 +114,7 @@
     <string name="context_menu_btn_cancel_title" translatable="false">@android:string/cancel</string>
     <string name="context_menu_btn_ok_title" translatable="false">@android:string/ok</string>
     <string name="context_menu_item_delete_title">Delete</string>
+    <string name="cg_game_title_frg_hint">Everybody can see it</string>
 
 
 </resources>

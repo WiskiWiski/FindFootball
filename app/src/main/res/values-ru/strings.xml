@@ -17,8 +17,8 @@
     <string name="cg_fragment_email">Ваш email</string>
     <string name="cg_fragment_password">Придумайте пароль</string>
     <string name="cg_game_created_msg">%s организована!</string>
-    <string name="cg_game_description_frg_empty_description">Описание не может быть пустым.</string>
-    <string name="cg_game_description_frg_hint">Вся информация о событии</string>
+    <string name="cg_game_description_frg_empty_description">Информация не может быть пустым.</string>
+    <string name="cg_game_description_frg_hint">Как пройти, сколько стоит и тд.</string>
     <string name="cg_game_description_frg_too_short_description">Минимум 12 символов!</string>
     <string name="cg_game_location_frg_location_not_selected">Выберете место проведения</string>
     <string name="cg_game_team_size_frg_main_text">Размер команд</string>
@@ -50,4 +50,8 @@
     <string name="popup_msg_coming_soon">Скоро!</string>
     <string name="profile_activity_sign_out_btn_text">Выйти</string>
     <string name="upcoming_games_fragment_no_data">Игры не найдены</string>
+    <string name="cg_fragment_email_letter">Мы вышлем вам письмо с подтверждением</string>
+    <string name="cg_game_description">Информация</string>
+    <string name="cg_game_title">Название</string>
+    <string name="find_game_activity_select_location">Изменить регион</string>
 </resources>

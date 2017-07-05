@@ -18,7 +18,7 @@
         android:textColor="@android:color/white"
         android:textSize="21sp"
         android:textStyle="bold"
-        tools:text="@string/auth_fragment_email" />
+        tools:text="@string/cg_fragment_email" />
 
     <TextView
         android:id="@+id/textView3"
@@ -26,15 +26,15 @@
         android:layout_height="wrap_content"
         android:alpha="0.5"
         android:gravity="center"
-        android:text="На него придет письмо для подтверждения"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        tools:text="@string/cg_fragment_email_letter" />
 
     <EditText
         android:id="@+id/edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Email"
+        android:hint="@string/auth_activity_hint_email"
         android:inputType="textEmailAddress"
         android:padding="16dp"
         android:textColor="@android:color/white"
