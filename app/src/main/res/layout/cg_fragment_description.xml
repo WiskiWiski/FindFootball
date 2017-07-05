@@ -17,6 +17,15 @@
         android:textSize="28dp"
         android:textStyle="bold"/>
 
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.5"
+        android:gravity="center"
+        android:text="@string/cg_game_description_frg_hint"
+        android:textColor="@android:color/white"/>
+
     <EditText
         android:id="@+id/edit_text"
         android:layout_width="match_parent"
@@ -26,6 +35,7 @@
         android:inputType="textCapSentences|textAutoCorrect"
         android:padding="16dp"
         android:textColor="@android:color/white"
-        android:textColorHint="#62ffffff"/>
+        android:textColorHint="#62ffffff"
+        android:theme="@style/AppTheme.Widget.EditText"/>
 
 </LinearLayout>

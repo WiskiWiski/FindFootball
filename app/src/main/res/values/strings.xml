@@ -48,9 +48,11 @@
     <!-- === Create Game === -->
     <string name="cg_game_created_msg" formatted="false">%s has been created!</string>
 
+    <string name="cg_game_title_frg_hint">Его увидят все пользователи</string>
     <string name="cg_game_title_frg_empty_title">Title cannot be empty!</string>
     <string name="cg_game_title_frg_too_short_title">The minimal title length %d!</string>
 
+    <string name="cg_game_description_frg_hint">Вся информация о событии</string>
     <string name="cg_game_description_frg_empty_description">Description cannot be empty!</string>
     <string name="cg_game_description_frg_too_short_description">The minimal description length %d!</string>
 

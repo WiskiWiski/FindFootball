@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,122 +7,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:orientation="vertical"
     tools:context=".game.football.screen.create.CreateGameActivity">
 
-    <RelativeLayout
+
+    <online.findfootball.android.game.football.screen.create.view.CreateGameViewPager
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <online.findfootball.android.game.football.screen.create.view.CreateGameViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/bottom_bar"
-            android:layout_alignParentTop="true"/>
-
-        <LinearLayout
-            android:id="@+id/bottom_bar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_alignParentBottom="true"
-            android:background="@color/colorPrimary"
-
-            android:orientation="horizontal">
-
-            <FrameLayout
-                android:id="@+id/left_btn"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:foreground="?attr/selectableItemBackground">
-
-                <LinearLayout
-                    android:id="@+id/back_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center|start">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="16dp"
-                        android:src="@android:drawable/ic_dialog_dialer"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:ellipsize="end"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:text="Back"
-                        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
-                        android:textColor="@android:color/white"/>
-
-                </LinearLayout>
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/right_btn"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:foreground="?attr/selectableItemBackground">
-
-                <LinearLayout
-                    android:id="@+id/next_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center|end">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:ellipsize="end"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:text="Next"
-                        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
-                        android:textColor="@android:color/white"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="16dp"
-                        android:src="@android:drawable/ic_dialog_dialer"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/finish_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center|end"
-                    android:visibility="invisible">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:ellipsize="end"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:text="Finish"
-                        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
-                        android:textColor="@android:color/white"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:padding="16dp"
-                        android:src="@android:drawable/ic_dialog_dialer"/>
-                </LinearLayout>
-
-            </FrameLayout>
-
-        </LinearLayout>
-
-    </RelativeLayout>
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"/>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -131,4 +23,24 @@
         android:background="@android:color/transparent"
         app:theme="@style/AppTheme.ToolbarArrow"/>
 
-</FrameLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_arrow_right"
+        android:tint="@color/colorPrimary"
+        app:backgroundTint="@color/vk_white"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_arrow_left"
+        android:tint="@color/colorPrimary"
+        app:backgroundTint="@color/vk_white"/>
+
+</android.support.design.widget.CoordinatorLayout>

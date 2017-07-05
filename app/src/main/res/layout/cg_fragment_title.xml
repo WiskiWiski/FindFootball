@@ -1,33 +1,49 @@
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".game.football.screen.create.fragments.CGTitleFragment">
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/data_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Game Title"
-        android:textAllCaps="true"
-        android:textColor="@android:color/white"
-        android:textSize="28dp"
-        android:textStyle="bold"/>
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <EditText
-        android:id="@+id/edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Game Title"
-        android:inputType="textCapSentences|textAutoCorrect"
-        android:padding="16dp"
-        android:textColor="@android:color/white"
-        android:textColorHint="#62ffffff"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Game Title"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textSize="28dp"
+            android:textStyle="bold"/>
 
-</LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.5"
+            android:gravity="center"
+            android:text="@string/cg_game_title_frg_hint"
+            android:textColor="@android:color/white"/>
+
+        <EditText
+            android:id="@+id/edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Game Title"
+            android:inputType="textCapSentences|textAutoCorrect"
+            android:padding="16dp"
+            android:textColor="@android:color/white"
+            android:textColorHint="#62ffffff"
+            android:theme="@style/AppTheme.Widget.EditText"/>
+
+    </LinearLayout>
+
+</FrameLayout>

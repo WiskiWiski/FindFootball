@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.Formatter;
@@ -38,12 +37,8 @@ public class CreateGameActivity extends BaseActivity implements
     private static final float ENABLE_BUTTON_VIEW_ALPHA = 1f;
     private static final float DISABLE_BUTTON_VIEW_ALPHA = 0.2f;
 
-    private FrameLayout leftButton;
-    private FrameLayout rightButton;
-
-    private LinearLayout backTabBtn;
-    private LinearLayout nextTabBtn;
-    private LinearLayout finishBtn;
+    private FloatingActionButton btnLeft;
+    private FloatingActionButton btnRight;
 
     private CreateGameViewPager viewPager;
     private PagerAdapter adapter;
@@ -86,22 +81,16 @@ public class CreateGameActivity extends BaseActivity implements
         viewPager.setCreateGameListener(this);
 
 
-        leftButton = (FrameLayout) findViewById(R.id.left_btn);
-        rightButton = (FrameLayout) findViewById(R.id.right_btn);
+        btnLeft = (FloatingActionButton) findViewById(R.id.fab_left);
+        btnRight = (FloatingActionButton) findViewById(R.id.fab_right);
 
-
-        backTabBtn = (LinearLayout) findViewById(R.id.back_btn);
-        nextTabBtn = (LinearLayout) findViewById(R.id.next_btn);
-        finishBtn = (LinearLayout) findViewById(R.id.finish_btn);
-
-        leftButton.setOnClickListener(new View.OnClickListener() {
+        btnLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewPager.tryGoBack();
             }
         });
-
-        rightButton.setOnClickListener(new View.OnClickListener() {
+        btnRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewPager.tryGoNext();
@@ -134,31 +123,23 @@ public class CreateGameActivity extends BaseActivity implements
         updateButtonViews();
     }
 
-    private LinearLayout getNextButtonView() {
-        if (!viewPager.hasNext()) {
-            // последний таб
-            return finishBtn;
-        } else {
-            // другой таб
-            return nextTabBtn;
-        }
-    }
-
     private void updateButtonViews() {
+        boolean correct = true;
+        if (viewPager != null) {
+            correct = viewPager.getCurrentFragment().verifyData(false);
+        }
+        setBtnEnable(btnRight, correct);
         if (!viewPager.hasNext()) {
             // последний таб
-            showPreviewBtn(true);
-            showNextBtn(false);
-            showFinishBtn(true);
+            setBtnEnable(btnLeft, true);
+            btnRight.setImageResource(R.drawable.ic_check);
         } else if (!viewPager.hasPreview()) {
             // первый таб
-            showPreviewBtn(false);
-            showNextBtn(true);
-            showFinishBtn(false);
+            setBtnEnable(btnLeft, false);
+            btnRight.setImageResource(R.drawable.ic_arrow_right);
         } else {
-            showPreviewBtn(true);
-            showNextBtn(true);
-            showFinishBtn(false);
+            setBtnEnable(btnLeft, true);
+            btnRight.setImageResource(R.drawable.ic_arrow_right);
         }
     }
 
@@ -169,54 +150,10 @@ public class CreateGameActivity extends BaseActivity implements
         }
     }
 
-    private void showPreviewBtn(boolean bool) {
-        backTabBtn.setEnabled(bool);
-        backTabBtn.setAlpha(bool ? ENABLE_BUTTON_VIEW_ALPHA : DISABLE_BUTTON_VIEW_ALPHA);
-        leftButton.setEnabled(bool);
-    }
-
-    private void showNextBtn(boolean bool) {
-        nextTabBtn.setEnabled(bool);
-        nextTabBtn.setVisibility(bool ? View.VISIBLE : View.INVISIBLE);
-
-        if (viewPager != null) {
-            // проверяем состояние данных в табе
-            // в завистимости от корректности включаем/выключаем кнопку
-            nextTabBtn.setAlpha(viewPager.getCurrentFragment().verifyData(false) ?
-                    ENABLE_BUTTON_VIEW_ALPHA : DISABLE_BUTTON_VIEW_ALPHA);
-        }
-
-        if (bool) {
-            finishBtn.setEnabled(false);
-            finishBtn.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void showFinishBtn(boolean bool) {
-        finishBtn.setEnabled(bool);
-        finishBtn.setVisibility(bool ? View.VISIBLE : View.INVISIBLE);
-
-        if (viewPager != null) {
-            // проверяем состояние данных в табе
-            // в завистимости от корректности включаем/выключаем кнопку
-            finishBtn.setAlpha(viewPager.getCurrentFragment().verifyData(false) ?
-                    ENABLE_BUTTON_VIEW_ALPHA : DISABLE_BUTTON_VIEW_ALPHA);
-        }
-
-        if (bool) {
-            nextTabBtn.setEnabled(false);
-            nextTabBtn.setVisibility(View.INVISIBLE);
-        }
-    }
-
     // Create Game Tab Callback
     @Override
     public void onDoneEdit() {
         viewPager.tryGoNext();
-    }
-
-    public void onDataStateChange(boolean correct) {
-        getNextButtonView().setAlpha(correct ? ENABLE_BUTTON_VIEW_ALPHA : DISABLE_BUTTON_VIEW_ALPHA);
     }
 
     @Override
@@ -249,12 +186,41 @@ public class CreateGameActivity extends BaseActivity implements
     }
 
     @Override
+    public void onDataStateChange(boolean correct) {
+        setBtnEnable(btnRight, correct);
+    }
+
+    @Override
     public void onNextTab() {
-        updateButtonViews();
+        if (viewPager.hasPreview()) {
+            setBtnEnable(btnLeft, true);
+        }
+        setBtnEnable(btnRight, viewPager.getCurrentFragment().verifyData(false));
+        if (!viewPager.hasNext()) {
+            // последний таб
+            btnRight.setImageResource(R.drawable.ic_check);
+        } else {
+            // не устанавливаем ic_arrow_right, т к она стои по умолчанию
+            // btnRight.setImageResource(R.drawable.ic_arrow_right);
+        }
     }
 
     @Override
     public void onPreviewTab() {
-        updateButtonViews();
+        if (!viewPager.hasPreview()) {
+            // первый таб
+            setBtnEnable(btnLeft, false);
+        }
+        boolean correct = true;
+        if (viewPager != null) {
+            correct = viewPager.getCurrentFragment().verifyData(false);
+        }
+        setBtnEnable(btnRight, correct);
+        btnRight.setImageResource(R.drawable.ic_arrow_right);
+    }
+
+    private void setBtnEnable(FloatingActionButton btn, boolean val) {
+        btn.setAlpha(val ? ENABLE_BUTTON_VIEW_ALPHA : DISABLE_BUTTON_VIEW_ALPHA);
+        btn.setEnabled(val);
     }
 }
