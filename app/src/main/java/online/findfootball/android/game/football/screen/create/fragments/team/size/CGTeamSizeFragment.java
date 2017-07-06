@@ -2,6 +2,7 @@ package online.findfootball.android.game.football.screen.create.fragments.team.s
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,17 +47,21 @@ public class CGTeamSizeFragment extends BaseCGFragment {
     }
 
     @Override
-    public void saveResult(GameObj game) {
-        game.getTeams().setTeamsCapacity(numberPicker.getValue());
+    public void saveResult(@NonNull Object game) {
+        ((GameObj) game).getTeams().setTeamsCapacity(numberPicker.getValue());
     }
 
     @Override
-    public void updateView(GameObj game) {
-        hideSoftKeyboard(); // прячем клавиатуру, если она есть
+    public void updateView(@NonNull Object game) {
+        // getTeamsCapacity() возращает общую вместительность команд
+        int cap = ((GameObj) game).getTeams().getTeamsCapacity() / 2;
+        if (cap >= MIN_TEAM_SIZE && cap <= MAX_TEAM_SIZE) {
+            numberPicker.setValue(cap);
+        }
     }
 
     @Override
-    public boolean verifyData(boolean showToast) {
+    public boolean verifyData(boolean notifyUser) {
         return true;
     }
 }

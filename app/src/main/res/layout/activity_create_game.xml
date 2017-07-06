@@ -10,7 +10,7 @@
     tools:context=".game.football.screen.create.CreateGameActivity">
 
 
-    <online.findfootball.android.game.football.screen.create.view.CreateGameViewPager
+    <online.findfootball.android.app.view.verify.view.pager.VerifyTabViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,4 +1,4 @@
-package online.findfootball.android.game.football.screen.create.view;
+package online.findfootball.android.app.view.verify.view.pager;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
@@ -6,8 +6,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import online.findfootball.android.app.App;
-import online.findfootball.android.game.GameObj;
-import online.findfootball.android.game.football.screen.create.BaseCGFragment;
 import online.findfootball.android.game.football.screen.create.PagerAdapter;
 
 import static java.lang.Math.abs;
@@ -17,29 +15,28 @@ import static java.lang.Math.abs;
  * Created by WiskiW on 02.04.2017.
  */
 
-public class CreateGameViewPager extends ViewPager {
+public class VerifyTabViewPager extends ViewPager {
 
-    private static final String TAG = App.G_TAG + ":CreateGameViewPage";
+    private static final String TAG = App.G_TAG + ":VerifyViewPager";
 
     // погрешность для акцивации проверки ввода при свайпе вправо
     private static final int MINIMAL_SWIPE_OFFSET = 100;
 
-    public GameObj thisGameObj;
-    private CreateGameListener createGameListener;
+    private VerifyTabsParent parent;
 
     private float initialXValue;
     private int pressState = 0;
 
-    public CreateGameViewPager(Context context) {
+    public VerifyTabViewPager(Context context) {
         super(context);
     }
 
-    public CreateGameViewPager(Context context, AttributeSet attrs) {
+    public VerifyTabViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void setCreateGameListener(CreateGameListener createGameListener) {
-        this.createGameListener = createGameListener;
+    public void setParent(VerifyTabsParent parent) {
+        this.parent = parent;
         addOnPageChangeListener(new OnPageChangeListener() {
             int previewPos;
 
@@ -57,22 +54,14 @@ public class CreateGameViewPager extends ViewPager {
             public void onPageScrollStateChanged(int state) {
                 if (previewPos > state) {
                     //Swiped Right
-                    CreateGameViewPager.this.createGameListener.onNextTab();
+                    VerifyTabViewPager.this.parent.onRightSwipe();
                 } else {
                     // Swiped Left
-                    CreateGameViewPager.this.createGameListener.onPreviewTab();
+                    VerifyTabViewPager.this.parent.onLeftSwipe();
                 }
                 previewPos = state;
             }
         });
-    }
-
-    public GameObj getGameObj() {
-        return thisGameObj;
-    }
-
-    public void setGameObj(GameObj thisGameObj) {
-        this.thisGameObj = thisGameObj;
     }
 
     @Override
@@ -109,9 +98,9 @@ public class CreateGameViewPager extends ViewPager {
                                из verifyData() только один раз
                              */
                             pressState++;
-                            BaseCGFragment cgFragment = getCurrentFragment();
-                            if (cgFragment.verifyData(pressState < 2)) {
-                                cgFragment.saveResult(getGameObj());
+                            VerifycapableTab tab = getCurrentTab();
+                            if (!tab.isDifficultToSwipe() && tab.verifyData(pressState < 2)) {
+                                parent.saveTabData(tab);
                                 return true;
                             } else {
                                 return false;
@@ -121,7 +110,7 @@ public class CreateGameViewPager extends ViewPager {
                         }
                     } else if (diffX > 0) {
                         // swipe from left to right detected
-                        return true;
+                        return !getCurrentTab().isDifficultToSwipe();
                     } else {
                         return false;
                     }
@@ -136,52 +125,12 @@ public class CreateGameViewPager extends ViewPager {
         return true;
     }
 
-    @Override
-    public void setAdapter(android.support.v4.view.PagerAdapter adapter) {
-        super.setAdapter(adapter);
-        getCurrentFragment().updateView(getGameObj());
+    public void goNext() {
+        setCurrentItem(getCurrentItem() + 1);
     }
 
-    public boolean tryGoNext() {
-        // Возвращает был ли сменен таб
-        if (getCurrentFragment().verifyData(true)) {
-            // сохраняем данных с таба
-            getCurrentFragment().saveResult(getGameObj());
-            if (hasNext()) {
-                goNext();
-                getCurrentFragment().updateView(getGameObj());
-                return true;
-            } else if (createGameListener != null) {
-                createGameListener.onGameCreated(getGameObj());
-            }
-            return false;
-        }
-        return false;
-    }
-
-    public boolean tryGoBack() {
-        if (!hasPreview()) {
-            return false;
-        }
-        // сохраняем данных с предыдущего таба
-        getCurrentFragment().saveResult(getGameObj());
-
-        goBack();
-        // обновляем данные в следующем табе
-        getCurrentFragment().updateView(getGameObj());
-        return true;
-    }
-
-    private void goNext() {
-        if (hasNext()) {
-            setCurrentItem(getCurrentItem() + 1);
-        }
-    }
-
-    private void goBack() {
-        if (hasPreview()) {
-            setCurrentItem(getCurrentItem() - 1);
-        }
+    public void goBack() {
+        setCurrentItem(getCurrentItem() - 1);
     }
 
     public boolean hasPreview() {
@@ -192,16 +141,7 @@ public class CreateGameViewPager extends ViewPager {
         return !(getCurrentItem() + 1 >= getAdapter().getCount());
     }
 
-    public BaseCGFragment getCurrentFragment() {
+    public VerifycapableTab getCurrentTab() {
         return ((PagerAdapter) getAdapter()).getItem(getCurrentItem());
     }
-
-    public interface CreateGameListener {
-        void onGameCreated(GameObj game);
-
-        void onNextTab();
-
-        void onPreviewTab();
-    }
-
 }

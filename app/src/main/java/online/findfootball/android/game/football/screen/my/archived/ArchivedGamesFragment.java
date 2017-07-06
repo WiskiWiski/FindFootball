@@ -90,7 +90,7 @@ public class ArchivedGamesFragment extends Fragment implements
 
                     @Override
                     public void onSuccess(List<GameObj> gameList) {
-                        //Log.w(TAG, "onComplete: list size: " + gameList.size());
+                        //Log.w(TAG, "onFinish: list size: " + gameList.size());
                         if (gameList.size() == 0) {
                             Toast.makeText(getContext(), getString(R.string.archived_games_fragment_no_data),
                                     Toast.LENGTH_LONG).show();

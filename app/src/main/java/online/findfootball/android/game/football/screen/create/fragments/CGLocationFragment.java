@@ -2,6 +2,7 @@ package online.findfootball.android.game.football.screen.create.fragments;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,30 +46,34 @@ public class CGLocationFragment extends BaseCGFragment {
     }
 
     @Override
-    public void saveResult(GameObj game) {
+    public void saveResult(@NonNull Object game) {
         LocationObj l = getLocation();
-        game.setLocation(l);
+        ((GameObj) game).setLocation(l);
     }
 
     @Override
-    public void updateView(GameObj game) {
-        hideSoftKeyboard(); // прячем клавиатуру, если она есть
+    public void updateView(@NonNull Object game) {
         if (locationSelectFragment != null) {
-            locationSelectFragment.setMarkerPosition(game.getLocation());
+            locationSelectFragment.setMarkerPosition(((GameObj) game).getLocation());
         }
     }
 
     @Override
-    public boolean verifyData(boolean showToast) {
+    public boolean verifyData(boolean notifyUser) {
         LocationObj location = getLocation();
         if (location == null) {
-            if (showToast) {
+            if (notifyUser) {
                 Toast.makeText(getContext(), getString(R.string.cg_game_location_frg_location_not_selected),
                         Toast.LENGTH_SHORT).show();
                 vibrate();
             }
             return false;
         }
+        return true;
+    }
+
+    @Override
+    public boolean isDifficultToSwipe() {
         return true;
     }
 }
