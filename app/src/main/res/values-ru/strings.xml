@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_title_auth">Авторизация</string>
+    <string name="activity_title_create_game">Начать игру</string>
+    <string name="activity_title_find_game">Найти игру</string>
+    <string name="activity_title_game_info">Игра</string>
+    <string name="activity_title_profile">Профиль</string>
+    <string name="auth_activity_bad_email">Адрес должен содержать \"@\"!</string>
+    <string name="auth_activity_button_sign_in">Войти</string>
+    <string name="auth_activity_button_sign_up">Регистрация</string>
+    <string name="auth_activity_default_msg">Пожалуйста, авторизируйтесь</string>
+    <string name="auth_activity_empty_email">Адрес не может быть пустым!</string>
+    <string name="auth_activity_empty_password">Пароль не может быть пустым!</string>
+    <string name="auth_activity_hint_password">Пароль</string>
+    <string name="auth_activity_password_too_short" translatable="false">Пароль должен быть не короче 6 символов</string>
+    <string name="auth_required_re_authorization">Ошибка авторизации. Попробуйте снова.</string>
+    <string name="cg_fragment_email">Ваш email</string>
+    <string name="cg_fragment_password">Придумайте пароль</string>
+    <string name="cg_game_created_msg">%s организована!</string>
+    <string name="cg_game_description_frg_empty_description">Описание не может быть пустым.</string>
+    <string name="cg_game_description_frg_hint">Вся информация о событии</string>
+    <string name="cg_game_description_frg_too_short_description">Минимум 12 символов!</string>
+    <string name="cg_game_location_frg_location_not_selected">Выберете место проведения</string>
+    <string name="cg_game_team_size_frg_main_text">Размер команд</string>
+    <string name="cg_game_time_frg_main_text">Время начала</string>
+    <string name="cg_game_time_frg_time_in_the_past">Нельзя создать игру в прошлом! :)</string>
+    <string name="cg_game_time_frg_time_offset_too_small">Минимальное время до начала: %d часа!</string>
+    <string name="cg_game_title_frg_empty_title">Название не может быть пустым!</string>
+    <string name="cg_game_title_frg_hint">Его увидят все пользователи</string>
+    <string name="cg_game_title_frg_too_short_title">Название не короче %d символов!</string>
+    <string name="context_menu_item_delete_title">Удалить</string>
+    <string name="context_menu_title">Выбрать</string>
+    <string name="find_game_activity_no_data">Игры не найдены! :(</string>
+    <string name="find_game_activity_no_more_data">Хватит данных!</string>
+    <string name="game_info_activity_tab_title_about">О нас</string>
+    <string name="game_info_activity_tab_title_chat">Чат</string>
+    <string name="game_info_activity_tab_title_players">Игроки</string>
+    <string name="gmaps_button_confirm_text">Подтвердить</string>
+    <string name="gmaps_permissions_not_granted">Требуются права на геолокацию</string>
+    <string name="my_games_activity_title_archived_games">Архив</string>
+    <string name="my_games_activity_title_upcoming_games">Мои игры</string>
+    <string name="nav_create_game_title">Начать игру</string>
+    <string name="nav_find_game_title">Найти игру</string>
+    <string name="nav_main_title"></string>
+    <string name="nav_nav_archived_games_title">Архив</string>
+    <string name="nav_settings_title">Настройки</string>
+    <string name="nav_upcoming_games_title" translatable="false">Мои игры</string>
+    <string name="navigation_drawer_close">Закрыть</string>
+    <string name="navigation_drawer_open">Открыть</string>
+    <string name="popup_msg_coming_soon">Скоро!</string>
+    <string name="profile_activity_sign_out_btn_text">Выйти</string>
+    <string name="upcoming_games_fragment_no_data">Игры не найдены</string>
+</resources>

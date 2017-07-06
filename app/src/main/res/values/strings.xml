@@ -1,20 +1,20 @@
 <resources>
-    <string name="app_name">Find Football</string>
+    <string name="app_name" translatable="false">FindFootball</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="activity_title_main">@string/app_name</string>
+    <string name="activity_title_main" translatable="false">@string/app_name</string>
     <string name="activity_title_auth">Authorization</string>
     <string name="activity_title_find_game">Find Game</string>
     <string name="activity_title_create_game">Create Game</string>
     <string name="activity_title_game_info">Game</string>
     <string name="activity_title_profile">Profile</string>
 
-    <string name="action_version">Version</string>
+    <string name="action_version" translatable="false">Version</string>
 
     <!-- === Navigation Drawer === -->
-    <string name="nav_main_title">Debug</string>
+    <string name="nav_main_title" translatable="false">Debug</string>
     <string name="nav_find_game_title">Find Game</string>
     <string name="nav_upcoming_games_title">Upcoming Games</string>
     <string name="nav_nav_archived_games_title">Archived Games</string>
@@ -35,10 +35,12 @@
     <string name="auth_activity_password_too_short">Password cannot be shorter than 6!</string>
     <string name="auth_activity_bad_email">Email must contain \'@\' !</string>
     <string name="auth_activity_hint_password">Password</string>
-    <string name="auth_activity_hint_email">Email</string>
+    <string name="auth_activity_hint_email" translatable="false">Email</string>
     <string name="auth_activity_button_sign_in">Login</string>
     <string name="auth_activity_button_sign_up">Sign Up</string>
-    <string name="auth_activity_msg_other_networks">or use social network</string>
+    <string name="auth_activity_msg_other_networks" translatable="false">or use social network</string>
+    <string name="cg_fragment_email">Your email</string>
+    <string name="cg_fragment_password">Tape your password</string>
 
 
     <!--- === Profile Activity === -->
@@ -48,11 +50,11 @@
     <!-- === Create Game === -->
     <string name="cg_game_created_msg" formatted="false">%s has been created!</string>
 
-    <string name="cg_game_title_frg_hint">Его увидят все пользователи</string>
+    <string name="cg_game_title_frg_hint">All users can see</string>
     <string name="cg_game_title_frg_empty_title">Title cannot be empty!</string>
     <string name="cg_game_title_frg_too_short_title">The minimal title length %d!</string>
 
-    <string name="cg_game_description_frg_hint">Вся информация о событии</string>
+    <string name="cg_game_description_frg_hint">All info about event</string>
     <string name="cg_game_description_frg_empty_description">Description cannot be empty!</string>
     <string name="cg_game_description_frg_too_short_description">The minimal description length %d!</string>
 
@@ -83,7 +85,7 @@
     <string name="my_games_activity_title_archived_games">Archive</string>
     <string name="my_games_activity_title_upcoming_games">Upcoming</string>
     <string name="upcoming_games_fragment_no_data">Games not found</string>
-    <string name="archived_games_fragment_no_data">@string/upcoming_games_fragment_no_data</string>
+    <string name="archived_games_fragment_no_data" translatable="false">@string/upcoming_games_fragment_no_data</string>
 
 
     <!-- === Find Game Activity === -->
@@ -103,8 +105,8 @@
 
     <!-- === Context Menu === -->
     <string name="context_menu_title">Select Action</string>
-    <string name="context_menu_btn_cancel_title">@android:string/cancel</string>
-    <string name="context_menu_btn_ok_title">@android:string/ok</string>
+    <string name="context_menu_btn_cancel_title" translatable="false">@android:string/cancel</string>
+    <string name="context_menu_btn_ok_title" translatable="false">@android:string/ok</string>
     <string name="context_menu_item_delete_title">Delete</string>
 
 
