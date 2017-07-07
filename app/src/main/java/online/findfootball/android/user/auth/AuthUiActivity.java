@@ -142,7 +142,7 @@ public class AuthUiActivity extends BaseActivity {
                 Toast.makeText(getApplicationContext(), user.getEmail(), Toast.LENGTH_LONG).show();
 
                 // пытаемся подгрузить данные пользователя из firebase бд
-                new UserObj(user.getFbUser().getUid()).load(new DatabaseLoader.OnLoadListener() {
+                new UserObj(user.getUid()).load(new DatabaseLoader.OnLoadListener() {
                     @Override
                     public void onComplete(DataInstanceResult result, DatabasePackable packable) {
                         if (packable.hasUnpacked()) {
@@ -196,11 +196,11 @@ public class AuthUiActivity extends BaseActivity {
         // Записывает данные в бд после регистрации пользователя
         signInUser(user);
         final DatabaseReference thisUserReference = FirebaseDatabase.getInstance().getReference()
-                .child(FBDatabase.PATH_USERS).child(user.getFbUser().getUid());
+                .child(FBDatabase.PATH_USERS).child(user.getUid());
         thisUserReference.child(UserObj.PATH_REGISTER_TIME).setValue(TimeProvider.getUtcTime());
 
-        List<String> providers = user.getFbUser().getProviders();
-        if (providers != null && providers.size() > 0) {
+        List<String> providers = user.getProviders();
+        if (providers.size() > 0) {
             thisUserReference.child(UserObj.PATH_AUTH_PROVIDER).setValue(providers.get(0));
         } else {
             thisUserReference.child(UserObj.PATH_AUTH_PROVIDER).setValue("unknown");
@@ -215,7 +215,7 @@ public class AuthUiActivity extends BaseActivity {
     public static void signInUser(AuthUserObj user) {
         // Обновляет поля пользователя в бд по данным FirebaseUser после авторизации
         final DatabaseReference thisUserReference = FirebaseDatabase.getInstance().getReference()
-                .child(FBDatabase.PATH_USERS).child(user.getFbUser().getUid());
+                .child(FBDatabase.PATH_USERS).child(user.getUid());
         if (!user.getEmail().isEmpty()) {
             thisUserReference.child(UserObj.PATH_EMAIL).setValue(user.getEmail());
         }

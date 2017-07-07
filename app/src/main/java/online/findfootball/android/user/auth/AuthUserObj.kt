@@ -1,57 +1,50 @@
 package online.findfootball.android.user.auth
 
-import android.net.Uri
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.firebase.auth.FirebaseUser
+import online.findfootball.android.user.UserObj
 
 /**
  * Created by WiskiW on 06.07.2017.
  * AuthUserObj объект-обёртка Firebase пользователя, проходящего авторизацию
  */
-class AuthUserObj() {
+class AuthUserObj : UserObj {
 
-    constructor(fbUser: FirebaseUser) : this() {
-        this.fbUser = fbUser
+    companion object {
+        @JvmField val CREATOR: Parcelable.Creator<AuthUserObj> =
+                object : Parcelable.Creator<AuthUserObj> {
+                    override fun createFromParcel(source: Parcel): AuthUserObj {
+                        return AuthUserObj(source)
+                    }
+
+                    override fun newArray(size: Int): Array<AuthUserObj?> {
+                        return arrayOfNulls(size)
+                    }
+                }
     }
 
-    var fbUser: FirebaseUser? = null
     var password = ""
-    var email: String = ""
-        get() {
-            if (!field.isEmpty()) {
-                return field
-            } else {
-                val email = fbUser?.email
-                if (email != null) {
-                    field = email
-                }
-                return field
-            }
-        }
+    var providers: List<String> = ArrayList()
 
-    var displayName: String = ""
-        get() {
-            if (!field.isEmpty()) {
-                return field
-            } else {
-                val name = fbUser?.displayName
-                if (name != null) {
-                    field = name
-                }
-                return field
-            }
-        }
+    constructor() : super()
 
-    var photoUrl: Uri = Uri.EMPTY
-        get() {
-            if (field != Uri.EMPTY) {
-                return field
-            } else {
-                val url = fbUser?.photoUrl
-                if (url != null) {
-                    field = url
-                }
-                return field
-            }
-        }
+    constructor(fbUser: FirebaseUser) : super(fbUser)
+
+    constructor(source: Parcel) : super(source) {
+        password = source.readString()
+        source.readStringList(providers)
+    }
+
+    override fun initByFirebaseUser(fUser: FirebaseUser?) {
+        super.initByFirebaseUser(fUser)
+        this.providers = fUser?.providers as List<String>
+    }
+
+    override fun writeToParcel(dest: Parcel?, flags: Int) {
+        super.writeToParcel(dest, flags)
+        dest?.writeString(password)
+        dest?.writeStringList(providers)
+    }
 
 }
