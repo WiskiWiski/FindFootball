@@ -66,7 +66,7 @@ public class CreateGameActivity extends BaseActivity implements
 
 
         viewPager = (VerifyTabViewPager) findViewById(R.id.pager);
-        PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
+        CGPagerAdapter adapter = new CGPagerAdapter(getSupportFragmentManager());
         adapter.addNext(new CGTitleFragment());
         adapter.addNext(new CGDescriptionFragment());
         adapter.addNext(new CGLocationFragment());

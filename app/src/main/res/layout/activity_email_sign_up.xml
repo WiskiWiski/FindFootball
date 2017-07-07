@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".game.football.screen.create.CreateGameActivity">
+
+
+    <online.findfootball.android.app.view.verify.view.pager.VerifyTabViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"/>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        app:theme="@style/AppTheme.ToolbarArrow"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_arrow_right"
+        android:tint="@color/colorPrimary"
+        app:backgroundTint="@color/vk_white"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_arrow_left"
+        android:tint="@color/colorPrimary"
+        app:backgroundTint="@color/vk_white"/>
+
+</android.support.design.widget.CoordinatorLayout>

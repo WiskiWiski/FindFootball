@@ -118,7 +118,7 @@ public class ProfileActivity extends BaseActivity
         }
 
 
-        if (thisUserObj == AppUser.getInstance(this, false)) {
+        if (thisUserObj.getUid().equals(AppUser.getInstance(this, false).getUid())) {
             signOutBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

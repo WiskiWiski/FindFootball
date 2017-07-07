@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import online.findfootball.android.app.App;
-import online.findfootball.android.game.football.screen.create.PagerAdapter;
+import online.findfootball.android.user.auth.signup.SUPageAdapter;
 
 import static java.lang.Math.abs;
 
@@ -142,6 +142,6 @@ public class VerifyTabViewPager extends ViewPager {
     }
 
     public VerifycapableTab getCurrentTab() {
-        return ((PagerAdapter) getAdapter()).getItem(getCurrentItem());
+        return ((SUPageAdapter) getAdapter()).getItem(getCurrentItem());
     }
 }

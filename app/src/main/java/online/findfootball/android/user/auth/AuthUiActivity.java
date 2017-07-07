@@ -126,10 +126,12 @@ public class AuthUiActivity extends BaseActivity {
             public void onClick(View v) {
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
+                emailAuthProvider.signUp(email, password);
+                /*
                 if (validation(email, password)) {
-                    disableButtons();
-                    emailAuthProvider.signUp(email, password);
+                disableButtons();
                 }
+                */
             }
         });
     }

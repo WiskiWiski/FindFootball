@@ -24,14 +24,12 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
 
-        <service
-            android:name=".app.FirebaseInstanceIDService">
+        <service android:name=".app.FirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
-        <service
-            android:name=".firebase.messaging.FFBFirebaseMessagingService">
+        <service android:name=".firebase.messaging.FFBFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
@@ -91,6 +89,11 @@
         <activity
             android:name=".user.ProfileActivity"
             android:label="@string/activity_title_profile"
+            android:theme="@style/AppTheme.NoToolBar">
+        </activity>
+        <activity
+            android:name=".user.auth.signup.EmailSignUpActivity"
+            android:label="@string/activity_title_email_sign_up"
             android:theme="@style/AppTheme.NoToolBar">
         </activity>
     </application>

@@ -8,6 +8,7 @@
     <string name="activity_title_auth">Authorization</string>
     <string name="activity_title_find_game">Find Game</string>
     <string name="activity_title_create_game">Create Game</string>
+    <string name="activity_title_email_sign_up">Sign Up</string>
     <string name="activity_title_game_info">Game</string>
     <string name="activity_title_profile">Profile</string>
 
@@ -45,6 +46,9 @@
 
     <!--- === Profile Activity === -->
     <string name="profile_activity_sign_out_btn_text">Sign Out</string>
+
+
+    <!-- === Email Sign Up === -->
 
 
     <!-- === Create Game === -->

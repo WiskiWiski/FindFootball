@@ -68,6 +68,10 @@ public class UserObj extends PackableObject {
 
     }
 
+    public boolean isEmpty() {
+        return this.uid.equals(EMPTY_UID);
+    }
+
     private void initGameList(FootballGameList list) {
         list.setPackablePath(this.getPackablePath() + "/" + this.getPackableKey());
     }

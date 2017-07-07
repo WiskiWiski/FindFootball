@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="activity_title_auth">Авторизация</string>
+    <string name="activity_title_email_sign_up">Регистрация</string>
     <string name="activity_title_create_game">Начать игру</string>
     <string name="activity_title_find_game">Найти игру</string>
     <string name="activity_title_game_info">Игра</string>
