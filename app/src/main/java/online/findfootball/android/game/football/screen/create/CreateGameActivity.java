@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -24,12 +25,13 @@ import online.findfootball.android.game.football.screen.create.fragments.CGLocat
 import online.findfootball.android.game.football.screen.create.fragments.CGTitleFragment;
 import online.findfootball.android.game.football.screen.create.fragments.team.size.CGTeamSizeFragment;
 import online.findfootball.android.game.football.screen.create.fragments.time.CGGameTimeFragment;
-import online.findfootball.android.game.football.screen.create.view.CreateGameViewPager;
+import online.findfootball.android.app.view.verify.view.pager.VerifyTabViewPager;
+import online.findfootball.android.app.view.verify.view.pager.VerifyTabsParent;
+import online.findfootball.android.app.view.verify.view.pager.VerifycapableTab;
 import online.findfootball.android.user.AppUser;
 
 public class CreateGameActivity extends BaseActivity implements
-        BaseCGFragment.CGTabEditListener,
-        CreateGameViewPager.CreateGameListener {
+        VerifyTabsParent {
 
     private static final String TAG = App.G_TAG + ":CreateGameAct";
 
@@ -40,8 +42,9 @@ public class CreateGameActivity extends BaseActivity implements
     private FloatingActionButton btnLeft;
     private FloatingActionButton btnRight;
 
-    private CreateGameViewPager viewPager;
-    private PagerAdapter adapter;
+    private VerifyTabViewPager viewPager;
+
+    private GameObj thisGameObject;
 
 
     @SuppressWarnings("ConstantConditions")
@@ -62,24 +65,24 @@ public class CreateGameActivity extends BaseActivity implements
         initToolbar();
 
 
-        viewPager = (CreateGameViewPager) findViewById(R.id.pager);
-        adapter = new PagerAdapter(getSupportFragmentManager());
+        viewPager = (VerifyTabViewPager) findViewById(R.id.pager);
+        CGPagerAdapter adapter = new CGPagerAdapter(getSupportFragmentManager());
         adapter.addNext(new CGTitleFragment());
         adapter.addNext(new CGDescriptionFragment());
         adapter.addNext(new CGLocationFragment());
         adapter.addNext(new CGTeamSizeFragment());
         adapter.addNext(new CGGameTimeFragment());
         viewPager.setAdapter(adapter);
+        viewPager.setParent(this);
+        adapter.getItem(0).updateView(thisGameObject);
 
         Intent intent = getIntent();
         if (intent != null) {
-            viewPager.setGameObj((GameObj) intent.getParcelableExtra(INTENT_GAME_KEY));
+            thisGameObject = intent.getParcelableExtra(INTENT_GAME_KEY);
         }
-        if (viewPager.getGameObj() == null) {
-            viewPager.setGameObj(new GameObj());
+        if (thisGameObject == null) {
+            thisGameObject = new GameObj();
         }
-        viewPager.setCreateGameListener(this);
-
 
         btnLeft = (FloatingActionButton) findViewById(R.id.fab_left);
         btnRight = (FloatingActionButton) findViewById(R.id.fab_right);
@@ -87,15 +90,16 @@ public class CreateGameActivity extends BaseActivity implements
         btnLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewPager.tryGoBack();
+                tryLeftSwipe();
             }
         });
         btnRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewPager.tryGoNext();
+                tryRightSwipe();
             }
         });
+
     }
 
     @Override
@@ -103,7 +107,7 @@ public class CreateGameActivity extends BaseActivity implements
         if (requestCode == AppUser.AUTH_REQUEST_CODE) {
             switch (resultCode) {
                 case AppUser.RESULT_SUCCESS:
-                    onGameCreated(viewPager.getGameObj());
+                    onFinish(thisGameObject);
                     break;
                 case AppUser.RESULT_FAILED:
 
@@ -126,7 +130,7 @@ public class CreateGameActivity extends BaseActivity implements
     private void updateButtonViews() {
         boolean correct = true;
         if (viewPager != null) {
-            correct = viewPager.getCurrentFragment().verifyData(false);
+            correct = viewPager.getCurrentTab().verifyData(false);
         }
         setBtnEnable(btnRight, correct);
         if (!viewPager.hasNext()) {
@@ -145,25 +149,18 @@ public class CreateGameActivity extends BaseActivity implements
 
     @Override
     public void onBackPressed() {
-        if (!viewPager.tryGoBack()) {
+        if (!tryLeftSwipe()) {
             super.onBackPressed();
         }
     }
 
-    // Create Game Tab Callback
-    @Override
-    public void onDoneEdit() {
-        viewPager.tryGoNext();
-    }
-
-    @Override
-    public void onGameCreated(final GameObj game) {
+    public void onFinish(final GameObj game) {
         final AppUser appUser = AppUser.getInstance(this, true);
         if (appUser != null) {
             Formatter formatter = new Formatter();
-            formatter.format(getString(R.string.cg_game_created_msg), viewPager.getGameObj().getTitle());
+            formatter.format(getString(R.string.cg_game_created_msg), thisGameObject.getTitle());
 
-            Log.d(TAG, "onGameCreated: " + formatter);
+            Log.d(TAG, "onFinish: " + formatter);
             Context context = getApplicationContext();
             Toast.makeText(context, formatter.toString(), Toast.LENGTH_LONG).show();
 
@@ -190,12 +187,58 @@ public class CreateGameActivity extends BaseActivity implements
         setBtnEnable(btnRight, correct);
     }
 
+    private void setBtnEnable(FloatingActionButton btn, boolean val) {
+        btn.setAlpha(val ? ENABLE_BUTTON_VIEW_ALPHA : DISABLE_BUTTON_VIEW_ALPHA);
+        btn.setEnabled(val);
+    }
+
     @Override
-    public void onNextTab() {
+    public boolean tryRightSwipe() {
+        // Возвращает был ли сменен таб
+        if (viewPager.getCurrentTab().verifyData(true)) {
+            // сохраняем данных с таба
+            saveTabData(viewPager.getCurrentTab());
+            if (viewPager.hasNext()) {
+                viewPager.goNext();
+                viewPager.getCurrentTab().updateView(thisGameObject);
+                //onNextTab();
+                return true;
+            } else {
+                onFinish(thisGameObject);
+            }
+            return false;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean tryLeftSwipe() {
+        if (!viewPager.hasPreview()) {
+            return false;
+        }
+        // сохраняем данных с предыдущего таба
+        saveTabData(viewPager.getCurrentTab());
+
+        viewPager.goBack();
+        // обновляем данные в следующем табе
+        viewPager.getCurrentTab().updateView(thisGameObject);
+        //onPreviewTab();
+        return true;
+    }
+
+    @Override
+    public void onRightSwipe() {
         if (viewPager.hasPreview()) {
             setBtnEnable(btnLeft, true);
         }
-        setBtnEnable(btnRight, viewPager.getCurrentFragment().verifyData(false));
+        VerifycapableTab tab = viewPager.getCurrentTab();
+        if (tab instanceof CGLocationFragment) {
+            // TODO : Create onMarkerLocationChange listener in CGLocationFragment
+            // временный кусок кода, разрещающий next click на фрагменте выбора местоположения
+            setBtnEnable(btnRight, true);
+        } else {
+            setBtnEnable(btnRight, viewPager.getCurrentTab().verifyData(false));
+        }
         if (!viewPager.hasNext()) {
             // последний таб
             btnRight.setImageResource(R.drawable.ic_check);
@@ -206,21 +249,21 @@ public class CreateGameActivity extends BaseActivity implements
     }
 
     @Override
-    public void onPreviewTab() {
+    public void onLeftSwipe() {
         if (!viewPager.hasPreview()) {
             // первый таб
             setBtnEnable(btnLeft, false);
         }
         boolean correct = true;
         if (viewPager != null) {
-            correct = viewPager.getCurrentFragment().verifyData(false);
+            correct = viewPager.getCurrentTab().verifyData(false);
         }
         setBtnEnable(btnRight, correct);
         btnRight.setImageResource(R.drawable.ic_arrow_right);
     }
 
-    private void setBtnEnable(FloatingActionButton btn, boolean val) {
-        btn.setAlpha(val ? ENABLE_BUTTON_VIEW_ALPHA : DISABLE_BUTTON_VIEW_ALPHA);
-        btn.setEnabled(val);
+    @Override
+    public void saveTabData(@NonNull VerifycapableTab tab) {
+        tab.saveResult(thisGameObject);
     }
 }

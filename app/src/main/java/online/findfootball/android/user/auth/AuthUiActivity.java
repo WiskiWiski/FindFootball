@@ -13,10 +13,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
+
+import java.util.List;
 
 import online.findfootball.android.R;
 import online.findfootball.android.app.App;
@@ -125,10 +126,12 @@ public class AuthUiActivity extends BaseActivity {
             public void onClick(View v) {
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
+                emailAuthProvider.signUp(email, password);
+                /*
                 if (validation(email, password)) {
-                    disableButtons();
-                    emailAuthProvider.signUp(email, password);
+                disableButtons();
                 }
+                */
             }
         });
     }
@@ -136,7 +139,7 @@ public class AuthUiActivity extends BaseActivity {
     private void initProviders() {
         ProviderCallback providerCallback = new ProviderCallback() {
             @Override
-            public void onResult(final FirebaseUser user) {
+            public void onResult(final AuthUserObj user) {
                 Log.d(TAG, "Authentication success: " + user.getEmail());
                 Toast.makeText(getApplicationContext(), user.getEmail(), Toast.LENGTH_LONG).show();
 
@@ -174,7 +177,7 @@ public class AuthUiActivity extends BaseActivity {
                 enableButtons();
             }
         };
-        emailAuthProvider = new MyEmailAuthAuthProvider(providerCallback);
+        emailAuthProvider = new MyEmailAuthAuthProvider(this, providerCallback);
         googleAuthProvider = new MyGoogleAuthProvider(this, providerCallback);
         fbAuthProvider = new MyFacebookAuthProvider(this, providerCallback);
         vkAuthProvider = new MyVkontakteAuthAuthProvider(this, providerCallback);
@@ -187,18 +190,20 @@ public class AuthUiActivity extends BaseActivity {
         googleAuthProvider.onActivityResult(requestCode, resultCode, data);
         fbAuthProvider.onActivityResult(requestCode, resultCode, data);
         vkAuthProvider.onActivityResult(requestCode, resultCode, data);
+        emailAuthProvider.onActivityResult(requestCode, resultCode, data);
     }
 
 
-    public static void signUpUser(FirebaseUser user) {
+    public static void signUpUser(AuthUserObj user) {
         // Записывает данные в бд после регистрации пользователя
         signInUser(user);
         final DatabaseReference thisUserReference = FirebaseDatabase.getInstance().getReference()
                 .child(FBDatabase.PATH_USERS).child(user.getUid());
         thisUserReference.child(UserObj.PATH_REGISTER_TIME).setValue(TimeProvider.getUtcTime());
 
-        if (user.getProviders() != null && user.getProviders().size() > 0) {
-            thisUserReference.child(UserObj.PATH_AUTH_PROVIDER).setValue(user.getProviders().get(0));
+        List<String> providers = user.getProviders();
+        if (providers.size() > 0) {
+            thisUserReference.child(UserObj.PATH_AUTH_PROVIDER).setValue(providers.get(0));
         } else {
             thisUserReference.child(UserObj.PATH_AUTH_PROVIDER).setValue("unknown");
         }
@@ -209,20 +214,20 @@ public class AuthUiActivity extends BaseActivity {
         }
     }
 
-    public static void signInUser(FirebaseUser user) {
+    public static void signInUser(AuthUserObj user) {
         // Обновляет поля пользователя в бд по данным FirebaseUser после авторизации
         final DatabaseReference thisUserReference = FirebaseDatabase.getInstance().getReference()
                 .child(FBDatabase.PATH_USERS).child(user.getUid());
-        if (user.getEmail() != null) {
+        if (!user.getEmail().isEmpty()) {
             thisUserReference.child(UserObj.PATH_EMAIL).setValue(user.getEmail());
         }
 
-        if (user.getDisplayName() != null) {
+        if (!user.getDisplayName().isEmpty()) {
             thisUserReference.child(UserObj.PATH_DISPLAY_NAME).setValue(user.getDisplayName());
         }
 
         Uri photoUri = user.getPhotoUrl();
-        if (photoUri != null) {
+        if (photoUri != Uri.EMPTY) {
             thisUserReference.child(UserObj.PATH_PHOTO_URL).setValue(String.valueOf(photoUri));
         }
 

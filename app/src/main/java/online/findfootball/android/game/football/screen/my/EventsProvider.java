@@ -80,7 +80,7 @@ public class EventsProvider {
                                 appUser.leaveGame(game);
                                 break;
                             default:
-                                Log.d(TAG, "onComplete [" + result.getCode() + "]: " + result.getMessage());
+                                Log.d(TAG, "onFinish [" + result.getCode() + "]: " + result.getMessage());
                                 break;
                         }
                         processData(iterator);
@@ -132,7 +132,7 @@ public class EventsProvider {
         loadingStatus = LOADING_STATUS.ABORTED;
         if (userLoader != null) {
             userLoader.abortAllLoadings();
-            //listener.onComplete(gameList);
+            //listener.onFinish(gameList);
         }
         if (gameLoader != null) {
             gameLoader.abortAllLoadings();

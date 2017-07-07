@@ -26,6 +26,8 @@ public class UserObj extends PackableObject {
     private final static String PATH_USERS = "users/";
     final static String PATH_GAMES_FOOTBALL = "/events/football/";
 
+    public final static String EMPTY_UID = "empty_uid";
+
     public final static String PATH_DISPLAY_NAME = "display_name";
     public final static String PATH_EMAIL = "email";
     public final static String PATH_PHOTO_URL = "photo_url";
@@ -34,7 +36,7 @@ public class UserObj extends PackableObject {
     public final static String PATH_AUTH_PROVIDER = "auth_provider";
     public final static String PATH_CLOUDE_MESSAGE_TOKEN = "cm_token";
 
-    public final static UserObj EMPTY = new UserObj("empty_uid");
+    public final static UserObj EMPTY = new UserObj(EMPTY_UID);
 
     private String uid;
     private String displayName;
@@ -46,16 +48,28 @@ public class UserObj extends PackableObject {
     private String authProvider;
     private FootballGameList gameList;
 
+    protected UserObj() {
+        this.uid = EMPTY_UID;
+    }
 
     public UserObj(String uid) {
         this.uid = uid;
     }
 
     public UserObj(FirebaseUser firebaseUser) {
-        setUid(firebaseUser.getUid());
-        setDisplayName(firebaseUser.getDisplayName());
-        setEmail(firebaseUser.getEmail());
-        setPhotoUrl(firebaseUser.getPhotoUrl());
+        this.initByFirebaseUser(firebaseUser);
+    }
+
+    public void initByFirebaseUser(FirebaseUser fUser) {
+        setUid(fUser.getUid());
+        setDisplayName(fUser.getDisplayName());
+        setEmail(fUser.getEmail());
+        setPhotoUrl(fUser.getPhotoUrl());
+
+    }
+
+    public boolean isEmpty() {
+        return this.uid.equals(EMPTY_UID);
     }
 
     private void initGameList(FootballGameList list) {

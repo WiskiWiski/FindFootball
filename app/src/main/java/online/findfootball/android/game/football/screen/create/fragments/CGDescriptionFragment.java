@@ -2,16 +2,14 @@ package online.findfootball.android.game.football.screen.create.fragments;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Formatter;
@@ -44,16 +42,6 @@ public class CGDescriptionFragment extends BaseCGFragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.cg_fragment_description, container, false);
         editText = (EditText) rootView.findViewById(R.id.edit_text);
-        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
-                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    doneEdit();
-                }
-                return false;
-            }
-        });
-
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -62,7 +50,7 @@ public class CGDescriptionFragment extends BaseCGFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                notifyDataStateChange();
+                getParent().onDataStateChange(verifyData(false));
             }
 
             @Override
@@ -83,13 +71,14 @@ public class CGDescriptionFragment extends BaseCGFragment {
 
 
     @Override
-    public void saveResult(GameObj game) {
-        game.setDescription(getDescription());
+    public void saveResult(@NonNull Object game) {
+        ((GameObj) game).setDescription(getDescription());
+        hideSoftKeyboard();
     }
 
     @Override
-    public void updateView(GameObj game) {
-        String desc = game.getDescription();
+    public void updateView(@NonNull Object game) {
+        String desc = ((GameObj) game).getDescription();
         if (desc != null && editText != null) {
             editText.setText(desc);
             editText.setSelection(desc.length());
@@ -98,16 +87,16 @@ public class CGDescriptionFragment extends BaseCGFragment {
     }
 
     @Override
-    public boolean verifyData(boolean showToast) {
+    public boolean verifyData(boolean notifyUser) {
         String description = getDescription();
         if (description == null || description.isEmpty()) {
-            if (showToast) {
+            if (notifyUser) {
                 Toast.makeText(getContext(), getString(R.string.cg_game_description_frg_empty_description),
                         Toast.LENGTH_SHORT).show();
                 vibrate();
             }
         } else if (description.length() < MINIMAL_DESCRIPTION_LENGTH) {
-            if (showToast) {
+            if (notifyUser) {
                 Formatter formatter = new Formatter();
                 formatter.format(getString(R.string.cg_game_description_frg_too_short_description),
                         MINIMAL_DESCRIPTION_LENGTH);
@@ -117,7 +106,7 @@ public class CGDescriptionFragment extends BaseCGFragment {
         } else {
             return true;
         }
-        if (editText != null){
+        if (editText != null) {
             editText.requestFocus();
         }
         return false;

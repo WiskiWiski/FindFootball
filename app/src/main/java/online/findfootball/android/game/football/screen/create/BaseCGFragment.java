@@ -4,22 +4,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import online.findfootball.android.app.App;
-import online.findfootball.android.game.GameObj;
+import online.findfootball.android.app.view.verify.view.pager.VerifyTabsParent;
+import online.findfootball.android.app.view.verify.view.pager.VerifycapableTab;
 
 /**
  * Created by WiskiW on 02.04.2017.
  */
 
-public abstract class BaseCGFragment extends Fragment {
+public abstract class BaseCGFragment extends Fragment implements VerifycapableTab {
 
     private static final String TAG = App.G_TAG + ":BaseCGFrg";
     private static final long VIBRATION_DURATION = 25;
 
-    private CGTabEditListener callback;
+    private VerifyTabsParent parent;
 
     @Override
     public void onAttach(Context context) {
@@ -27,35 +27,21 @@ public abstract class BaseCGFragment extends Fragment {
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
-            callback = (CGTabEditListener) context;
+            parent = (VerifyTabsParent) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.getClass().getName()
-                    + " must implement CGTabEditListener");
+                    + " must implement VerifyTabsParent");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        callback = null;
+        parent = null;
     }
 
-    interface CGTabEditListener {
-        void onDoneEdit();
-
-        void onDataStateChange(boolean correct);
-    }
-
-    protected void notifyDataStateChange() {
-        if (callback != null) {
-            callback.onDataStateChange(this.verifyData(false));
-        }
-    }
-
-    protected void doneEdit() {
-        if (callback != null) {
-            callback.onDoneEdit();
-        }
+    protected VerifyTabsParent getParent(){
+        return this.parent;
     }
 
     public void hideSoftKeyboard() {
@@ -71,10 +57,8 @@ public abstract class BaseCGFragment extends Fragment {
         App.vibrate(getContext(), VIBRATION_DURATION);
     }
 
-    public abstract void saveResult(GameObj game); // return : были ли данных сохранены успешно
-
-    public abstract void updateView(GameObj game);
-
-    public abstract boolean verifyData(boolean showToast); // проверка данных на корректность
-
+    @Override
+    public boolean isDifficultToSwipe() {
+        return false;
+    }
 }

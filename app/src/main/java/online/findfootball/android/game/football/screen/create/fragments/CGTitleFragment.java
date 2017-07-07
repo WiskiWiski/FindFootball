@@ -2,6 +2,7 @@ package online.findfootball.android.game.football.screen.create.fragments;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -43,7 +44,7 @@ public class CGTitleFragment extends BaseCGFragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
                         || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    doneEdit();
+                    getParent().tryRightSwipe();
                 }
                 return false;
             }
@@ -57,7 +58,7 @@ public class CGTitleFragment extends BaseCGFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                notifyDataStateChange();
+                getParent().onDataStateChange(verifyData(false));
             }
 
             @Override
@@ -83,29 +84,29 @@ public class CGTitleFragment extends BaseCGFragment {
 
 
     @Override
-    public void saveResult(GameObj game) {
-        game.setTitle(getTitle());
+    public void saveResult(@NonNull Object game) {
+        ((GameObj) game).setTitle(getTitle());
     }
 
     @Override
-    public void updateView(GameObj game) {
-        this.thisGame = game;
-        if (editText != null){
+    public void updateView(@NonNull Object game) {
+        this.thisGame = (GameObj) game;
+        if (editText != null) {
             editText.requestFocus();
         }
     }
 
     @Override
-    public boolean verifyData(boolean showToast) {
+    public boolean verifyData(boolean notifyUser) {
         String title = getTitle();
         if (title == null || title.isEmpty()) {
-            if (showToast) {
+            if (notifyUser) {
                 Toast.makeText(getContext(), getString(R.string.cg_game_title_frg_empty_title),
                         Toast.LENGTH_SHORT).show();
                 vibrate();
             }
         } else if (title.length() < MINIMAL_TITLE_LENGTH) {
-            if (showToast) {
+            if (notifyUser) {
                 Formatter formatter = new Formatter();
                 formatter.format(getString(R.string.cg_game_title_frg_too_short_title),
                         MINIMAL_TITLE_LENGTH);
@@ -115,7 +116,7 @@ public class CGTitleFragment extends BaseCGFragment {
         } else {
             return true;
         }
-        if (editText != null){
+        if (editText != null) {
             editText.requestFocus();
         }
         return false;

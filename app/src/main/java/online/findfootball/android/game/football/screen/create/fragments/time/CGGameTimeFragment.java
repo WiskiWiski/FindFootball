@@ -4,6 +4,7 @@ package online.findfootball.android.game.football.screen.create.fragments.time;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -161,7 +162,7 @@ public class CGGameTimeFragment extends BaseCGFragment
 
         daySpinnerAdapter.setTitle(f.toString());
         daySpinnerAdapter.notifyDataSetChanged();
-        notifyDataStateChange();
+        getParent().onDataStateChange(this.verifyData(false));
     }
 
     private void updateTimeSpinner(int hourOfDay, int minute) {
@@ -169,21 +170,20 @@ public class CGGameTimeFragment extends BaseCGFragment
         f.format("%d:%02d", hourOfDay, minute);
         timeSpinnerAdapter.setTitle(f.toString());
         timeSpinnerAdapter.notifyDataSetChanged();
-        notifyDataStateChange();
+        getParent().onDataStateChange(this.verifyData(false));
     }
 
     @Override
-    public void saveResult(GameObj game) {
-        if (game != null && calendar != null) {
-            game.setEventTime(calendar.getTimeInMillis());
+    public void saveResult(@NonNull Object game) {
+        if (calendar != null) {
+            ((GameObj) game).setEventTime(calendar.getTimeInMillis());
         }
     }
 
     @Override
-    public void updateView(GameObj game) {
-        hideSoftKeyboard(); // прячем клавиатуру, если она есть
-        if (game != null && calendar != null) {
-            calendar.setTimeInMillis(game.getCreateTime());
+    public void updateView(@NonNull Object game) {
+        if (calendar != null) {
+            calendar.setTimeInMillis(((GameObj) game).getCreateTime());
             updateDaySpinner(
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),

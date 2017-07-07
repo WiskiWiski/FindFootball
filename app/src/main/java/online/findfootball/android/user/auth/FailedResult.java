@@ -15,6 +15,7 @@ public class FailedResult {
             103 - отмена логина через Facebook
             69 - Емэйл не верефицирован
             25 - ожидание емэйла при регистрации
+            26 - после запосление табов регистрации пришел пустой или null AuthUserObj
 
             VK errors: https://vk.com/dev/errors
 
