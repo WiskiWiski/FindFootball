@@ -1,12 +1,12 @@
 package online.findfootball.android.app.view.verify.view.pager;
 
 import android.content.Context;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import online.findfootball.android.app.App;
-import online.findfootball.android.user.auth.signup.SUPageAdapter;
 
 import static java.lang.Math.abs;
 
@@ -142,6 +142,6 @@ public class VerifyTabViewPager extends ViewPager {
     }
 
     public VerifycapableTab getCurrentTab() {
-        return ((SUPageAdapter) getAdapter()).getItem(getCurrentItem());
+        return (VerifycapableTab) ((FragmentStatePagerAdapter) getAdapter()).getItem(getCurrentItem());
     }
 }
