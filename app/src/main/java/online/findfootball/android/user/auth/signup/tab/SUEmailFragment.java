@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.Formatter;
-
 import online.findfootball.android.R;
 import online.findfootball.android.user.auth.AuthUserObj;
 
@@ -86,7 +84,7 @@ public class SUEmailFragment extends BaseSUFragment {
                 vibrate();
             }
 
-        } else if (email.lastIndexOf("@") <= email.lastIndexOf(".") || !email.contains(".")) {
+        } else if (email.lastIndexOf("@") >= email.lastIndexOf(".") || !email.contains(".")) {
             if (notifyUser) {
                 Toast.makeText(getContext(), getString(R.string.su_email_frg_incorrect),
                         Toast.LENGTH_SHORT).show();

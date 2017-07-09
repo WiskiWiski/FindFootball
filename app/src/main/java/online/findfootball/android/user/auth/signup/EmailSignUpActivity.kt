@@ -12,6 +12,7 @@ import online.findfootball.android.app.view.verify.view.pager.VerifyTabsParent
 import online.findfootball.android.app.view.verify.view.pager.VerifycapableTab
 import online.findfootball.android.user.auth.AuthUserObj
 import online.findfootball.android.user.auth.signup.tab.SUEmailFragment
+import online.findfootball.android.user.auth.signup.tab.SUPasswordFragment
 
 class EmailSignUpActivity : BaseActivity(), VerifyTabsParent {
 
@@ -50,9 +51,13 @@ class EmailSignUpActivity : BaseActivity(), VerifyTabsParent {
             val adapter = SUPageAdapter(supportFragmentManager)
             // add tabs here
             adapter.addNext(SUEmailFragment())
+            adapter.addNext(SUPasswordFragment())
             viewPager!!.adapter = adapter
             viewPager!!.setParent(this)
             adapter.getItem(0)?.updateView(authUser)
+
+
+
         }
 
         btnLeft = findViewById(R.id.fab_left) as FloatingActionButton

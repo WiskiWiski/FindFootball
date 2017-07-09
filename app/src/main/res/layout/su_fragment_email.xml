@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:text="@string/cg_fragment_email"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:alpha="0.5"
         android:gravity="center"
+        android:text="@string/cg_fragment_email_letter"
         android:textColor="@android:color/white"
         tools:text="@string/cg_fragment_email_letter" />
 
