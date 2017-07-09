@@ -50,14 +50,16 @@
 
 
     <!-- === Email Sign Up === -->
+    <string name="su_email_frg_empty_email">Email cannot be empty!</string>
+    <string name="su_email_frg_without_dog">Email cannot be without "@"!</string>
+    <string name="su_email_frg_incorrect">Email incorrect!</string>
+<string name="su_email_frg_empty_password">Password cannot be empty!</string>
 
-
-    <!-- === Create Game === -->
+    <!-- === Create Game  === -->
     <string name="cg_game_created_msg" formatted="false">%s has been created!</string>
 
     <string name="cg_game_title">Game title</string>
     <string name="cg_game_description">Game description</string>
-
 
 
     <string name="cg_game_title_frg_empty_title">Title cannot be empty!</string>

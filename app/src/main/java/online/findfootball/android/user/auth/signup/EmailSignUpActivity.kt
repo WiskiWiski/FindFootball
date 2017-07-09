@@ -11,6 +11,7 @@ import online.findfootball.android.app.view.verify.view.pager.VerifyTabViewPager
 import online.findfootball.android.app.view.verify.view.pager.VerifyTabsParent
 import online.findfootball.android.app.view.verify.view.pager.VerifycapableTab
 import online.findfootball.android.user.auth.AuthUserObj
+import online.findfootball.android.user.auth.signup.tab.SUEmailFragment
 
 class EmailSignUpActivity : BaseActivity(), VerifyTabsParent {
 
@@ -48,6 +49,7 @@ class EmailSignUpActivity : BaseActivity(), VerifyTabsParent {
         if (viewPager != null) {
             val adapter = SUPageAdapter(supportFragmentManager)
             // add tabs here
+            adapter.addNext(SUEmailFragment())
             viewPager!!.adapter = adapter
             viewPager!!.setParent(this)
             adapter.getItem(0)?.updateView(authUser)

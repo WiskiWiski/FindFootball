@@ -22,7 +22,6 @@ import online.findfootball.android.game.GameObj;
 import online.findfootball.android.game.football.object.FootballPlayer;
 import online.findfootball.android.game.football.screen.create.fragments.CGDescriptionFragment;
 import online.findfootball.android.game.football.screen.create.fragments.CGLocationFragment;
-import online.findfootball.android.game.football.screen.create.fragments.CGTitleFragment;
 import online.findfootball.android.game.football.screen.create.fragments.team.size.CGTeamSizeFragment;
 import online.findfootball.android.game.football.screen.create.fragments.time.CGGameTimeFragment;
 import online.findfootball.android.app.view.verify.view.pager.VerifyTabViewPager;

@@ -30,7 +30,7 @@
         tools:text="@string/cg_fragment_email_letter" />
 
     <EditText
-        android:id="@+id/edit_text"
+        android:id="@+id/edit_text_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
