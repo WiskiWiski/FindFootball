@@ -39,7 +39,7 @@
     <string name="auth_activity_hint_email" translatable="false">Email</string>
     <string name="auth_activity_button_sign_in">Login</string>
     <string name="auth_activity_button_sign_up">Sign Up</string>
-    <string name="auth_activity_msg_other_networks" translatable="false">or use social network</string>
+    <string name="auth_activity_msg_other_networks">Or</string>
     <string name="cg_fragment_email">Your email</string>
     <string name="cg_fragment_password">Tape your password</string>
     <string name="cg_fragment_email_letter">You will get verification letter</string>
