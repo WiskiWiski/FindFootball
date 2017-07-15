@@ -103,7 +103,7 @@ public class MyEmailAuthAuthProvider extends RootAuthProvider {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != EmailSignUpActivity.REQUEST_CODE) {
+        if (requestCode != EmailSignUpActivity.REQUEST_CODE || data == null) {
             return;
         }
         AuthUserObj signUpUser = data.getParcelableExtra(EmailSignUpActivity.EXTRA_KEY);

@@ -36,7 +36,7 @@ public class SUEmailFragment extends BaseSUFragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                SUEmailFragment.super.getParent().onDataStateChange(verifyData(false));
             }
 
             @Override

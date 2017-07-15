@@ -13,4 +13,5 @@ interface VerifycapableTab {
 
     fun isDifficultToSwipe(): Boolean // Таб с проблематичной регистрацией свайпов
 
+    fun getParent(): VerifyTabsParent?
 }

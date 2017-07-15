@@ -40,7 +40,7 @@ public abstract class BaseCGFragment extends Fragment implements VerifycapableTa
         parent = null;
     }
 
-    protected VerifyTabsParent getParent(){
+    public VerifyTabsParent getParent(){
         return this.parent;
     }
 

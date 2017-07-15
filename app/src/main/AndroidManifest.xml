@@ -94,7 +94,8 @@
         <activity
             android:name=".user.auth.signup.EmailSignUpActivity"
             android:label="@string/activity_title_email_sign_up"
-            android:theme="@style/AppTheme.NoToolBar">
+            android:theme="@style/AppTheme.NoToolBar"
+            android:windowSoftInputMode="adjustResize">
         </activity>
     </application>
 

@@ -36,7 +36,7 @@ public class SUPasswordFragment extends BaseSUFragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                SUPasswordFragment.super.getParent().onDataStateChange(verifyData(false));
             }
 
             @Override
