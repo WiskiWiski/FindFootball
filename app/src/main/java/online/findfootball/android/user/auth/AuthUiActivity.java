@@ -210,7 +210,7 @@ public class AuthUiActivity extends BaseActivity {
 
         String token = FirebaseInstanceId.getInstance().getToken();
         if (token != null) {
-            thisUserReference.child(UserObj.PATH_CLOUDE_MESSAGE_TOKEN).setValue(token);
+            thisUserReference.child(UserObj.PATH_CLOUD_MESSAGE_TOKEN).setValue(token);
         }
     }
 

@@ -195,24 +195,6 @@ public class AppUser extends UserObj {
         return super.hashCode() * 3;
     }
 
-
-    @NonNull
-    @Override
-    public DataInstanceResult pack(@NonNull HashMap<String, Object> databaseMap) {
-        databaseMap.put(PATH_DISPLAY_NAME, getDisplayName());
-        databaseMap.put(PATH_PHOTO_URL, getPhotoUrl().toString());
-        databaseMap.put(PATH_EMAIL, getEmail());
-        databaseMap.put(PATH_CLOUDE_MESSAGE_TOKEN, getCloudMessageToken());
-        databaseMap.put(PATH_REGISTER_TIME, getRegisterTime());
-        databaseMap.put(PATH_LAST_ACTIVITY_TIME, getLastActivityTime());
-        databaseMap.put(PATH_AUTH_PROVIDER, getAuthProvider());
-
-        HashMap<String, Object> gameListMap = new HashMap<>();
-        getGameList().pack(gameListMap);
-        databaseMap.put(PATH_GAMES_FOOTBALL, gameListMap);
-        return DataInstanceResult.onSuccess();
-    }
-
     public static UserStateListener getUserStateListener() {
         return userStateListener;
     }
