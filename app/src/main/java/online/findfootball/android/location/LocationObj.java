@@ -33,11 +33,13 @@ public class LocationObj extends PackableObject implements Parcelable, Serializa
     private final static String PATH_LONGITUDE = "longitude";
     public final static String PATH_CITY_NAME = "city_name";
     public final static String PATH_COUNTRY_NAME = "country_name";
+    public final static String PATH_ADDRESS_NAME = "address";
 
     private double latitude;
     private double longitude;
     private String cityName;
     private String countryName;
+    private String addressName;
     private List<String> closesCites; // TODO : get closes cites
 
     public LocationObj() {
@@ -67,6 +69,10 @@ public class LocationObj extends PackableObject implements Parcelable, Serializa
         return cityName;
     }
 
+    public String getAddressName(){
+        return addressName;
+    }
+
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
@@ -86,6 +92,8 @@ public class LocationObj extends PackableObject implements Parcelable, Serializa
     public void setCityName(String cityName) {
         this.cityName = cityName;
     }
+
+    public void setAddressName(String addressName){this.addressName = addressName;}
 
     public String getCountryName() {
         return countryName;
@@ -112,6 +120,7 @@ public class LocationObj extends PackableObject implements Parcelable, Serializa
     private LocationObj(Parcel in) {
         latitude = in.readDouble();
         longitude = in.readDouble();
+        addressName = in.readString();
         cityName = in.readString();
         countryName = in.readString();
         closesCites = in.readArrayList(String.class.getClassLoader());
@@ -127,6 +136,7 @@ public class LocationObj extends PackableObject implements Parcelable, Serializa
     public void writeToParcel(Parcel out, int flags) {
         out.writeDouble(latitude);
         out.writeDouble(longitude);
+        out.writeString(addressName);
         out.writeString(cityName);
         out.writeString(countryName);
         out.writeList(closesCites);
@@ -153,6 +163,7 @@ public class LocationObj extends PackableObject implements Parcelable, Serializa
     public DataInstanceResult pack(@NonNull HashMap<String, Object> databaseMap) {
         databaseMap.put(PATH_LATITUDE, latitude);
         databaseMap.put(PATH_LONGITUDE, longitude);
+        databaseMap.put(PATH_ADDRESS_NAME,addressName);
         databaseMap.put(PATH_CITY_NAME, cityName);
         databaseMap.put(PATH_COUNTRY_NAME, countryName);
         return DataInstanceResult.onSuccess();
@@ -165,6 +176,7 @@ public class LocationObj extends PackableObject implements Parcelable, Serializa
             setCountryName((String) dataSnapshot.child(PATH_COUNTRY_NAME).getValue());
             setLatitude((Double) dataSnapshot.child(PATH_LATITUDE).getValue());
             setLongitude((Double) dataSnapshot.child(PATH_LONGITUDE).getValue());// FIXME: java.lang.ClassCastException: java.lang.Long cannot be cast to java.lang.Double
+            setAddressName((String) dataSnapshot.child(PATH_ADDRESS_NAME).getValue());
             setCityName((String) dataSnapshot.child(PATH_CITY_NAME).getValue());
             return DataInstanceResult.onSuccess();
         } catch (Exception ex) {
@@ -179,13 +191,14 @@ public class LocationObj extends PackableObject implements Parcelable, Serializa
             List<Address> addresses = geocoder.getFromLocation(getLatitude(), getLongitude(), 1);
             if (addresses != null && addresses.size() > 0) {
                 Address address = addresses.get(0);
+                addressName = address.getAddressLine(0).substring(0,address.getAddressLine(0).indexOf(","));
                 countryName = address.getCountryName();
                 cityName = address.getLocality();
                 if (cityName == null) {
                     cityName = address.getSubAdminArea();
                 }
 
-                if (cityName != null && countryName != null) {
+                if (addressName != null && cityName != null && countryName != null) {
                     return 0;
                 } else {
                     //resultMsg = "Something was not loaded";

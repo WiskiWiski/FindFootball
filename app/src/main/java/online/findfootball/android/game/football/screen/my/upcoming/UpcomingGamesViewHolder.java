@@ -68,12 +68,13 @@ class UpcomingGamesViewHolder extends RecyclerView.ViewHolder {
 
     public void setLocation(LocationObj location){
         if (location != null){
+            String addressName = location.getAddressName();
             String addressCity = location.getCityName();
             String addressCountry = location.getCountryName();
-            if (addressCity != null && addressCountry != null){
-                locationView.setText(addressCity + ", " + addressCountry);
+            if (addressName != null && addressCity != null){
+                locationView.setText(addressName);
             } else {
-                if (addressCity != null){
+                if (addressCity != null && addressCountry !=null){
                     locationView.setText(addressCity);
                 } else {
                     locationView.setText(addressCountry);
@@ -81,6 +82,7 @@ class UpcomingGamesViewHolder extends RecyclerView.ViewHolder {
             }
         }
     }
+
 
     public void setTeamsSize(int capacity, int occupancy){
         String str = occupancy + "/" + capacity;

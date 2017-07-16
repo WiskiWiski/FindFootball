@@ -110,6 +110,8 @@
     <string name="game_info_activity_tab_title_chat">Chat</string>
     <string name="game_info_activity_tab_title_players">Players</string>
 
+    <!-- === Chat === -->
+    <string name="type_message">Message</string>
 
     <!-- === Popup === -->
     <string name="popup_msg_coming_soon">Coming soon!</string>

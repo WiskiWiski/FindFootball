@@ -75,7 +75,7 @@ public class BgTaskMaker extends AsyncTask<Void, Void, Integer> {
     }
 
     public interface OnBgCompleteListener {
-        // TODO : add onFailed() & onSuccess()
+        // TODO : put onFailed() & onSuccess()
         void onComplete();
     }
 

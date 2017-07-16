@@ -171,12 +171,13 @@ public class GIAboutTab extends Fragment {
         if (gameLocationView != null) {
             LocationObj location = thisGameObj.getLocation();
             if (location != null) {
+                String addressName = location.getAddressName();
                 String addressCity = location.getCityName();
                 String addressCountry = location.getCountryName();
-                if (addressCity != null && addressCountry != null) {
-                    gameLocationView.setText(addressCity + ", " + addressCountry);
+                if (addressName != null && addressCity != null){
+                    gameLocationView.setText(addressName);
                 } else {
-                    if (addressCity != null) {
+                    if (addressCity != null && addressCountry !=null){
                         gameLocationView.setText(addressCity);
                     } else {
                         gameLocationView.setText(addressCountry);
