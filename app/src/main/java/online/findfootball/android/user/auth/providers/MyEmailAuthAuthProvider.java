@@ -67,7 +67,7 @@ public class MyEmailAuthAuthProvider extends RootAuthProvider {
 
 /*
         TODO : Move to EmailSignUpActivity
-        FirebaseAuth.getInstance()
+        FirebaseAuth.getUser()
                 .createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override

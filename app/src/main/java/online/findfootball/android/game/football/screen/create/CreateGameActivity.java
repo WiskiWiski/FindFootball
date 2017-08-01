@@ -155,7 +155,7 @@ public class CreateGameActivity extends BaseActivity implements
     }
 
     public void onFinish(final GameObj game) {
-        final AppUser appUser = AppUser.getInstance(this, true);
+        final AppUser appUser = AppUser.getUser(this, true);
         if (appUser != null) {
             Formatter formatter = new Formatter();
             formatter.format(getString(R.string.cg_game_created_msg), thisGameObject.getTitle());

@@ -82,7 +82,7 @@ public class GIPlayersTab extends Fragment {
             @Override
             public void onClick(View v) {
                 setButtonEnable(false);
-                thisAppUser = AppUser.getInstance(getContext());
+                thisAppUser = AppUser.getUser(getContext());
                 if (thisAppUser != null) {
                     afterUserAuth(thisAppUser);
                 }
@@ -121,7 +121,7 @@ public class GIPlayersTab extends Fragment {
                             teams.add(player);
                             if (mAdapter != null) {
                                 if (thisAppUser == null) {
-                                    thisAppUser = AppUser.getInstance(getContext());
+                                    thisAppUser = AppUser.getUser(getContext());
                                 }
                                 if (thisAppUser != null && player.getUser().equals(thisAppUser)) {
                                     mAdapter.addAppUserPlayer(player);
@@ -153,7 +153,7 @@ public class GIPlayersTab extends Fragment {
                 teams.remove(player);
                 if (mAdapter != null) {
                     if (thisAppUser == null) {
-                        thisAppUser = AppUser.getInstance(getContext());
+                        thisAppUser = AppUser.getUser(getContext());
                     }
                     if (thisAppUser != null && player.getUser().equals(thisAppUser)) {
                         mAdapter.removeAppUserPayer(player);
@@ -215,7 +215,7 @@ public class GIPlayersTab extends Fragment {
 
     private void tryEnableButton(FootballPlayer player) {
         if (thisAppUser == null) {
-            thisAppUser = AppUser.getInstance(getContext());
+            thisAppUser = AppUser.getUser(getContext());
         }
         if ((thisAppUser != null && player.getUser().equals(thisAppUser))
                 || loadedCount >= thisGameObj.getTeams().getTeamsOccupancy()) {
@@ -236,7 +236,7 @@ public class GIPlayersTab extends Fragment {
         if (requestCode == AppUser.AUTH_REQUEST_CODE) {
             switch (resultCode) {
                 case AppUser.RESULT_SUCCESS:
-                    AppUser appUser = AppUser.getInstance(getContext(), false);
+                    AppUser appUser = AppUser.getUser(getContext(), false);
                     if (appUser != null) {
                         afterUserAuth(appUser);
                     }

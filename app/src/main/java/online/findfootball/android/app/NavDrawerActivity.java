@@ -26,6 +26,7 @@ import online.findfootball.android.firebase.database.DatabaseLoader;
 import online.findfootball.android.firebase.database.DatabasePackable;
 import online.findfootball.android.user.AppUser;
 import online.findfootball.android.user.ProfileActivity;
+import online.findfootball.android.user.auth.AuthUiActivity;
 
 /**
  * Created by WiskiW on 16.03.2017.
@@ -185,7 +186,7 @@ public class NavDrawerActivity extends BaseActivity implements
         navDrawHeaderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AppUser.requestUser(getApplicationContext());
+                AuthUiActivity.requestAuth(getApplicationContext());
             }
         });
         photoView.setImageDrawable(null);
@@ -201,7 +202,7 @@ public class NavDrawerActivity extends BaseActivity implements
         photoView = (ImageView) navDrawHeaderLayout.findViewById(R.id.user_photo);
 
         AppUser.setUserStateListener(this);
-        AppUser appUser = AppUser.getInstance(this, false);
+        AppUser appUser = AppUser.getUser(this, false);
         if (appUser == null) {
             onSignOut();
         } else {

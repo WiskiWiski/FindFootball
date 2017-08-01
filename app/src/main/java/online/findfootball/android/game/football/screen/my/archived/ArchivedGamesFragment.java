@@ -78,7 +78,7 @@ public class ArchivedGamesFragment extends Fragment implements
     private void fillAdapter() {
         if (mAdapter.getItemCount() == 0) {
             Context context = getContext();
-            AppUser user = AppUser.getInstance(context);
+            AppUser user = AppUser.getUser(context);
             if (user != null) {
                 swipeRefreshLayout.setRefreshing(true);
                 eventsProvider = new EventsProvider(

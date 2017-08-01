@@ -14,7 +14,7 @@ class FirebaseInstanceIDService : FirebaseInstanceIdService() {
 
     override fun onTokenRefresh() {
         super.onTokenRefresh()
-        val appUser = AppUser.getInstance(applicationContext, false)
+        val appUser = AppUser.getUser(applicationContext, false)
         if (appUser != null) {
             Log.i(TAG, "cm_token refresh for ${appUser.email}")
             appUser.cloudMessageToken = FirebaseInstanceId.getInstance().token

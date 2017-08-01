@@ -90,7 +90,7 @@ public class UpcomingGamesFragment extends Fragment implements
     private void fillAdapter() {
         if (mAdapter.getItemCount() == 0) {
             Context context = getContext();
-            final AppUser appUser = AppUser.getInstance(context);
+            final AppUser appUser = AppUser.getUser(context);
             if (appUser == null) {
                 return;
             }
@@ -172,7 +172,7 @@ public class UpcomingGamesFragment extends Fragment implements
 
     private void deleteEvent(int pos) {
         Context context = getContext();
-        AppUser appUser = AppUser.getInstance(context);
+        AppUser appUser = AppUser.getUser(context);
         if (appUser != null) {
             final GameObj game = mAdapter.getGameList().get(pos);
             mAdapter.removeGame(pos);

@@ -100,7 +100,7 @@ public class GIChatTab extends Fragment implements Mailbox {
         String msgText = msgEditText.getText().toString().trim();
         if (thisGameObj != null && !msgText.isEmpty()) {
             if (appUser == null) {
-                appUser = AppUser.getInstance(getContext(), true);
+                appUser = AppUser.getUser(getContext(), true);
             }
             if (appUser != null) {
                 MessageObj msg = new MessageObj();
@@ -132,7 +132,7 @@ public class GIChatTab extends Fragment implements Mailbox {
     public void setData(GameObj game) {
         this.thisGameObj = game;
         if (appUser == null) {
-            appUser = AppUser.getInstance(getContext(), true);
+            appUser = AppUser.getUser(getContext(), true);
         }
         if (appUser != null) {
             startListening();

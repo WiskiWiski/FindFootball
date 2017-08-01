@@ -67,7 +67,7 @@ public class MainActivity extends NavDrawerActivity {
         findViewById(R.id.test_btn_3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AppUser.getInstance(view.getContext(), true);
+                AppUser.getUser(view.getContext(), true);
             }
         });
     }

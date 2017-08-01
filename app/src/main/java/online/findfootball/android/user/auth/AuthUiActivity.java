@@ -1,5 +1,6 @@
 package online.findfootball.android.user.auth;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -39,6 +42,7 @@ public class AuthUiActivity extends BaseActivity {
     private static final String TAG = App.G_TAG + ":AuthAct";
 
     public static final String SIGN_IN_MSG_INTENT_KEY = "sign_in_msg";
+    public static final int AUTH_REQUEST_CODE = 101;
 
     private EditText inputEmail, inputPassword;
     private Button btnSignIn;
@@ -160,9 +164,9 @@ public class AuthUiActivity extends BaseActivity {
                         // учедомления слушателя о входе пользователя
                         AppUser.UserStateListener userStateListener = AppUser.getUserStateListener();
                         if (userStateListener != null) {
-                            AppUser appUser = AppUser.getUser();
-                            if (appUser != null) {
-                                userStateListener.onLogin(AppUser.getUser());
+                            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                            if (firebaseUser != null && firebaseUser.isEmailVerified()) {
+                                userStateListener.onLogin(new AppUser(firebaseUser));
                             }
                         }
                     }
@@ -183,7 +187,6 @@ public class AuthUiActivity extends BaseActivity {
         vkAuthProvider = new MyVkontakteAuthAuthProvider(this, providerCallback);
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -192,7 +195,6 @@ public class AuthUiActivity extends BaseActivity {
         vkAuthProvider.onActivityResult(requestCode, resultCode, data);
         emailAuthProvider.onActivityResult(requestCode, resultCode, data);
     }
-
 
     public static void signUpUser(AuthUserObj user) {
         // Записывает данные в бд после регистрации пользователя
@@ -264,5 +266,28 @@ public class AuthUiActivity extends BaseActivity {
             return true;
         }
         return false;
+    }
+
+    public static void requestAuth(Context context) {
+        /*
+            Смотреть requestAuth(Context, String)
+         */
+        requestAuth(context, null);
+    }
+
+    public static void requestAuth(Context context, String singInMsg) {
+        /*
+            Запускает активити входа юзера
+         */
+        Intent intent = new Intent(context, AuthUiActivity.class);
+        if (singInMsg != null) {
+            intent.putExtra(AuthUiActivity.SIGN_IN_MSG_INTENT_KEY, singInMsg);
+        }
+        if (!(context instanceof Activity)) {
+            Log.i(TAG, "RequestAuth: Context must be instance of Activity to use onActivityResult");
+            context.startActivity(intent);
+        } else {
+            ((Activity) context).startActivityForResult(intent, AUTH_REQUEST_CODE);
+        }
     }
 }
