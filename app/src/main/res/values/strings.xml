@@ -50,10 +50,10 @@
 
 
     <!-- === Email Sign Up === -->
-    <string name="su_email_frg_empty_email">Email cannot be empty!</string>
-    <string name="su_email_frg_without_dog">Email cannot be without "@"!</string>
-    <string name="su_email_frg_incorrect">Email incorrect!</string>
-<string name="su_email_frg_empty_password">Password cannot be empty!</string>
+    <string name="su_email_frg_empty_email" translatable="false">Email cannot be empty!</string>
+    <string name="su_email_frg_without_dog" translatable="false">Email cannot be without "@"!</string>
+    <string name="su_email_frg_incorrect" translatable="false">Email incorrect!</string>
+<string name="su_email_frg_empty_password" translatable="false">Password cannot be empty!</string>
 
     <!-- === Create Game  === -->
     <string name="cg_game_created_msg" formatted="false">%s has been created!</string>
@@ -111,7 +111,7 @@
     <string name="game_info_activity_tab_title_players">Players</string>
 
     <!-- === Chat === -->
-    <string name="type_message">Message</string>
+    <string name="type_message" translatable="false">Message</string>
 
     <!-- === Popup === -->
     <string name="popup_msg_coming_soon">Coming soon!</string>

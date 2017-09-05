@@ -13,7 +13,7 @@
     <string name="auth_activity_empty_email">Адрес не может быть пустым!</string>
     <string name="auth_activity_empty_password">Пароль не может быть пустым!</string>
     <string name="auth_activity_hint_password">Пароль</string>
-    <string name="auth_activity_password_too_short" translatable="false">Пароль должен быть не короче 6 символов</string>
+    <string name="auth_activity_password_too_short">Пароль должен быть не короче 6 символов</string>
     <string name="auth_required_re_authorization">Ошибка авторизации. Попробуйте снова.</string>
     <string name="cg_fragment_email">Ваш email</string>
     <string name="cg_fragment_password">Придумайте пароль</string>
@@ -42,10 +42,9 @@
     <string name="my_games_activity_title_upcoming_games">Мои игры</string>
     <string name="nav_create_game_title">Начать игру</string>
     <string name="nav_find_game_title">Найти игру</string>
-    <string name="nav_main_title"></string>
     <string name="nav_nav_archived_games_title">Архив</string>
     <string name="nav_settings_title">Настройки</string>
-    <string name="nav_upcoming_games_title" translatable="false">Мои игры</string>
+    <string name="nav_upcoming_games_title">Мои игры</string>
     <string name="navigation_drawer_close">Закрыть</string>
     <string name="navigation_drawer_open">Открыть</string>
     <string name="popup_msg_coming_soon">Скоро!</string>

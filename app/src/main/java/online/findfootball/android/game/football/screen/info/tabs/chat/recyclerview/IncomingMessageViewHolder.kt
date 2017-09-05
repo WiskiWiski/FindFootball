@@ -23,8 +23,8 @@ import online.findfootball.android.user.UserObj
  */
 class IncomingMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    val msgTextView: TextView = itemView.findViewById(R.id.msg_edit_text) as TextView
-    val userPhotoView: ImageView = itemView.findViewById(R.id.user_photo) as ImageView
+    val msgTextView: TextView = itemView.findViewById(R.id.msg_edit_text)
+    val userPhotoView: ImageView = itemView.findViewById(R.id.user_photo)
 
     var message: MessageObj = MessageObj()
         set(value) {

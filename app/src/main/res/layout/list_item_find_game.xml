@@ -44,7 +44,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/event_players_count"
                 tools:text="3/22"
-                android:textColor="@color/wallet_hint_foreground_holo_dark"
                 android:textSize="18sp"
                 android:gravity="center"/>
 

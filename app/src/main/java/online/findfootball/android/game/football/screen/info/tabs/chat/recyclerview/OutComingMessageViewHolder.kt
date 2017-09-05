@@ -15,7 +15,7 @@ class OutComingMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
 
     var message: OutComingMessage = OutComingMessage(MessageObj())
         set(value) {
-            val msgText: TextView = itemView.findViewById(R.id.msg_edit_text) as TextView
+            val msgText: TextView = itemView.findViewById(R.id.msg_edit_text)
             msgText.text = value.text
 
 
