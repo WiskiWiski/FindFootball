@@ -210,16 +210,18 @@ public class AuthUiActivity extends BaseActivity {
             thisUserReference.child(UserObj.PATH_AUTH_PROVIDER).setValue("unknown");
         }
 
-        String token = FirebaseInstanceId.getInstance().getToken();
-        if (token != null) {
-            thisUserReference.child(UserObj.PATH_CLOUD_MESSAGE_TOKEN).setValue(token);
-        }
     }
 
     public static void signInUser(AuthUserObj user) {
         // Обновляет поля пользователя в бд по данным FirebaseUser после авторизации
         final DatabaseReference thisUserReference = FirebaseDatabase.getInstance().getReference()
                 .child(FBDatabase.PATH_USERS).child(user.getUid());
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+        if (token != null) {
+            thisUserReference.child(UserObj.PATH_CLOUD_MESSAGE_TOKEN).setValue(token);
+        }
+
         if (!user.getEmail().isEmpty()) {
             thisUserReference.child(UserObj.PATH_EMAIL).setValue(user.getEmail());
         }

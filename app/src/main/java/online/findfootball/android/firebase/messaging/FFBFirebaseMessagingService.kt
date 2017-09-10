@@ -16,19 +16,18 @@ open class FFBFirebaseMessagingService : FirebaseMessagingService() {
 
     companion object {
         private val TAG = App.G_TAG + ":FFB_FMS"
+
         private val REMOTE_MSG_TYPE_KEY = "type"
+
         private val TYPE_VALUE_MESSAGE_OBJ = "chat_message" // объект типа сообщение чата
 
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         if (remoteMessage != null) {
-            Log.d(TAG, "onMessageReceived-messageType: ${remoteMessage.messageType}")
-            Log.d(TAG, "onMessageReceived-data: ${remoteMessage.data}")
-            Log.d(TAG, "onMessageReceived-from: ${remoteMessage.from}")
-
             val remoteMessageData = remoteMessage.data
-            when (remoteMessageData["type"]) {
+            val msgType = remoteMessageData[REMOTE_MSG_TYPE_KEY]
+            when (msgType) {
                 TYPE_VALUE_MESSAGE_OBJ -> {
                     val message = MessageObj()
                     if (message.rebuildByMessageData(remoteMessageData)) {
@@ -45,7 +44,7 @@ open class FFBFirebaseMessagingService : FirebaseMessagingService() {
                     }
                 }
                 else -> {
-                    unknownContentType(remoteMessageData[REMOTE_MSG_TYPE_KEY] as String)
+                    unknownContentType(msgType.toString())
                 }
             }
         } else {
@@ -53,12 +52,12 @@ open class FFBFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    private fun badRemoteMessageData(remoteMessageData: Map <String, String>) {
+    private fun badRemoteMessageData(remoteMessageData: Map<String, String>) {
         Log.d(TAG, "badRemoteMessageData: ${remoteMessageData[REMOTE_MSG_TYPE_KEY]}")
     }
 
     private fun unknownContentType(contentType: String) {
-        Log.d(TAG, "unknownContentType: unknown content type: $contentType}")
+        Log.d(TAG, "unknownContentType: unknown content type: $contentType")
     }
 
 

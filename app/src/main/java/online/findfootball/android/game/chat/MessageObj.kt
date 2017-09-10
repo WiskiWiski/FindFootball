@@ -25,6 +25,11 @@ open class MessageObj : PackableObject, RemoteMessageContent, Notificatable {
     companion object {
         private val PATH_MESSAGE = "text"
         private val PATH_USER_FROM = "from"
+
+        private val REMOTE_MSG_FROM_KEY = "uid_from"
+        private val REMOTE_MSG_TIME_KEY = "time"
+        private val REMOTE_MSG_TEXT_KEY = "text"
+
         @JvmField val CREATOR: Parcelable.Creator<MessageObj> =
                 object : Parcelable.Creator<MessageObj> {
                     override fun createFromParcel(source: Parcel): MessageObj {
@@ -145,23 +150,23 @@ open class MessageObj : PackableObject, RemoteMessageContent, Notificatable {
     }
 
     override fun rebuildByMessageData(contentMap: Map<String, String>): Boolean {
-        var result: Boolean = true
+        var result = true
 
-        val uidFrom: String? = contentMap["from"]
+        val uidFrom: String? = contentMap[REMOTE_MSG_FROM_KEY]
         if (uidFrom != null) {
             this.userFrom = UserObj(uidFrom)
         } else {
             result = false
         }
 
-        val timeString: String? = contentMap["time"]
+        val timeString: String? = contentMap[REMOTE_MSG_TIME_KEY]
         if (timeString != null) {
             this.time = timeString.toLong()
         } else {
             result = false
         }
 
-        val text: String? = contentMap["text"]
+        val text: String? = contentMap[REMOTE_MSG_TEXT_KEY]
         if (text != null) {
             this.text = text
         } else {
