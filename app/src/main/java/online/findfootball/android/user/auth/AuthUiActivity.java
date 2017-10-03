@@ -188,6 +188,11 @@ public class AuthUiActivity extends BaseActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        moveTaskToBack(true); // To close app
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         googleAuthProvider.onActivityResult(requestCode, resultCode, data);
