@@ -99,7 +99,7 @@ public class VerifyTabViewPager extends ViewPager {
                              */
                             pressState++;
                             VerifycapableTab tab = getCurrentTab();
-                            if (!tab.isDifficultToSwipe() && tab.verifyData(pressState < 2)) {
+                            if (tab.swipeble() && tab.verifyData(pressState < 2)) {
                                 parent.saveTabData(tab);
                                 return true;
                             } else {
@@ -110,7 +110,7 @@ public class VerifyTabViewPager extends ViewPager {
                         }
                     } else if (diffX > 0) {
                         // swipe from left to right detected
-                        return !getCurrentTab().isDifficultToSwipe();
+                        return getCurrentTab().swipeble();
                     } else {
                         return false;
                     }

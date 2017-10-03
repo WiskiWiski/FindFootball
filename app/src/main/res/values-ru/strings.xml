@@ -15,8 +15,8 @@
     <string name="auth_activity_hint_password">Пароль</string>
     <string name="auth_activity_password_too_short">Пароль должен быть не короче 6 символов</string>
     <string name="auth_required_re_authorization">Ошибка авторизации. Попробуйте снова.</string>
-    <string name="cg_fragment_email">Ваш email</string>
-    <string name="cg_fragment_password">Придумайте пароль</string>
+    <string name="su_fragment_email">Ваш email</string>
+    <string name="su_fragment_password">Придумайте пароль</string>
     <string name="cg_game_created_msg">%s организована!</string>
     <string name="cg_game_description_frg_empty_description">Информация не может быть пустым.</string>
     <string name="cg_game_description_frg_hint">Как пройти, сколько стоит и тд.</string>
@@ -50,7 +50,7 @@
     <string name="popup_msg_coming_soon">Скоро!</string>
     <string name="profile_activity_sign_out_btn_text">Выйти</string>
     <string name="upcoming_games_fragment_no_data">Игры не найдены</string>
-    <string name="cg_fragment_email_letter">Мы вышлем вам письмо с подтверждением</string>
+    <string name="su_fragment_email_small">Мы вышлем вам письмо с подтверждением</string>
     <string name="cg_game_description">Информация</string>
     <string name="cg_game_title">Название</string>
     <string name="find_game_activity_select_location">Изменить регион</string>

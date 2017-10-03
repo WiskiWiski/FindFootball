@@ -10,9 +10,9 @@ import online.findfootball.android.app.view.verify.view.pager.VerifycapableTab
  * Created by WiskiW on 06.07.2017.
  */
 abstract class BaseSUFragment : Fragment(), VerifycapableTab {
-    private var parent : VerifyTabsParent? = null
-    val VIBRATION_DURATION: Long = 25
-    override fun isDifficultToSwipe(): Boolean = false
+    private var parent: VerifyTabsParent? = null
+    private val VIBRATION_DURATION: Long = 25
+    override fun swipeble() = true
     protected fun vibrate() {
         App.vibrate(context, VIBRATION_DURATION)
     }

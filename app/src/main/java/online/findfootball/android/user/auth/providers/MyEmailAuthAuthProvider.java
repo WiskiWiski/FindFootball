@@ -65,30 +65,6 @@ public class MyEmailAuthAuthProvider extends RootAuthProvider {
         signUpIntent.putExtra(EmailSignUpActivity.EXTRA_KEY, authUser);
         activity.startActivityForResult(signUpIntent, EmailSignUpActivity.REQUEST_CODE);
 
-/*
-        TODO : Move to EmailSignUpActivity
-        FirebaseAuth.getUser()
-                .createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            task.getResult().getUser().sendEmailVerification()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            Log.d(TAG, "Successful sent verification" + task.isSuccessful());
-
-                                        }
-                                    });
-                            FailedResult failedResult = new FailedResult(25)
-                                    .message("Check your email please!")
-                                    .provider(getProvider());
-                            callback.onFailed(failedResult);
-                        } else callback.onFailed(onCompleteFailed(task));
-                    }
-                });
-                */
     }
 
 

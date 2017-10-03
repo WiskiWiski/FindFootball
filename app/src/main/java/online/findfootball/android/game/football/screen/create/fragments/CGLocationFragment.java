@@ -73,7 +73,7 @@ public class CGLocationFragment extends BaseCGFragment {
     }
 
     @Override
-    public boolean isDifficultToSwipe() {
-        return true;
+    public boolean swipeble() {
+        return false;
     }
 }

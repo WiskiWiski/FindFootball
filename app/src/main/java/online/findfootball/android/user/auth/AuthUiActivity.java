@@ -226,8 +226,9 @@ public class AuthUiActivity extends BaseActivity {
             thisUserReference.child(UserObj.PATH_EMAIL).setValue(user.getEmail());
         }
 
-        if (!user.getDisplayName().isEmpty()) {
-            thisUserReference.child(UserObj.PATH_DISPLAY_NAME).setValue(user.getDisplayName());
+        String displayName = user.getDisplayName();
+        if (displayName != null && !displayName.isEmpty()) {
+            thisUserReference.child(UserObj.PATH_DISPLAY_NAME).setValue(displayName);
         }
 
         Uri photoUri = user.getPhotoUrl();

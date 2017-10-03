@@ -11,7 +11,7 @@ interface VerifycapableTab {
 
     fun verifyData(notifyUser: Boolean): Boolean // Проверяет данные таба на корректность
 
-    fun isDifficultToSwipe(): Boolean // Таб с проблематичной регистрацией свайпов
+    fun swipeble(): Boolean // Таб с проблематичной регистрацией свайпов
 
     fun getParent(): VerifyTabsParent?
 }

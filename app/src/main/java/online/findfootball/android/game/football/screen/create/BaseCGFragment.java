@@ -58,7 +58,7 @@ public abstract class BaseCGFragment extends Fragment implements VerifycapableTa
     }
 
     @Override
-    public boolean isDifficultToSwipe() {
-        return false;
+    public boolean swipeble() {
+        return true;
     }
 }

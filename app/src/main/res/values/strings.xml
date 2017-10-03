@@ -36,13 +36,12 @@
     <string name="auth_activity_password_too_short">Password cannot be shorter than 6!</string>
     <string name="auth_activity_bad_email">Email must contain \'@\' !</string>
     <string name="auth_activity_hint_password">Password</string>
+    <string name="auth_activity_hint_repeat_password">Repeat password</string>
     <string name="auth_activity_hint_email" translatable="false">Email</string>
+    <string name="auth_activity_hint_name" translatable="false">Name</string>
     <string name="auth_activity_button_sign_in">Login</string>
     <string name="auth_activity_button_sign_up">Sign Up</string>
     <string name="auth_activity_msg_other_networks">Or</string>
-    <string name="cg_fragment_email">Your email</string>
-    <string name="cg_fragment_password">Tape your password</string>
-    <string name="cg_fragment_email_letter">You will get verification letter</string>
 
 
     <!--- === Profile Activity === -->
@@ -53,7 +52,21 @@
     <string name="su_email_frg_empty_email" translatable="false">Email cannot be empty!</string>
     <string name="su_email_frg_without_dog" translatable="false">Email cannot be without "@"!</string>
     <string name="su_email_frg_incorrect" translatable="false">Email incorrect!</string>
-<string name="su_email_frg_empty_password" translatable="false">Password cannot be empty!</string>
+    <string name="su_password_frg_empty_password" translatable="false">Password cannot be empty!</string>
+    <string name="su_password_frg_password_not_match" translatable="false">Passwords do not match!</string>
+    <string name="su_password_frg_password_too_short" translatable="false">Password too short!</string>
+    <string name="su_name_frg_too_short" translatable="false">Name to short!</string>
+    <string name="su_name_frg_empty_name" translatable="false">Name cannot be empty!</string>
+    <string name="su_fragment_email">Your email</string>
+    <string name="su_fragment_name">Your name</string>
+    <string name="su_fragment_password">Tape your password</string>
+    <string name="su_fragment_name_small">For your friends</string>
+    <string name="su_fragment_email_small">You will get verification letter</string>
+    <string name="su_fragment_sex">Male or not?</string>
+    <string name="su_fragment_sex_small">just a joke</string>
+    <string name="su_fragment_dialog_title">Signing Up…</string>
+    <string name="su_fragment_registration_failed">Registration failed! Please try again. (@error@)</string>
+    <string name="su_fragment_check_email">Check your email please!</string>
 
     <!-- === Create Game  === -->
     <string name="cg_game_created_msg" formatted="false">%s has been created!</string>

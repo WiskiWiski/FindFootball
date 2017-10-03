@@ -13,34 +13,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/su_fragment_email"
+        android:text="@string/su_fragment_sex"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
         android:textSize="21sp"
         android:textStyle="bold"
-        tools:text="@string/su_fragment_email" />
+        tools:text="@string/su_fragment_sex"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:alpha="0.5"
         android:gravity="center"
-        android:text="@string/su_fragment_email_small"
+        android:text="@string/su_fragment_sex_small"
         android:textColor="@android:color/white"
-        tools:text="@string/su_fragment_email_small" />
+        tools:text="@string/su_fragment_sex_small"/>
 
-    <EditText
-        android:id="@+id/edit_text_email"
-        android:layout_width="match_parent"
+    <online.findfootball.android.game.football.screen.create.fragments.team.size.view.CustomNumberPicker
+        android:id="@+id/sex_picker"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/auth_activity_hint_email"
-        android:inputType="textEmailAddress"
-        android:padding="16dp"
-        android:textColor="@android:color/white"
-        android:textColorHint="#62ffffff"
-        android:theme="@style/AppTheme.Widget.EditText" />
+        android:layout_margin="16dp"
+        android:descendantFocusability="blocksDescendants"/>
 
 
 </LinearLayout>

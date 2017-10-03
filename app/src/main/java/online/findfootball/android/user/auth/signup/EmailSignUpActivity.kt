@@ -1,9 +1,15 @@
 package online.findfootball.android.user.auth.signup
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
+import android.util.Log
+import android.view.LayoutInflater
+import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 import online.findfootball.android.R
 import online.findfootball.android.app.App
 import online.findfootball.android.app.BaseActivity
@@ -12,15 +18,20 @@ import online.findfootball.android.app.view.verify.view.pager.VerifyTabsParent
 import online.findfootball.android.app.view.verify.view.pager.VerifycapableTab
 import online.findfootball.android.user.auth.AuthUserObj
 import online.findfootball.android.user.auth.signup.tab.SUEmailFragment
+import online.findfootball.android.user.auth.signup.tab.SUNameFragment
 import online.findfootball.android.user.auth.signup.tab.SUPasswordFragment
+import online.findfootball.android.user.auth.signup.tab.SUSexFragment
+
 
 class EmailSignUpActivity : BaseActivity(), VerifyTabsParent {
 
     companion object {
         private val TAG = App.G_TAG + ":EmailSignUpAct"
 
-        @JvmField val EXTRA_KEY = "intent_sign_up_user_key"
-        @JvmField val REQUEST_CODE = 3188
+        @JvmField
+        val EXTRA_KEY = "intent_sign_up_user_key"
+        @JvmField
+        val REQUEST_CODE = 3188
         private val ENABLE_BUTTON_VIEW_ALPHA = 1F
         private val DISABLE_BUTTON_VIEW_ALPHA = 0.2F
     }
@@ -44,7 +55,7 @@ class EmailSignUpActivity : BaseActivity(), VerifyTabsParent {
         setContentView(R.layout.activity_email_sign_up)
         initToolbar()
 
-        authUser = intent.getParcelableExtra<AuthUserObj>(EXTRA_KEY)
+        authUser = intent.getParcelableExtra(EXTRA_KEY)
 
         viewPager = findViewById(R.id.pager) as VerifyTabViewPager
         if (viewPager != null) {
@@ -52,12 +63,11 @@ class EmailSignUpActivity : BaseActivity(), VerifyTabsParent {
             // add tabs here
             adapter.addNext(SUEmailFragment())
             adapter.addNext(SUPasswordFragment())
+            adapter.addNext(SUNameFragment())
+            adapter.addNext(SUSexFragment())
             viewPager!!.adapter = adapter
             viewPager!!.setParent(this)
             adapter.getItem(0)?.updateView(authUser)
-
-
-
         }
 
         btnLeft = findViewById(R.id.fab_left) as FloatingActionButton
@@ -69,11 +79,42 @@ class EmailSignUpActivity : BaseActivity(), VerifyTabsParent {
     }
 
     private fun onFinish() {
-        // TODO
-        val resultIntent = Intent()
-        resultIntent.putExtra(EXTRA_KEY, authUser)
-        setResult(REQUEST_CODE, resultIntent)
-        finish()
+        val dialogBuilder = AlertDialog.Builder(this)
+        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_progress, null)
+        dialogBuilder.setView(dialogView)
+        dialogBuilder.setTitle(getString(R.string.su_fragment_dialog_title))
+        dialogBuilder.setCancelable(false)
+
+        val dialog = dialogBuilder.create()
+        dialog.show()
+
+        FirebaseAuth.getInstance()
+                .createUserWithEmailAndPassword(authUser.email, authUser.password)
+                .addOnCompleteListener { task ->
+                    dialog.hide()
+                    if (task.isSuccessful) {
+                        authUser.uid = task.result.user.uid
+                        task.result.user.sendEmailVerification()
+                                .addOnCompleteListener { task ->
+                                    Log.d(TAG, "Successful sent verification: " + task.isSuccessful)
+                                    Toast.makeText(this, getString(R.string.su_fragment_check_email),
+                                            Toast.LENGTH_SHORT).show()
+                                    val resultIntent = Intent()
+                                    resultIntent.putExtra(EXTRA_KEY, authUser)
+                                    setResult(REQUEST_CODE, resultIntent)
+                                    finish()
+                                }
+                    } else {
+                        val errMsg = getString(R.string.su_fragment_registration_failed)
+                        val extMsg: String? = task.exception?.message
+                        if (extMsg != null) {
+                            errMsg.replace("@error@", extMsg, true)
+                        }
+                        Log.d(TAG, errMsg)
+                        Toast.makeText(this, errMsg, Toast.LENGTH_SHORT).show()
+                    }
+                }
     }
 
     override fun onResume() {
@@ -143,7 +184,7 @@ class EmailSignUpActivity : BaseActivity(), VerifyTabsParent {
     override fun onDataStateChange(correct: Boolean) = setBtnEnable(btnRight, correct)
 
     override fun tryLeftSwipe(): Boolean {
-        if (!(viewPager?.hasPreview() ?: false)) {
+        if (viewPager?.hasPreview() != true) {
             return false
         }
         // сохраняем данных с предыдущего таба
@@ -158,10 +199,10 @@ class EmailSignUpActivity : BaseActivity(), VerifyTabsParent {
 
     override fun tryRightSwipe(): Boolean {
         // Возвращает был ли сменен таб
-        if (viewPager?.currentTab?.verifyData(true) ?: true) {
+        if (viewPager?.currentTab?.verifyData(true) != false) {
             // сохраняем данных с таба
             viewPager?.currentTab?.let { saveTabData(it) }
-            if (viewPager?.hasNext() ?: false) {
+            if (viewPager?.hasNext() == true) {
                 viewPager?.goNext()
                 viewPager?.currentTab?.updateView(authUser)
                 return true

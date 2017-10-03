@@ -27,7 +27,7 @@ public class SUEmailFragment extends BaseSUFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.su_fragment_email, container, false);
-        editText = (EditText) rootView.findViewById(R.id.edit_text_email);
+        editText = rootView.findViewById(R.id.edit_text_email);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
