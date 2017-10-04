@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,8 +53,8 @@ public class AuthUiActivity extends BaseActivity {
     private ImageButton btnFBSignIn;
     private Button btnSignUp;
 
+    private AlertDialog progressDialog;
 
-    private boolean inProgress;
     private MyGoogleAuthProvider googleAuthProvider;
     private MyEmailAuthAuthProvider emailAuthProvider;
     private MyFacebookAuthProvider fbAuthProvider;
@@ -72,6 +74,7 @@ public class AuthUiActivity extends BaseActivity {
         }
 
         initProviders();
+        initProgressDialog();
 
 
         inputEmail = (EditText) findViewById(R.id.email_et);
@@ -105,6 +108,7 @@ public class AuthUiActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 disableButtons();
+                showProgressDialog();
                 googleAuthProvider.signIn();
             }
         });
@@ -113,6 +117,7 @@ public class AuthUiActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 disableButtons();
+                showProgressDialog();
                 fbAuthProvider.signIn();
             }
         });
@@ -120,14 +125,18 @@ public class AuthUiActivity extends BaseActivity {
         btnVKSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*
                 disableButtons();
+                showProgressDialog();
                 vkAuthProvider.signIn();
+                */
             }
         });
 
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showProgressDialog();
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
                 emailAuthProvider.signUp(email, password);
@@ -138,6 +147,28 @@ public class AuthUiActivity extends BaseActivity {
                 */
             }
         });
+    }
+
+    private void initProgressDialog() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogView = inflater.inflate(R.layout.dialog_progress, null);
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setTitle(getString(R.string.auth_activity_progress_dialog_title));
+        dialogBuilder.setCancelable(false);
+        progressDialog = dialogBuilder.create();
+    }
+
+    private void hideProgressDialog(){
+        if (progressDialog != null){
+            progressDialog.hide();
+        }
+    }
+
+    private void showProgressDialog(){
+        if (progressDialog != null){
+            progressDialog.show();
+        }
     }
 
     private void initProviders() {
@@ -175,6 +206,7 @@ public class AuthUiActivity extends BaseActivity {
 
             @Override
             public void onFailed(FailedResult result) {
+                hideProgressDialog();
                 setResult(AppUser.RESULT_FAILED);
                 Log.d(TAG, "Authentication failed. " + result.toString());
                 Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();

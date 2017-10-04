@@ -42,6 +42,7 @@
     <string name="auth_activity_button_sign_in">Login</string>
     <string name="auth_activity_button_sign_up">Sign Up</string>
     <string name="auth_activity_msg_other_networks">Or</string>
+    <string name="auth_activity_progress_dialog_title">In progress…</string>
 
 
     <!--- === Profile Activity === -->
