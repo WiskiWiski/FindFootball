@@ -74,7 +74,6 @@
         android:ellipsize="end"
         android:maxLines="4"
         android:paddingLeft="24dp"
-        android:text="This is game description"
         android:textSize="18sp"
         tools:text="This is game description"/>
 

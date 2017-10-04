@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,28 +116,14 @@ public class GIAboutTab extends Fragment {
         this.thisGameObj = game;
         thisGameOwnerUser = thisGameObj.getOwnerUser();
 
-        if (notificationSwitch != null) {
-            FootballPlayer thisFootballPlayer = thisGameObj.getTeams().getPlayer(thisGameOwnerUser);
-            if (thisFootballPlayer != null) {
-                notificationSwitch.setChecked(thisFootballPlayer.getChatNotifications());
-            }
-        }
-        if (thisGameOwnerUser.hasUnpacked()) {
-            updateOwnerView();
-            showUserLoading(false);
-        } else {
-            if (loader == null) {
-                loader = DatabaseLoader.newLoader();
-            }
-            loader.load(thisGameOwnerUser, false, loadListener);
-        }
+        updateGameView();
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        if (thisGameObj != null && thisGameObj.hasUnpacked()) {
+        if (thisGameObj != null) {
             updateGameView();
         }
 
@@ -164,8 +151,14 @@ public class GIAboutTab extends Fragment {
         if (thisGameObj == null) {
             return;
         }
+
         if (gameDescriptionView != null) {
             gameDescriptionView.setText(thisGameObj.getDescription());
+        }
+
+        if (gameDateView != null) {
+            long localDate = TimeProvider.convertToLocal(thisGameObj.getEventTime());
+            gameDateView.setText(TimeProvider.getStringDate(TimeProvider.FORMAT_LONG, localDate));
         }
 
         if (gameLocationView != null) {
@@ -174,10 +167,10 @@ public class GIAboutTab extends Fragment {
                 String addressName = location.getAddressName();
                 String addressCity = location.getCityName();
                 String addressCountry = location.getCountryName();
-                if (addressName != null && addressCity != null){
+                if (addressName != null && addressCity != null) {
                     gameLocationView.setText(addressName);
                 } else {
-                    if (addressCity != null && addressCountry !=null){
+                    if (addressCity != null && addressCountry != null) {
                         gameLocationView.setText(addressCity);
                     } else {
                         gameLocationView.setText(addressCountry);
@@ -186,9 +179,20 @@ public class GIAboutTab extends Fragment {
             }
         }
 
-        if (gameDateView != null) {
-            long localDate = TimeProvider.convertToLocal(thisGameObj.getEventTime());
-            gameDateView.setText(TimeProvider.getStringDate(TimeProvider.FORMAT_LONG, localDate));
+        if (notificationSwitch != null) {
+            FootballPlayer thisFootballPlayer = thisGameObj.getTeams().getPlayer(thisGameOwnerUser);
+            if (thisFootballPlayer != null) {
+                notificationSwitch.setChecked(thisFootballPlayer.getChatNotifications());
+            }
+        }
+        if (thisGameOwnerUser.hasUnpacked()) {
+            updateOwnerView();
+            showUserLoading(false);
+        } else {
+            if (loader == null) {
+                loader = DatabaseLoader.newLoader();
+            }
+            loader.load(thisGameOwnerUser, false, loadListener);
         }
     }
 
